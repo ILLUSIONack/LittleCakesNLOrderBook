@@ -1,0 +1,3 @@
+# .gitignore
+.env
+GoogleService-Info.plist
