@@ -44,9 +44,9 @@ final class SubmissionsViewModel: ObservableObject {
                         // Step 4: Save merged data back to Firestore
                         for existingSubmission in existingSubmissions {
                             if let id = existingSubmission.id {
-                                try? self?.db.collection("submissions").document(id).setData(from: existingSubmission)
+                                try? self?.db.collection(ServerConfig.shared.collectionName).document(id).setData(from: existingSubmission)
                             } else {
-                                let newDocRef = self?.db.collection("submissions").document()
+                                let newDocRef = self?.db.collection(ServerConfig.shared.collectionName).document()
                                 try? newDocRef?.setData(from: existingSubmission)
                             }
                         }
@@ -78,7 +78,7 @@ final class SubmissionsViewModel: ObservableObject {
             switch result {
             case .success(let submission):
                 if let submission = submission {
-                    try? self.db.collection("submissions").document(submission.id ?? "").setData(from: submissionData)
+                    try? self.db.collection(ServerConfig.shared.collectionName).document(submission.id ?? "").setData(from: submissionData)
                 } else {
                     print("No submission found with the given ID.")
                 }
@@ -92,7 +92,7 @@ final class SubmissionsViewModel: ObservableObject {
     func fetchSubmission(by submissionId: String, completion: @escaping (Result<FirebaseSubmission?, Error>) -> Void) {
         let db = Firestore.firestore()
         
-        db.collection("submissions")
+        db.collection(ServerConfig.shared.collectionName)
             .whereField("submissionId", isEqualTo: submissionId)
             .getDocuments { (snapshot, error) in
                 if let error = error {
