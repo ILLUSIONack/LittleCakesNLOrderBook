@@ -1,0 +1,526 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		403338932C77AD06009DE459 /* LittleCakesNLOrderBookApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338922C77AD06009DE459 /* LittleCakesNLOrderBookApp.swift */; };
+		403338972C77AD09009DE459 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 403338962C77AD09009DE459 /* Assets.xcassets */; };
+		4033389A2C77AD09009DE459 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 403338992C77AD09009DE459 /* Preview Assets.xcassets */; };
+		403338A72C77AD5A009DE459 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338A02C77AD5A009DE459 /* Extensions.swift */; };
+		403338A82C77AD5A009DE459 /* FilloutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338A12C77AD5A009DE459 /* FilloutService.swift */; };
+		403338A92C77AD5A009DE459 /* Submission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338A32C77AD5A009DE459 /* Submission.swift */; };
+		403338AA2C77AD5A009DE459 /* SubmissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338A42C77AD5A009DE459 /* SubmissionsView.swift */; };
+		403338AB2C77AD5A009DE459 /* SubmissionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338A52C77AD5A009DE459 /* SubmissionsViewModel.swift */; };
+		403338AE2C77AE14009DE459 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 403338AD2C77AE14009DE459 /* FirebaseAnalytics */; };
+		403338B02C77AE14009DE459 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 403338AF2C77AE14009DE459 /* FirebaseAnalyticsOnDeviceConversion */; };
+		403338B22C77AE14009DE459 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 403338B12C77AE14009DE459 /* FirebaseAnalyticsWithoutAdIdSupport */; };
+		403338B42C77AE14009DE459 /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = 403338B32C77AE14009DE459 /* FirebaseAppCheck */; };
+		403338B62C77AE14009DE459 /* FirebaseAppDistribution-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 403338B52C77AE14009DE459 /* FirebaseAppDistribution-Beta */; };
+		403338B92C77AE2E009DE459 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 403338B82C77AE2E009DE459 /* FirebaseFirestore */; };
+		403338BB2C77AE49009DE459 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 403338BA2C77AE49009DE459 /* FirebaseAuth */; };
+		403338BD2C77AE49009DE459 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 403338BC2C77AE49009DE459 /* FirebaseDatabase */; };
+		403338BF2C77AE49009DE459 /* FirebaseDynamicLinks in Frameworks */ = {isa = PBXBuildFile; productRef = 403338BE2C77AE49009DE459 /* FirebaseDynamicLinks */; };
+		403338C12C77AE49009DE459 /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = 403338C02C77AE49009DE459 /* FirebaseFunctions */; };
+		403338C32C77AE49009DE459 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 403338C22C77AE49009DE459 /* FirebaseStorage */; };
+		403338C52C77AEE8009DE459 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 403338C42C77AEE8009DE459 /* GoogleService-Info.plist */; };
+		403338C72C77B0CE009DE459 /* SubmissionsDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338C62C77B0CE009DE459 /* SubmissionsDetailView.swift */; };
+		403338CB2C7CDA89009DE459 /* ServerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338CA2C7CDA89009DE459 /* ServerConfig.swift */; };
+		403338CD2C7D2D66009DE459 /* EnvLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338CC2C7D2D66009DE459 /* EnvLoader.swift */; };
+		403338CF2C7D32A0009DE459 /* .env in Resources */ = {isa = PBXBuildFile; fileRef = 403338CE2C7D32A0009DE459 /* .env */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		4033388F2C77AD06009DE459 /* LittleCakesNLOrderBook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LittleCakesNLOrderBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		403338922C77AD06009DE459 /* LittleCakesNLOrderBookApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LittleCakesNLOrderBookApp.swift; sourceTree = "<group>"; };
+		403338962C77AD09009DE459 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		403338992C77AD09009DE459 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		403338A02C77AD5A009DE459 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		403338A12C77AD5A009DE459 /* FilloutService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilloutService.swift; sourceTree = "<group>"; };
+		403338A32C77AD5A009DE459 /* Submission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Submission.swift; sourceTree = "<group>"; };
+		403338A42C77AD5A009DE459 /* SubmissionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubmissionsView.swift; sourceTree = "<group>"; };
+		403338A52C77AD5A009DE459 /* SubmissionsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubmissionsViewModel.swift; sourceTree = "<group>"; };
+		403338C42C77AEE8009DE459 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		403338C62C77B0CE009DE459 /* SubmissionsDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmissionsDetailView.swift; sourceTree = "<group>"; };
+		403338C82C7A8BB2009DE459 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		403338CA2C7CDA89009DE459 /* ServerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConfig.swift; sourceTree = "<group>"; };
+		403338CC2C7D2D66009DE459 /* EnvLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvLoader.swift; sourceTree = "<group>"; };
+		403338CE2C7D32A0009DE459 /* .env */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .env; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4033388C2C77AD06009DE459 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				403338B42C77AE14009DE459 /* FirebaseAppCheck in Frameworks */,
+				403338AE2C77AE14009DE459 /* FirebaseAnalytics in Frameworks */,
+				403338B62C77AE14009DE459 /* FirebaseAppDistribution-Beta in Frameworks */,
+				403338B22C77AE14009DE459 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
+				403338B02C77AE14009DE459 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
+				403338BF2C77AE49009DE459 /* FirebaseDynamicLinks in Frameworks */,
+				403338BB2C77AE49009DE459 /* FirebaseAuth in Frameworks */,
+				403338C12C77AE49009DE459 /* FirebaseFunctions in Frameworks */,
+				403338C32C77AE49009DE459 /* FirebaseStorage in Frameworks */,
+				403338BD2C77AE49009DE459 /* FirebaseDatabase in Frameworks */,
+				403338B92C77AE2E009DE459 /* FirebaseFirestore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		403338862C77AD06009DE459 = {
+			isa = PBXGroup;
+			children = (
+				403338912C77AD06009DE459 /* LittleCakesNLOrderBook */,
+				403338902C77AD06009DE459 /* Products */,
+				403338B72C77AE2E009DE459 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		403338902C77AD06009DE459 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4033388F2C77AD06009DE459 /* LittleCakesNLOrderBook.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		403338912C77AD06009DE459 /* LittleCakesNLOrderBook */ = {
+			isa = PBXGroup;
+			children = (
+				403338CE2C7D32A0009DE459 /* .env */,
+				403338C82C7A8BB2009DE459 /* Info.plist */,
+				403338C42C77AEE8009DE459 /* GoogleService-Info.plist */,
+				403338922C77AD06009DE459 /* LittleCakesNLOrderBookApp.swift */,
+				403338A22C77AD5A009DE459 /* Service */,
+				403338A62C77AD5A009DE459 /* Submission */,
+				403338962C77AD09009DE459 /* Assets.xcassets */,
+				403338982C77AD09009DE459 /* Preview Content */,
+				403338CA2C7CDA89009DE459 /* ServerConfig.swift */,
+				403338CC2C7D2D66009DE459 /* EnvLoader.swift */,
+			);
+			path = LittleCakesNLOrderBook;
+			sourceTree = "<group>";
+		};
+		403338982C77AD09009DE459 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				403338992C77AD09009DE459 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		403338A22C77AD5A009DE459 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				403338A02C77AD5A009DE459 /* Extensions.swift */,
+				403338A12C77AD5A009DE459 /* FilloutService.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		403338A62C77AD5A009DE459 /* Submission */ = {
+			isa = PBXGroup;
+			children = (
+				403338A32C77AD5A009DE459 /* Submission.swift */,
+				403338A42C77AD5A009DE459 /* SubmissionsView.swift */,
+				403338A52C77AD5A009DE459 /* SubmissionsViewModel.swift */,
+				403338C62C77B0CE009DE459 /* SubmissionsDetailView.swift */,
+			);
+			path = Submission;
+			sourceTree = "<group>";
+		};
+		403338B72C77AE2E009DE459 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4033388E2C77AD06009DE459 /* LittleCakesNLOrderBook */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4033389D2C77AD09009DE459 /* Build configuration list for PBXNativeTarget "LittleCakesNLOrderBook" */;
+			buildPhases = (
+				4033388B2C77AD06009DE459 /* Sources */,
+				4033388C2C77AD06009DE459 /* Frameworks */,
+				4033388D2C77AD06009DE459 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LittleCakesNLOrderBook;
+			packageProductDependencies = (
+				403338AD2C77AE14009DE459 /* FirebaseAnalytics */,
+				403338AF2C77AE14009DE459 /* FirebaseAnalyticsOnDeviceConversion */,
+				403338B12C77AE14009DE459 /* FirebaseAnalyticsWithoutAdIdSupport */,
+				403338B32C77AE14009DE459 /* FirebaseAppCheck */,
+				403338B52C77AE14009DE459 /* FirebaseAppDistribution-Beta */,
+				403338B82C77AE2E009DE459 /* FirebaseFirestore */,
+				403338BA2C77AE49009DE459 /* FirebaseAuth */,
+				403338BC2C77AE49009DE459 /* FirebaseDatabase */,
+				403338BE2C77AE49009DE459 /* FirebaseDynamicLinks */,
+				403338C02C77AE49009DE459 /* FirebaseFunctions */,
+				403338C22C77AE49009DE459 /* FirebaseStorage */,
+			);
+			productName = LittleCakesNLOrderBook;
+			productReference = 4033388F2C77AD06009DE459 /* LittleCakesNLOrderBook.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		403338872C77AD06009DE459 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1530;
+				LastUpgradeCheck = 1530;
+				TargetAttributes = {
+					4033388E2C77AD06009DE459 = {
+						CreatedOnToolsVersion = 15.3;
+					};
+				};
+			};
+			buildConfigurationList = 4033388A2C77AD06009DE459 /* Build configuration list for PBXProject "LittleCakesNLOrderBook" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 403338862C77AD06009DE459;
+			packageReferences = (
+				403338AC2C77AE14009DE459 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
+			productRefGroup = 403338902C77AD06009DE459 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4033388E2C77AD06009DE459 /* LittleCakesNLOrderBook */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4033388D2C77AD06009DE459 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4033389A2C77AD09009DE459 /* Preview Assets.xcassets in Resources */,
+				403338C52C77AEE8009DE459 /* GoogleService-Info.plist in Resources */,
+				403338972C77AD09009DE459 /* Assets.xcassets in Resources */,
+				403338CF2C7D32A0009DE459 /* .env in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4033388B2C77AD06009DE459 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				403338C72C77B0CE009DE459 /* SubmissionsDetailView.swift in Sources */,
+				403338CD2C7D2D66009DE459 /* EnvLoader.swift in Sources */,
+				403338932C77AD06009DE459 /* LittleCakesNLOrderBookApp.swift in Sources */,
+				403338CB2C7CDA89009DE459 /* ServerConfig.swift in Sources */,
+				403338AA2C77AD5A009DE459 /* SubmissionsView.swift in Sources */,
+				403338AB2C77AD5A009DE459 /* SubmissionsViewModel.swift in Sources */,
+				403338A82C77AD5A009DE459 /* FilloutService.swift in Sources */,
+				403338A72C77AD5A009DE459 /* Extensions.swift in Sources */,
+				403338A92C77AD5A009DE459 /* Submission.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		4033389B2C77AD09009DE459 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		4033389C2C77AD09009DE459 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		4033389E2C77AD09009DE459 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"LittleCakesNLOrderBook/Preview Content\"";
+				DEVELOPMENT_TEAM = G7B87U8R23;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LittleCakesNLOrderBook/Info.plist;
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app requires access to your calendar to save order pickup events.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.littlecakesnl.LittleCakesNLAgenda;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG DEV";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		4033389F2C77AD09009DE459 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"LittleCakesNLOrderBook/Preview Content\"";
+				DEVELOPMENT_TEAM = G7B87U8R23;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LittleCakesNLOrderBook/Info.plist;
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app requires access to your calendar to save order pickup events.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.littlecakesnl.LittleCakesNLAgenda;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = RELEASE;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4033388A2C77AD06009DE459 /* Build configuration list for PBXProject "LittleCakesNLOrderBook" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4033389B2C77AD09009DE459 /* Debug */,
+				4033389C2C77AD09009DE459 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4033389D2C77AD09009DE459 /* Build configuration list for PBXNativeTarget "LittleCakesNLOrderBook" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4033389E2C77AD09009DE459 /* Debug */,
+				4033389F2C77AD09009DE459 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		403338AC2C77AE14009DE459 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		403338AD2C77AE14009DE459 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 403338AC2C77AE14009DE459 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		403338AF2C77AE14009DE459 /* FirebaseAnalyticsOnDeviceConversion */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 403338AC2C77AE14009DE459 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsOnDeviceConversion;
+		};
+		403338B12C77AE14009DE459 /* FirebaseAnalyticsWithoutAdIdSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 403338AC2C77AE14009DE459 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsWithoutAdIdSupport;
+		};
+		403338B32C77AE14009DE459 /* FirebaseAppCheck */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 403338AC2C77AE14009DE459 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAppCheck;
+		};
+		403338B52C77AE14009DE459 /* FirebaseAppDistribution-Beta */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 403338AC2C77AE14009DE459 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = "FirebaseAppDistribution-Beta";
+		};
+		403338B82C77AE2E009DE459 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 403338AC2C77AE14009DE459 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		403338BA2C77AE49009DE459 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 403338AC2C77AE14009DE459 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		403338BC2C77AE49009DE459 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 403338AC2C77AE14009DE459 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		403338BE2C77AE49009DE459 /* FirebaseDynamicLinks */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 403338AC2C77AE14009DE459 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDynamicLinks;
+		};
+		403338C02C77AE49009DE459 /* FirebaseFunctions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 403338AC2C77AE14009DE459 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFunctions;
+		};
+		403338C22C77AE49009DE459 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 403338AC2C77AE14009DE459 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 403338872C77AD06009DE459 /* Project object */;
+}
