@@ -12,7 +12,7 @@ enum BaseUrl: String {
     case RELEASE = "API_RELEASE_FORM_ID"
 }
 
-class ServerConfig {
+final class ServerConfig {
     static let shared: ServerConfig = ServerConfig()
     
     var baseURL: String = ""

@@ -42,9 +42,6 @@ struct SubmissionDetailView: View {
                 }
             }
             .navigationTitle("Submission Details")
-//            .onAppear {
-//                preloadImages() // Start image preloading when the view appears
-//            }
             
             Button(action: {
                 requestCalendarAccess { granted in
@@ -118,38 +115,6 @@ struct SubmissionDetailView: View {
             }
         }
     }
-    
-//    private func preloadImages() {
-//        for question in submission.questions {
-//            if let valueType = question.value {
-//                switch valueType {
-//                case .file(let files):
-//                    for file in files {
-//                        if let url = URL(string: file.url) {
-//                            preloadImage(from: url)
-//                        }
-//                    }
-//                default:
-//                    break
-//                }
-//            }
-//        }
-//    }
-//    
-//    private func preloadImage(from url: URL) {
-//        let urlKey = NSURL(string: url.absoluteString)!
-//        // Skip if image already cached
-//        if ImageCache.shared.object(forKey: urlKey) != nil {
-//            return
-//        }
-//        
-//        URLSession.shared.dataTask(with: url) { data, response, error in
-//            if let data = data, let image = UIImage(data: data) {
-//                // Cache the image
-//                ImageCache.shared.setObject(image, forKey: urlKey)
-//            }
-//        }.resume()
-//    }
     
     func requestCalendarAccess(completion: @escaping (Bool) -> Void) {
         let eventStore = EKEventStore()

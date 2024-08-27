@@ -1,6 +1,6 @@
 import Foundation
 
-class FilloutService {
+final class FilloutService {
     func fetchSubmissions(completion: @escaping (Result<[Submission], Error>) -> Void) {
         
         let baseURL = ProcessInfo.processInfo.environment["BASE_URL"] ?? ""
