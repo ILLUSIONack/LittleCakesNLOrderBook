@@ -94,15 +94,14 @@
 			isa = PBXGroup;
 			children = (
 				403338CE2C7D32A0009DE459 /* .env */,
+				403338962C77AD09009DE459 /* Assets.xcassets */,
 				403338C82C7A8BB2009DE459 /* Info.plist */,
 				403338C42C77AEE8009DE459 /* GoogleService-Info.plist */,
 				403338922C77AD06009DE459 /* LittleCakesNLOrderBookApp.swift */,
+				403338D02C7DD7D8009DE459 /* Config */,
 				403338A22C77AD5A009DE459 /* Service */,
 				403338A62C77AD5A009DE459 /* Submission */,
-				403338962C77AD09009DE459 /* Assets.xcassets */,
 				403338982C77AD09009DE459 /* Preview Content */,
-				403338CA2C7CDA89009DE459 /* ServerConfig.swift */,
-				403338CC2C7D2D66009DE459 /* EnvLoader.swift */,
 			);
 			path = LittleCakesNLOrderBook;
 			sourceTree = "<group>";
@@ -140,6 +139,15 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		403338D02C7DD7D8009DE459 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				403338CA2C7CDA89009DE459 /* ServerConfig.swift */,
+				403338CC2C7D2D66009DE459 /* EnvLoader.swift */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

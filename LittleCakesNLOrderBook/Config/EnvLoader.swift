@@ -6,7 +6,7 @@
 //
 import Foundation
 
-class EnvLoader {
+final class EnvLoader {
     
     static func loadEnv() {
         guard let filePath = Bundle.main.path(forResource: ".env", ofType: nil) else {
