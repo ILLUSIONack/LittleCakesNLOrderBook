@@ -27,7 +27,7 @@ To run this app on your local machine, follow these steps:
 ```bash
 git clone https://github.com/yourusername/LittleCakesNLOrderBook.git
 cd LittleCakesNLOrderBook
-```bash
+```
 
 ## Usage
 To use the app, simply run it on the simulator or your device:
