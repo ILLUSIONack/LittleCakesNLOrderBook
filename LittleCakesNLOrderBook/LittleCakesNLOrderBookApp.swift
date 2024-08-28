@@ -12,7 +12,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         EnvLoader.loadEnv()
-        ServerConfig.shared
+        let _ = ServerConfig.shared
         FirebaseApp.configure()
         
         return true
@@ -25,7 +25,7 @@ struct LittleCakesNLAgenaApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     var body: some Scene {
         WindowGroup {
-            SubmissionsView()
+            ContentView()
         }
     }
 }

@@ -10,6 +10,7 @@ import Foundation
 enum BaseUrl: String {
     case DEV = "API_DEV_FORM_ID"
     case RELEASE = "API_RELEASE_FORM_ID"
+    case OLD = "API_RELEASE_FORM_ID_FIRST"
 }
 
 final class ServerConfig {

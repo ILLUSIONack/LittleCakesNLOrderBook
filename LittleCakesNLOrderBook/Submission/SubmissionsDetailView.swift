@@ -55,6 +55,7 @@ struct SubmissionDetailView: View {
                             if success {
                                 print("Event saved to calendar")
                                 calendarEventSaved = true
+                                showConfirmationAlert = true
                                 viewModel.confirmSubmission(withId: submission.submissionId)
                             } else if let error = error {
                                 print("Failed to save event: \(error.localizedDescription)")
@@ -65,13 +66,13 @@ struct SubmissionDetailView: View {
                     }
                 }
             }) {
-                Text(submission.isConfirmed ? "Order Confirmed" : "Confirm Order")
+                Text(submission.isConfirmed || showConfirmationAlert ? "Order Confirmed" : "Confirm Order")
                     .foregroundColor(.white)
                     .padding()
-                    .background(submission.isConfirmed ? Color.gray : Color.blue)
+                    .background(submission.isConfirmed || showConfirmationAlert ? Color.gray : Color.blue)
                     .cornerRadius(8)
             }
-            .disabled(submission.isConfirmed)
+            .disabled(submission.isConfirmed || showConfirmationAlert)
         }
         .alert(isPresented: $calendarEventSaved) {
             Alert(title: Text("Success"), message: Text("Event added to your calendar!"), dismissButton: .default(Text("OK")))

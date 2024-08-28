@@ -14,6 +14,9 @@ struct FirebaseSubmission: Codable, Identifiable {
     var lastUpdatedAt: String
     var questions: [SubmissionQuestion]
     var isConfirmed: Bool = false
+    var isDeleted: Bool = false
+    var isViewed: Bool = false
+    var isCompleted: Bool = false
     
     var submissionTimeDate: Date? {
         return ISO8601DateFormatter.extended.date(from: submissionTime)
@@ -33,11 +36,15 @@ struct Submission: Codable, Identifiable {
 }
 
 struct MappedSubmission: Codable, Identifiable {
+    var collectionId: String
     let submissionId: String
     var submissionTime: String
     var lastUpdatedAt: String
     var questions: [SubmissionQuestion]
     var isConfirmed: Bool = false
+    var isDeleted: Bool = false 
+    var isViewed: Bool = false 
+    var isCompleted: Bool = false
 
     var id: String { submissionId }
     var submissionTimeDate: Date? {

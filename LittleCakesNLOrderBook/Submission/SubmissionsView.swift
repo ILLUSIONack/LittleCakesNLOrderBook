@@ -4,32 +4,126 @@ final class ImageCache {
     static let shared = NSCache<NSURL, UIImage>()
 }
 
-struct SubmissionsView: View {
-    @StateObject private var viewModel = SubmissionsViewModel()
+struct ContentView: View {
 
     var body: some View {
+        TabView {
+            SubmissionsView(submissionState: .new)
+                .tabItem {
+                    Image(systemName: "arrow.down.circle")
+                    Text("New")
+                }
+            SubmissionsView(submissionState: .orders)
+                .tabItem {
+                    Image(systemName: "list.bullet")
+                    Text("Orders")
+                }
+            SubmissionsView(submissionState: .confirmed)
+                .tabItem {
+                    Image(systemName: "checkmark.seal.fill")
+                    Text("Confirmed")
+                }
+            SubmissionsView(submissionState: .completed)
+                .tabItem {
+                    Image(systemName: "square.and.pencil")
+                    Text("Completed")
+                }
+            SubmissionsView(submissionState: .deleted)
+                .tabItem {
+                    Image(systemName: "arrow.up.trash.fill")
+                    Text("Deleted")
+                }
+        }
+    }
+}
+
+struct SubmissionsView: View {
+    @StateObject private var viewModel = SubmissionsViewModel()
+    let submissionState: SubmissionState
+    
+    var body: some View {
         NavigationView {
-            List {
-                let groupedSubmissions = viewModel.groupedSubmissions()
-                let sortedDates = groupedSubmissions.keys.sorted(by: >)
-                
-                ForEach(sortedDates, id: \.self) { date in
-                    Section(header: Text(dateFormatted(date: date))) {
-                        if let submissionsForDate = groupedSubmissions[date] {
-                            ForEach(submissionsForDate) { submission in
-                                SubmissionRowView(submission: submission, viewModel: viewModel)
+            ZStack {
+                if viewModel.isLoading {
+                    VStack {
+                        Spacer()
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                        Spacer()
+                    }
+                } else {
+                    List {
+                        if viewModel.isNewOrdersViewVisible {
+                            Text(viewModel.newOrdersText)
+                                .frame(minWidth: 400)
+                                .font(Font.footnote.weight(.bold))
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(.black)
+                        }
+//                                        let groupedSubmissions = viewModel.groupedSubmissions()
+                        let sortedDates = viewModel.groupedSubmissions.keys.sorted(by: >)
+                        
+                        ForEach(sortedDates, id: \.self) { date in
+                            Section(header: Text(dateFormatted(date: date))) {
+                                if let submissionsForDate = viewModel.groupedSubmissions[date] {
+                                    ForEach(submissionsForDate) { submission in
+                                        HStack {
+                                            if !submission.isViewed {
+                                                Circle()
+                                                    .fill(Color.blue)
+                                                    .frame(width: 8, height: 8)
+                                            } else {
+                                                ZStack {
+                                                    Color.clear
+                                                        .frame(width: 8, height: 8)
+                                                    
+                                                }
+                                                .frame(width: 8, height: 8)
+                                            }
+                                            SubmissionRowView(submission: submission, viewModel: viewModel)
+                                            
+                                                .swipeActions {
+                                                    if !submission.isDeleted  {
+                                                        Button(role: .destructive) {
+                                                            viewModel.markSubmissionAsDeleted(submission)
+                                                            viewModel.fetchSubmissions(state: submissionState)
+                                                        } label: {
+                                                            Label("Delete", systemImage: "trash")
+                                                        }
+                                                    }
+                                                    if !submission.isCompleted {
+                                                        Button(role: .cancel) {
+                                                            viewModel.markSubmissionAsCompleted(submission)
+                                                        } label: {
+                                                            Label("Complete", systemImage: "checkmark.seal")
+                                                        }
+                                                    }
+                                                }
+                                        }
+                                        .listRowBackground(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(submission.isConfirmed ? Color.green : Color.clear, lineWidth: 5)
+                                                .background(Color.white) // Ensure the background is set
+                                        )
+//                                                                        .padding(.vertical, 4)
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
             .refreshable {
-                viewModel.fetchSubmissions()
+                viewModel.fetchSubmissions(state: submissionState, onAppear: false)
             }
-            .navigationTitle("Orders")
             .onAppear {
-                viewModel.fetchSubmissions()
+                viewModel.fetchSubmissions(state: submissionState, onAppear: true)
+                viewModel.getGroupedSubmissions()
             }
+            .onDisappear {
+                viewModel.stopPolling()
+            }
+            .navigationTitle(viewModel.title)
         }
     }
 
@@ -50,32 +144,71 @@ struct SubmissionRowView: View {
                             submission: submission,
                             viewModel: viewModel
                         )
+                            .onAppear {
+                                // Mark the submission as viewed when detail view appears
+                                viewModel.markSubmissionAsViewed(submission)
+                            }
         ) {
             HStack(spacing: 0) {
                 VStack(alignment: .leading) {
                     Text("\(viewModel.fetchSubmissionCustomerName(submission)) - \(viewModel.fetchSubmissionCustomerPickupLocation(submission))")
                         .font(.headline)
                         .lineLimit(1)
-                    Text(viewModel.fetchSubmissionCakeDescription(submission))
-                        .font(.caption)
-                        .lineLimit(nil)
-                    Text("Date: \(viewModel.fetchSubmissionPickupDate(submission))")
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
-                        .lineLimit(nil)
-                    if let submissionTime = submission.submissionTimeDate {
-                        Text("Created: \(submissionTime, formatter: submissionDateFormatter)")
-                            .font(.footnote)
-                            .foregroundColor(.secondary)
+                    if let cakeSizeText = viewModel.fetchSubmissionWithQuestion(submission, questionString: "For how many people would you like the cake?"), let cake = viewModel.fetchSubmissionWithQuestion(submission, questionString: "Which shape would you like your cake?") {
+                        Text("- \(cakeSizeText) / \(cake)")
+                            .font(.caption)
+                            .lineLimit(nil)
                     }
+                    
+                    if let heartCakeSizeText = viewModel.fetchSubmissionWithQuestion(submission, questionString: "For how many people would you like the cake? (1)") , let cake = viewModel.fetchSubmissionWithQuestion(submission, questionString: "Which shape would you like your cake?") {
+                        Text("- \(heartCakeSizeText) / \(cake)")
+                            .font(.caption)
+                            .lineLimit(nil)
+                    }
+                    
+                    if let flavourText = viewModel.fetchSubmissionWithQuestion(submission, questionString: "Which flavour would you like the cake?") {
+                        Text("- \(flavourText)")
+                            .font(.caption)
+                            .lineLimit(nil)
+                    }
+                    
+                    if let fillingText = viewModel.fetchSubmissionWithQuestion(submission, questionString: "Which flavour would you like the filling?") {
+                        Text("- \(fillingText)")
+                            .font(.caption)
+                            .lineLimit(nil)
+                    }
+                    
+                    
+                    if let cakeText = viewModel.fetchSubmissionWithQuestion(submission, questionString: "Which text would you like on the cake and which colour?"), 
+                        let writtenText = viewModel.fetchSubmissionWithQuestion(submission, questionString: "How would you like the text?") {
+                        Text("- \(cakeText) / \(writtenText)")
+                            .font(.caption)
+                            .lineLimit(nil)
+                    }
+                    
+
+                    HStack {
+                        if let submissionTime = submission.submissionTimeDate {
+                            Text("Created: \(submissionTime, formatter: submissionDateFormatter)")
+                                .font(.footnote)
+                                .foregroundColor(.secondary)
+                        }
+                        if let daysAgo = viewModel.getDaysAgo(submissionDate: submission.submissionTimeDate), !submission.isConfirmed {
+                            Text(daysAgo)
+                                .font(.footnote)
+                                .foregroundColor(.red)
+                        }
+                    }
+                    
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                
                 buildImages()
             }
             .cornerRadius(8)
         }
         
-        .background(submission.isConfirmed ? Color.green.opacity(0.3) : Color.clear)
+//        .background(submission.isConfirmed ? Color.green.opacity(0.3) : Color.clear)
     }
     
     @ViewBuilder
