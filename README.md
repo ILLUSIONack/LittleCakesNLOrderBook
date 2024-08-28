@@ -7,6 +7,7 @@ Welcome to **LittleCakesNLOrderBook**! This app is designed to streamline order 
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Features](#features)
 - [Technical Overview](#technical-overview)
 
 ## Features
