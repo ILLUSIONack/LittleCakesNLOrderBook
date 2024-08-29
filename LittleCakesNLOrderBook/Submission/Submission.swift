@@ -79,7 +79,9 @@ struct File: Codable, Hashable {
     var url: String
     var filename: String
 }
-
+enum SubError: Error {
+    case error
+}
 enum ValueType: Codable, Equatable, Hashable {
     case string(String?)
     case array([String])
@@ -92,14 +94,31 @@ enum ValueType: Codable, Equatable, Hashable {
         // Check if the value is null
         if container.decodeNil() {
             self = .null
-        } else if let stringValue = try? container.decode(String?.self) {
-            self = .string(stringValue)
-        } else if let arrayValue = try? container.decode([String].self) {
-            self = .array(arrayValue)
         } else if let fileValue = try? container.decode([File].self) {
             self = .file(fileValue)
+        } else if let arrayValue = try? container.decode([String].self) {
+            self = .array(arrayValue)
+        } else if let stringValue = try? container.decode(String?.self) {
+            self = .string(stringValue)
         } else {
-            self = .string("tt")
+            print("Error decoding ValueType: Unrecognized data type. Raw value: ")
+            throw SubError.error
+        }
+    }
+    
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        
+        switch self {
+        case .null:
+            try container.encodeNil()
+        case .string(let stringValue):
+            try container.encode(stringValue)
+        case .array(let arrayValue):
+            try container.encode(arrayValue)
+        case .file(let fileValue):
+            try container.encode(fileValue)
         }
     }
     

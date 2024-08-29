@@ -53,9 +53,11 @@ final class SubmissionsViewModel: ObservableObject {
     }
     
     func fetchSubmissions(state: SubmissionState, onAppear: Bool = false) {
-        if onAppear {
-            if !isLoaded {
-                isLoading = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            if onAppear {
+                if !self.isLoaded {
+                    self.isLoading = true
+                }
             }
         }
         isNewOrdersViewVisible = false
@@ -76,12 +78,16 @@ final class SubmissionsViewModel: ObservableObject {
                             print("No documents found in Firestore")
                             return
                         }
-
+                        
                         var firebaseSubmissions = documents.compactMap { queryDocumentSnapshot in
-                            try? queryDocumentSnapshot.data(as: FirebaseSubmission.self)
+                            do {
+                                return try queryDocumentSnapshot.data(as: FirebaseSubmission.self)
+                            } catch {
+                                print("Failed to decode document: \(error)")
+                                return nil
+                            }
                         }
-
-                    
+                        
                         // loopFilloutSubmissionsIfNotExistAddtoExistingSubbmisions
                         for filloutSubmission in filloutSubmissions {
                             if let index = firebaseSubmissions.firstIndex(where: { $0.submissionId == filloutSubmission.submissionId }) {
@@ -106,10 +112,17 @@ final class SubmissionsViewModel: ObservableObject {
                                 try? self?.db.collection(ServerConfig.shared.collectionName).document(id).setData(from: firebaseSubmission)
                             } else {
                                 let newDocRef = self?.db.collection(ServerConfig.shared.collectionName).document()
-                                try? newDocRef?.setData(from: firebaseSubmission)
+                                let mapped = MappedSubmission(
+                                    collectionId: newDocRef?.documentID ?? "docID",
+                                    submissionId: firebaseSubmission.submissionId,
+                                    submissionTime: firebaseSubmission.submissionTime,
+                                    lastUpdatedAt: firebaseSubmission.lastUpdatedAt,
+                                    questions: firebaseSubmission.questions
+                                )
+                                try? newDocRef?.setData(from: mapped)
                             }
                         }
-
+                        
                         // Update published submissions list
                         let list = firebaseSubmissions.map {
                             MappedSubmission(
@@ -139,12 +152,10 @@ final class SubmissionsViewModel: ObservableObject {
                             filteredList = list.filter { !$0.isDeleted && !$0.isCompleted && !$0.isConfirmed }
                         }
                         
-                        DispatchQueue.main.async {
-                            self?.submissions = []
-                            self?.submissions = filteredList
-                            self?.getGroupedSubmissions()
-                        }
-//                        self?.getGroupedSubmissions()
+                        self?.submissions = []
+                        self?.submissions = filteredList
+                        self?.getGroupedSubmissions()
+                        
                         self?.isLoaded = true
                         self?.isLoading = false
 

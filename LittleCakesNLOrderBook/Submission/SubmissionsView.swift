@@ -207,8 +207,6 @@ struct SubmissionRowView: View {
             }
             .cornerRadius(8)
         }
-        
-//        .background(submission.isConfirmed ? Color.green.opacity(0.3) : Color.clear)
     }
     
     @ViewBuilder
