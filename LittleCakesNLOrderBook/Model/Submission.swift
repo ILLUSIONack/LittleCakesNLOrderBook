@@ -1,6 +1,34 @@
 import Foundation
 import FirebaseFirestore
 
+enum Questions: String {
+    case name = "What's your instagram name?"
+    case pickUpType = "How do you want to receive the cake?"
+    case userAddress = "What's your address?"
+    case pickupLocation = "Select pick-up location"
+    case dateOfPickup = "Date of pickup"
+    case order = "What would you like to order?"
+    case orderShape = "Which shape would you like your cake?"
+    
+    case orderSize = "For how many people would you like the cake?"
+    case orderSize1 = "For how many people would you like the cake? (1)"
+    
+    case cupcakesAmount = "How many cupcakes would you like?"
+    case cupcakesAmount1 = "How many cupcakes would you like? (1)"
+    
+    case cakeFlavour = "Which flavour would you like the cake?"
+    case cakeFlavour1to4 = "Which flavour would you like the cake? (1-4)"
+    
+    case cakeFilling = "Which flavour would you like the filling?"
+    case cakeFilling1to4 = "Which flavour would you like the filling? (1-4)"
+    
+    case cakeTextAndColor = "Which text would you like on the cake and which colour?"
+    case cakeTextType = "How would you like the text?"
+    case phoneNumber = "Your Phone number (Optional)"
+    case email = "Email"
+    case extras = "Please provide extra information here"
+    
+}
 struct SubmissionResponse: Codable {
     let responses: [Submission]
     let totalResponses: Int
@@ -17,7 +45,7 @@ struct FirebaseSubmission: Codable, Identifiable {
     var isDeleted: Bool = false
     var isViewed: Bool = false
     var isCompleted: Bool = false
-    
+
     var submissionTimeDate: Date? {
         return ISO8601DateFormatter.extended.date(from: submissionTime)
     }
@@ -53,10 +81,10 @@ struct MappedSubmission: Codable, Identifiable {
 }
 
 struct SubmissionQuestion: Codable, Identifiable, Hashable {
-    let id: String
-    let name: String
-    let type: String
-    let value: ValueType?
+    var id: String
+    var name: String
+    var type: String
+    var value: ValueType?
 
     // Implement the `==` operator for custom equality checks
     static func == (lhs: SubmissionQuestion, rhs: SubmissionQuestion) -> Bool {
@@ -88,10 +116,17 @@ enum ValueType: Codable, Equatable, Hashable {
     case null
     case file([File])
     
+    init(string: String) {
+        if string.isEmpty {
+            self = .null
+        } else {
+            self = .string(string)
+        }
+    }
+    
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         
-        // Check if the value is null
         if container.decodeNil() {
             self = .null
         } else if let fileValue = try? container.decode([File].self) {
@@ -106,10 +141,8 @@ enum ValueType: Codable, Equatable, Hashable {
         }
     }
     
-    
     func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
-        
         switch self {
         case .null:
             try container.encodeNil()

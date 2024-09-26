@@ -26,6 +26,7 @@ struct LittleCakesNLAgenaApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(FirestoreManager.shared)
         }
     }
 }

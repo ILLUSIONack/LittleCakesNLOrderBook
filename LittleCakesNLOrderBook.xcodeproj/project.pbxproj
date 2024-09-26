@@ -31,6 +31,9 @@
 		403338CB2C7CDA89009DE459 /* ServerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338CA2C7CDA89009DE459 /* ServerConfig.swift */; };
 		403338CD2C7D2D66009DE459 /* EnvLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338CC2C7D2D66009DE459 /* EnvLoader.swift */; };
 		403338CF2C7D32A0009DE459 /* .env in Resources */ = {isa = PBXBuildFile; fileRef = 403338CE2C7D32A0009DE459 /* .env */; };
+		406C48BC2C8E29B100FE3BB8 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406C48BB2C8E29B100FE3BB8 /* ContentViewModel.swift */; };
+		406C48BE2C8E2A4200FE3BB8 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406C48BD2C8E2A4200FE3BB8 /* DatabaseManager.swift */; };
+		406C48C02C978B7E00FE3BB8 /* SubmissionRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406C48BF2C978B7E00FE3BB8 /* SubmissionRowView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +52,9 @@
 		403338CA2C7CDA89009DE459 /* ServerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConfig.swift; sourceTree = "<group>"; };
 		403338CC2C7D2D66009DE459 /* EnvLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvLoader.swift; sourceTree = "<group>"; };
 		403338CE2C7D32A0009DE459 /* .env */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .env; sourceTree = "<group>"; };
+		406C48BB2C8E29B100FE3BB8 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
+		406C48BD2C8E2A4200FE3BB8 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
+		406C48BF2C978B7E00FE3BB8 /* SubmissionRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmissionRowView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,8 +105,9 @@
 				403338C42C77AEE8009DE459 /* GoogleService-Info.plist */,
 				403338922C77AD06009DE459 /* LittleCakesNLOrderBookApp.swift */,
 				403338D02C7DD7D8009DE459 /* Config */,
+				406C48C12C9A181000FE3BB8 /* Model */,
+				406C48C22C9A185300FE3BB8 /* View */,
 				403338A22C77AD5A009DE459 /* Service */,
-				403338A62C77AD5A009DE459 /* Submission */,
 				403338982C77AD09009DE459 /* Preview Content */,
 			);
 			path = LittleCakesNLOrderBook;
@@ -126,10 +133,9 @@
 		403338A62C77AD5A009DE459 /* Submission */ = {
 			isa = PBXGroup;
 			children = (
-				403338A32C77AD5A009DE459 /* Submission.swift */,
 				403338A42C77AD5A009DE459 /* SubmissionsView.swift */,
+				406C48BF2C978B7E00FE3BB8 /* SubmissionRowView.swift */,
 				403338A52C77AD5A009DE459 /* SubmissionsViewModel.swift */,
-				403338C62C77B0CE009DE459 /* SubmissionsDetailView.swift */,
 			);
 			path = Submission;
 			sourceTree = "<group>";
@@ -148,6 +154,33 @@
 				403338CC2C7D2D66009DE459 /* EnvLoader.swift */,
 			);
 			path = Config;
+			sourceTree = "<group>";
+		};
+		406C48C12C9A181000FE3BB8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				406C48BD2C8E2A4200FE3BB8 /* DatabaseManager.swift */,
+				403338A32C77AD5A009DE459 /* Submission.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		406C48C22C9A185300FE3BB8 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				406C48BB2C8E29B100FE3BB8 /* ContentViewModel.swift */,
+				403338A62C77AD5A009DE459 /* Submission */,
+				406C48C32C9A186200FE3BB8 /* SubmissionDetailsView */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		406C48C32C9A186200FE3BB8 /* SubmissionDetailsView */ = {
+			isa = PBXGroup;
+			children = (
+				403338C62C77B0CE009DE459 /* SubmissionsDetailView.swift */,
+			);
+			path = SubmissionDetailsView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -239,9 +272,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				403338C72C77B0CE009DE459 /* SubmissionsDetailView.swift in Sources */,
+				406C48BE2C8E2A4200FE3BB8 /* DatabaseManager.swift in Sources */,
 				403338CD2C7D2D66009DE459 /* EnvLoader.swift in Sources */,
 				403338932C77AD06009DE459 /* LittleCakesNLOrderBookApp.swift in Sources */,
 				403338CB2C7CDA89009DE459 /* ServerConfig.swift in Sources */,
+				406C48C02C978B7E00FE3BB8 /* SubmissionRowView.swift in Sources */,
+				406C48BC2C8E29B100FE3BB8 /* ContentViewModel.swift in Sources */,
 				403338AA2C77AD5A009DE459 /* SubmissionsView.swift in Sources */,
 				403338AB2C77AD5A009DE459 /* SubmissionsViewModel.swift in Sources */,
 				403338A82C77AD5A009DE459 /* FilloutService.swift in Sources */,
@@ -385,6 +421,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LittleCakesNLOrderBook/Info.plist;
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app requires access to your calendar to save order pickup events.";
+				INFOPLIST_KEY_NSContactsUsageDescription = "We need access to your contacts to invite people to calendar events.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -418,6 +455,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LittleCakesNLOrderBook/Info.plist;
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app requires access to your calendar to save order pickup events.";
+				INFOPLIST_KEY_NSContactsUsageDescription = "We need access to your contacts to invite people to calendar events.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
