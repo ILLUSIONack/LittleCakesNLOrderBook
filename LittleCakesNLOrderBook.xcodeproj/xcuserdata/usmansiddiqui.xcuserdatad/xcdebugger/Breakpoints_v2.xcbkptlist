@@ -279,38 +279,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "C58079D5-E18F-495E-842D-DB00EEB9E378"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "LittleCakesNLOrderBook/View/Submission/SubmissionsViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "435"
-            endingLineNumber = "435"
-            landmarkName = "preloadImage(from:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "07F2445A-33E8-411B-B211-47ABB1246A38"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "LittleCakesNLOrderBook/View/Submission/SubmissionsViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "441"
-            endingLineNumber = "441"
-            landmarkName = "preloadImage(from:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "843628AE-967E-40FF-850C-2E7DBB5DC0FB"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -318,8 +286,8 @@
             filePath = "LittleCakesNLOrderBook/View/Submission/SubmissionsViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "420"
-            endingLineNumber = "420"
+            startingLineNumber = "494"
+            endingLineNumber = "494"
             landmarkName = "preloadImages()"
             landmarkType = "7">
          </BreakpointContent>
@@ -334,8 +302,8 @@
             filePath = "LittleCakesNLOrderBook/View/Submission/SubmissionsViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "419"
-            endingLineNumber = "419"
+            startingLineNumber = "493"
+            endingLineNumber = "493"
             landmarkName = "preloadImages()"
             landmarkType = "7">
          </BreakpointContent>
@@ -343,16 +311,62 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "7A9876C0-80CB-4568-8B6C-61C3B82B1D70"
+            uuid = "C90B5FA1-ECE2-452D-A283-4086C5282641"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LittleCakesNLOrderBook/View/Submission/SubmissionsViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "444"
-            endingLineNumber = "444"
-            landmarkName = "preloadImage(from:)"
+            startingLineNumber = "99"
+            endingLineNumber = "99"
+            landmarkName = "fetchSubmissions(state:onAppear:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "C90B5FA1-ECE2-452D-A283-4086C5282641 - 48e4f898a182793"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Swift.Optional&lt;__C.FIRQuerySnapshot&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in LittleCakesNLOrderBook.SubmissionsViewModel.fetchSubmissions(state: LittleCakesNLOrderBook.SubmissionState, onAppear: Swift.Bool) -&gt; ()"
+                  moduleName = "LittleCakesNLOrderBook"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/usmansiddiqui/LittleCakesNLOrderBook/LittleCakesNLOrderBook/View/Submission/SubmissionsViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "99"
+                  endingLineNumber = "99">
+               </Location>
+               <Location
+                  uuid = "C90B5FA1-ECE2-452D-A283-4086C5282641 - 234437da0cc2e3cf"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (LittleCakesNLOrderBook.FirebaseSubmission) -&gt; LittleCakesNLOrderBook.MappedSubmission in closure #2 (Swift.Optional&lt;__C.FIRQuerySnapshot&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in LittleCakesNLOrderBook.SubmissionsViewModel.fetchSubmissions(state: LittleCakesNLOrderBook.SubmissionState, onAppear: Swift.Bool) -&gt; ()"
+                  moduleName = "LittleCakesNLOrderBook"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/usmansiddiqui/LittleCakesNLOrderBook/LittleCakesNLOrderBook/View/Submission/SubmissionsViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "101"
+                  endingLineNumber = "101">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "CC57C176-B100-4026-BA84-B386D136D769"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "LittleCakesNLOrderBook/View/Submission/SubmissionsViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "92"
+            endingLineNumber = "92"
+            landmarkName = "fetchSubmissions(state:onAppear:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

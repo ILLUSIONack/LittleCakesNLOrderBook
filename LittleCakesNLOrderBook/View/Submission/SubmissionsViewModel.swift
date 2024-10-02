@@ -73,107 +73,181 @@ final class SubmissionsViewModel: ObservableObject {
             }
         }
         isNewOrdersViewVisible = false
-        setPolling(state: state)
         setTitle(state: state)
-        filloutService.fetchSubmissions { [weak self] result in
-            guard let self else { return }
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let filloutSubmissions):
-                    
-                    self.db.collection(ServerConfig.shared.collectionName).getDocuments { snapshot, error in
-                        if let error = error {
-                            print("Error fetching submissions from Firestore: \(error)")
-                            return
-                        }
-
-                        guard let documents = snapshot?.documents else {
-                            print("No documents found in Firestore")
-                            return
-                        }
-                        
-                        let firebaseSubmissions = documents.compactMap { queryDocumentSnapshot in
-                            do {
-                                return try queryDocumentSnapshot.data(as: FirebaseSubmission.self)
-                            } catch {
-                                print("Failed to decode document: \(error)")
-                                return nil
-                            }
-                        }
-                        
-                        var filteredList: [MappedSubmission] = []
-                        
-                        for filloutSubmission in filloutSubmissions {
-                            // Check if there's any existing submission in Firebase that matches the current fillout submission
-                            let isExistsFirebaseSubmission = firebaseSubmissions.contains {
-                                $0.submissionId == filloutSubmission.submissionId
-                            }
-                            
-                            // If it doesn't exist, create a new FirebaseSubmission and add it to firebaseSubmissions
-                            if !isExistsFirebaseSubmission {
-                                let newDocRef = self.db.collection(ServerConfig.shared.collectionName).document()
-                                var questions = filloutSubmission.questions
-                                print(questions.count)
-                                questions.append(SubmissionQuestion(id: String(filloutSubmission.questions.count), name: "Total amount €", type: "ShortAnswer", value: ValueType(string: " ")))
-                                questions.append(SubmissionQuestion(id: String(filloutSubmission.questions.count + 1), name: "Remaining amount €", type: "ShortAnswer", value: ValueType(string: " ")))
-                                let mappedSubmission = MappedSubmission(
-                                    collectionId: newDocRef.documentID,
-                                    submissionId: filloutSubmission.submissionId,
-                                    submissionTime: filloutSubmission.submissionTime,
-                                    lastUpdatedAt: filloutSubmission.lastUpdatedAt,
-                                    questions: questions
-                                )
-                                filteredList.append(mappedSubmission)
-                                try? newDocRef.setData(from: mappedSubmission)
-                            }
-                        }
-
-                        var list = firebaseSubmissions.map {
-                            MappedSubmission(
-                                collectionId: $0.id ?? "no-id",
-                                submissionId: $0.submissionId,
-                                submissionTime: $0.submissionTime,
-                                lastUpdatedAt: $0.lastUpdatedAt,
-                                questions: $0.questions,
-                                isConfirmed: $0.isConfirmed,
-                                isDeleted: $0.isDeleted,
-                                isViewed: $0.isViewed,
-                                isCompleted: $0.isCompleted
-                            )
-                        }
-                        
-                        list.append(contentsOf: filteredList)
-
-                        switch state {
-                        case .completed:
-                            filteredList = list.filter { $0.isCompleted }
-                        case .deleted:
-                            filteredList = list.filter { $0.isDeleted }
-                        case .confirmed:
-                            filteredList = list.filter { $0.isConfirmed }
-                        case .orders:
-                            if self.isNewFilteredActive {
-                                filteredList = list.filter { !$0.isConfirmed && !$0.isCompleted && !$0.isDeleted }
-                            } else {
-                                filteredList = list.filter { !$0.isDeleted }
-                            }
-                        }
-                        
-                        self.submissions = filteredList
-                        self.preloadImages()
-                        self.getGroupedSubmissions()
-                        
-                        self.isLoaded = true
-                        self.isLoading = false
-
-                    }
-                case .failure(let error):
-                    print("Error fetching submissions from Fillout: \(error)")
+        db.collection(ServerConfig.shared.collectionName).addSnapshotListener { snapshot, error in
+            if let error = error {
+                print("Error fetching submissions from Firestore: \(error)")
+                return
+            }
+            
+            guard let documents = snapshot?.documents else {
+                print("No documents found in Firestore")
+                return
+            }
+            
+            let firebaseSubmissions = documents.compactMap { queryDocumentSnapshot in
+                do {
+                    return try queryDocumentSnapshot.data(as: FirebaseSubmission.self)
+                } catch {
+                    print("Failed to decode document: \(error)")
+                    return nil
                 }
             }
+            
+            var filteredList: [MappedSubmission] = []
+
+            var list = firebaseSubmissions.map {
+                MappedSubmission(
+                    collectionId: $0.id ?? "no-id",
+                    submissionId: $0.submissionId,
+                    submissionTime: $0.submissionTime,
+                    lastUpdatedAt: $0.lastUpdatedAt,
+                    questions: $0.questions,
+                    isConfirmed: $0.isConfirmed,
+                    isDeleted: $0.isDeleted,
+                    isViewed: $0.isViewed,
+                    isCompleted: $0.isCompleted
+                )
+            }
+            
+            list.append(contentsOf: filteredList)
+
+            switch state {
+            case .completed:
+                filteredList = list.filter { $0.isCompleted }
+            case .deleted:
+                filteredList = list.filter { $0.isDeleted }
+            case .confirmed:
+                filteredList = list.filter { $0.isConfirmed }
+            case .orders:
+                if self.isNewFilteredActive {
+                    filteredList = list.filter { !$0.isConfirmed && !$0.isCompleted && !$0.isDeleted }
+                } else {
+                    filteredList = list.filter { !$0.isDeleted }
+                }
+            }
+            
+            self.submissions = filteredList
+            self.preloadImages()
+            self.getGroupedSubmissions()
+            
+            self.isLoaded = true
+            self.isLoading = false
         }
         newOrders = 0
     }
+    
+//    func fetchSubmissions(state: SubmissionState, onAppear: Bool = false) {
+//        submissionState = state
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//            if onAppear {
+//                if !self.isLoaded {
+//                    self.isLoading = true
+//                }
+//            }
+//        }
+//        isNewOrdersViewVisible = false
+//        setPolling(state: state)
+//        setTitle(state: state)
+//        filloutService.fetchSubmissions { [weak self] result in
+//            guard let self else { return }
+//            DispatchQueue.main.async {
+//                switch result {
+//                case .success(let filloutSubmissions):
+//                    
+//                    self.db.collection(ServerConfig.shared.collectionName).getDocuments { snapshot, error in
+//                        if let error = error {
+//                            print("Error fetching submissions from Firestore: \(error)")
+//                            return
+//                        }
+//
+//                        guard let documents = snapshot?.documents else {
+//                            print("No documents found in Firestore")
+//                            return
+//                        }
+//                        
+//                        let firebaseSubmissions = documents.compactMap { queryDocumentSnapshot in
+//                            do {
+//                                return try queryDocumentSnapshot.data(as: FirebaseSubmission.self)
+//                            } catch {
+//                                print("Failed to decode document: \(error)")
+//                                return nil
+//                            }
+//                        }
+//                        
+//                        var filteredList: [MappedSubmission] = []
+//                        
+//                        for filloutSubmission in filloutSubmissions {
+//                            // Check if there's any existing submission in Firebase that matches the current fillout submission
+//                            let isExistsFirebaseSubmission = firebaseSubmissions.contains {
+//                                $0.submissionId == filloutSubmission.submissionId
+//                            }
+//                            
+//                            // If it doesn't exist, create a new FirebaseSubmission and add it to firebaseSubmissions
+//                            if !isExistsFirebaseSubmission {
+//                                let newDocRef = self.db.collection(ServerConfig.shared.collectionName).document()
+//                                var questions = filloutSubmission.questions
+//                                print(questions.count)
+//                                questions.append(SubmissionQuestion(id: String(filloutSubmission.questions.count), name: "Total amount €", type: "ShortAnswer", value: ValueType(string: " ")))
+//                                questions.append(SubmissionQuestion(id: String(filloutSubmission.questions.count + 1), name: "Remaining amount €", type: "ShortAnswer", value: ValueType(string: " ")))
+//                                let mappedSubmission = MappedSubmission(
+//                                    collectionId: newDocRef.documentID,
+//                                    submissionId: filloutSubmission.submissionId,
+//                                    submissionTime: filloutSubmission.submissionTime,
+//                                    lastUpdatedAt: filloutSubmission.lastUpdatedAt,
+//                                    questions: questions
+//                                )
+//                                filteredList.append(mappedSubmission)
+//                                try? newDocRef.setData(from: mappedSubmission)
+//                            }
+//                        }
+//
+//                        var list = firebaseSubmissions.map {
+//                            MappedSubmission(
+//                                collectionId: $0.id ?? "no-id",
+//                                submissionId: $0.submissionId,
+//                                submissionTime: $0.submissionTime,
+//                                lastUpdatedAt: $0.lastUpdatedAt,
+//                                questions: $0.questions,
+//                                isConfirmed: $0.isConfirmed,
+//                                isDeleted: $0.isDeleted,
+//                                isViewed: $0.isViewed,
+//                                isCompleted: $0.isCompleted
+//                            )
+//                        }
+//                        
+//                        list.append(contentsOf: filteredList)
+//
+//                        switch state {
+//                        case .completed:
+//                            filteredList = list.filter { $0.isCompleted }
+//                        case .deleted:
+//                            filteredList = list.filter { $0.isDeleted }
+//                        case .confirmed:
+//                            filteredList = list.filter { $0.isConfirmed }
+//                        case .orders:
+//                            if self.isNewFilteredActive {
+//                                filteredList = list.filter { !$0.isConfirmed && !$0.isCompleted && !$0.isDeleted }
+//                            } else {
+//                                filteredList = list.filter { !$0.isDeleted }
+//                            }
+//                        }
+//                        
+//                        self.submissions = filteredList
+//                        self.preloadImages()
+//                        self.getGroupedSubmissions()
+//                        
+//                        self.isLoaded = true
+//                        self.isLoading = false
+//
+//                    }
+//                case .failure(let error):
+//                    print("Error fetching submissions from Fillout: \(error)")
+//                }
+//            }
+//        }
+//        newOrders = 0
+//    }
     
     func filterNewButtonPressed() {
         isNewFilteredActive.toggle()
