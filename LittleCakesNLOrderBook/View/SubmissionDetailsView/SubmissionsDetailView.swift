@@ -13,8 +13,10 @@ struct SubmissionDetailView: View {
     @State private var isEditEnabled = false
     
     @State private var showEventEditView = false
-    @State private var eventStore = EKEventStore()
     @State private var event: EKEvent?
+
+    private let eventStore = EventStoreManager.shared
+    private let feedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
 
     init(submission: MappedSubmission, viewModel: SubmissionsViewModel) {
         self._editedSubmission = State(initialValue: submission)
@@ -233,6 +235,8 @@ struct SubmissionDetailView: View {
             switch result {
             case .success:
                 print("Submission updated successfully.")
+                feedbackGenerator.impactOccurred()
+                isEditEnabled = false
             case .failure(let error):
                 print("Failed to update submission: \(error.localizedDescription)")
             }

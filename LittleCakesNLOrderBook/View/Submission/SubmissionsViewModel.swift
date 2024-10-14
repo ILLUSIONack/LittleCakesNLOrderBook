@@ -27,11 +27,12 @@ final class SubmissionsViewModel: ObservableObject {
     private let filloutService = FilloutService()
     private var pollingTimer: Timer?
     var newOrders:Int = 0
+    private var allOrders: [MappedSubmission] = []
     
     func startPolling(state: SubmissionState) {
         stopPolling() 
         pollingTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { [weak self] _ in
-            self?.fetchNewOrders(state: state)
+//            self?.fetchNewOrders(state: state)
         }
     }
     
@@ -73,116 +74,163 @@ final class SubmissionsViewModel: ObservableObject {
             }
         }
         isNewOrdersViewVisible = false
-        setPolling(state: state)
         setTitle(state: state)
-        filloutService.fetchSubmissions { [weak self] result in
-            guard let self else { return }
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let filloutSubmissions):
-                    
-                    self.db.collection(ServerConfig.shared.collectionName).getDocuments { snapshot, error in
-                        if let error = error {
-                            print("Error fetching submissions from Firestore: \(error)")
-                            return
-                        }
 
-                        guard let documents = snapshot?.documents else {
-                            print("No documents found in Firestore")
-                            return
-                        }
-                        
-                        let firebaseSubmissions = documents.compactMap { queryDocumentSnapshot in
-                            do {
-                                return try queryDocumentSnapshot.data(as: FirebaseSubmission.self)
-                            } catch {
-                                print("Failed to decode document: \(error)")
-                                return nil
+        var currentOffset = 0
+        let limit = 50 // Define your desired limit
+
+        func fetchBatch() {
+            filloutService.fetchSubmissions(limit: limit, offset: currentOffset) { [weak self] result in
+                guard let self else { return }
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let filloutSubmissions):
+                        self.db.collection(ServerConfig.shared.collectionName).getDocuments { snapshot, error in
+                            if let error = error {
+                                print("Error fetching submissions from Firestore: \(error)")
+                                return
                             }
-                        }
-                        
-                        var filteredList: [MappedSubmission] = []
-                        
-                        for filloutSubmission in filloutSubmissions {
-                            // Check if there's any existing submission in Firebase that matches the current fillout submission
-                            let isExistsFirebaseSubmission = firebaseSubmissions.contains {
-                                $0.submissionId == filloutSubmission.submissionId
+
+                            guard let documents = snapshot?.documents else {
+                                print("No documents found in Firestore")
+                                return
                             }
-                            
-                            // If it doesn't exist, create a new FirebaseSubmission and add it to firebaseSubmissions
-                            if !isExistsFirebaseSubmission {
-                                let newDocRef = self.db.collection(ServerConfig.shared.collectionName).document()
-                                var questions = filloutSubmission.questions
-                                print(questions.count)
-                                questions.append(SubmissionQuestion(id: String(filloutSubmission.questions.count), name: "Total amount €", type: "ShortAnswer", value: ValueType(string: " ")))
-                                questions.append(SubmissionQuestion(id: String(filloutSubmission.questions.count + 1), name: "Remaining amount €", type: "ShortAnswer", value: ValueType(string: " ")))
-                                let mappedSubmission = MappedSubmission(
-                                    collectionId: newDocRef.documentID,
-                                    submissionId: filloutSubmission.submissionId,
-                                    submissionTime: filloutSubmission.submissionTime,
-                                    lastUpdatedAt: filloutSubmission.lastUpdatedAt,
-                                    questions: questions
+
+                            let firebaseSubmissions = documents.compactMap { queryDocumentSnapshot in
+                                do {
+                                    return try queryDocumentSnapshot.data(as: FirebaseSubmission.self)
+                                } catch {
+                                    print("Failed to decode document: \(error)")
+                                    return nil
+                                }
+                            }
+
+                            var filteredList: [MappedSubmission] = []
+                            let batch = self.db.batch()
+
+                            // Iterate over filloutSubmissions
+                            for filloutSubmission in filloutSubmissions {
+                                let isExistsFirebaseSubmission = firebaseSubmissions.contains {
+                                    $0.submissionId == filloutSubmission.submissionId
+                                }
+
+                                if !isExistsFirebaseSubmission {
+                                    let newDocRef = self.db.collection(ServerConfig.shared.collectionName).document()
+
+                                    var questions = filloutSubmission.questions
+                                    questions.append(SubmissionQuestion(id: String(filloutSubmission.questions.count), name: "Total amount €", type: "ShortAnswer", value: ValueType(string: " ")))
+                                    questions.append(SubmissionQuestion(id: String(filloutSubmission.questions.count + 1), name: "Remaining amount €", type: "ShortAnswer", value: ValueType(string: " ")))
+                                    questions.append(SubmissionQuestion(id: String(filloutSubmission.questions.count + 2), name: "Notitie", type: "ShortAnswer", value: ValueType(string: " ")))
+
+                                    let mappedSubmission = MappedSubmission(
+                                        collectionId: newDocRef.documentID,
+                                        submissionId: filloutSubmission.submissionId,
+                                        submissionTime: filloutSubmission.submissionTime,
+                                        lastUpdatedAt: filloutSubmission.lastUpdatedAt,
+                                        questions: questions
+                                    )
+
+                                    filteredList.append(mappedSubmission)
+
+                                    do {
+                                        try batch.setData(from: mappedSubmission, forDocument: newDocRef)
+                                    } catch {
+                                        print("Error encoding mapped submission: \(error)")
+                                    }
+                                }
+                            }
+
+                            batch.commit { error in
+                                if let error = error {
+                                    print("Error committing batch write: \(error)")
+                                } else {
+                                    print("Batch write successfully committed.")
+                                }
+                            }
+
+                            var list = firebaseSubmissions.map {
+                                MappedSubmission(
+                                    collectionId: $0.id ?? "no-id",
+                                    submissionId: $0.submissionId,
+                                    submissionTime: $0.submissionTime,
+                                    lastUpdatedAt: $0.lastUpdatedAt,
+                                    questions: $0.questions,
+                                    isConfirmed: $0.isConfirmed,
+                                    isDeleted: $0.isDeleted,
+                                    isViewed: $0.isViewed,
+                                    isCompleted: $0.isCompleted
                                 )
-                                filteredList.append(mappedSubmission)
-                                try? newDocRef.setData(from: mappedSubmission)
                             }
-                        }
 
-                        var list = firebaseSubmissions.map {
-                            MappedSubmission(
-                                collectionId: $0.id ?? "no-id",
-                                submissionId: $0.submissionId,
-                                submissionTime: $0.submissionTime,
-                                lastUpdatedAt: $0.lastUpdatedAt,
-                                questions: $0.questions,
-                                isConfirmed: $0.isConfirmed,
-                                isDeleted: $0.isDeleted,
-                                isViewed: $0.isViewed,
-                                isCompleted: $0.isCompleted
-                            )
-                        }
-                        
-                        list.append(contentsOf: filteredList)
+                            list.append(contentsOf: filteredList)
 
-                        switch state {
-                        case .completed:
-                            filteredList = list.filter { $0.isCompleted }
-                        case .deleted:
-                            filteredList = list.filter { $0.isDeleted }
-                        case .confirmed:
-                            filteredList = list.filter { $0.isConfirmed }
-                        case .orders:
-                            if self.isNewFilteredActive {
-                                filteredList = list.filter { !$0.isConfirmed && !$0.isCompleted && !$0.isDeleted }
+                            switch state {
+                            case .completed:
+                                filteredList = list.filter { $0.isCompleted }
+                            case .deleted:
+                                filteredList = list.filter { $0.isDeleted }
+                            case .confirmed:
+                                filteredList = list.filter { $0.isConfirmed }
+                            case .orders:
+                                if self.isNewFilteredActive {
+                                    filteredList = list.filter { !$0.isConfirmed && !$0.isCompleted && !$0.isDeleted }
+                                } else {
+                                    filteredList = list.filter { !$0.isDeleted && !$0.isCompleted }
+                                    self.allOrders = list.filter { !$0.isDeleted && !$0.isCompleted }
+                                    
+                                }
+                            }
+
+                            self.submissions = filteredList
+                            self.getGroupedSubmissions()
+                            print(self.submissions.count)
+
+                            self.isLoaded = true
+                            self.isLoading = false
+
+                            // Check if more submissions were fetched and fetch the next batch if necessary
+                            if filloutSubmissions.count == limit {
+                                currentOffset += limit
+                                fetchBatch()
                             } else {
-                                filteredList = list.filter { !$0.isDeleted }
+                                self.preloadImages()
                             }
                         }
-                        
-                        self.submissions = filteredList
-                        self.preloadImages()
-                        self.getGroupedSubmissions()
-                        
-                        self.isLoaded = true
+                    case .failure(let error):
+                        print("Error fetching submissions from Fillout: \(error)")
                         self.isLoading = false
-
                     }
-                case .failure(let error):
-                    print("Error fetching submissions from Fillout: \(error)")
                 }
             }
         }
+
+        // Start fetching the first batch
+        fetchBatch()
+//        self.preloadImages()
         newOrders = 0
     }
     
     func filterNewButtonPressed() {
         isNewFilteredActive.toggle()
-        fetchSubmissions(state: submissionState ?? .orders, onAppear: false)
+        print(isNewFilteredActive)
+        if isNewFilteredActive == true {
+            let filteredList = submissions.filter { !$0.isConfirmed && !$0.isCompleted && !$0.isDeleted }
+            self.submissions = filteredList
+            setTitle(state: .orders)
+            getGroupedSubmissions()
+
+        } else {
+            self.submissions = allOrders
+            setTitle(state: .orders)
+            getGroupedSubmissions()
+        }
+//        fetchSubmissions(state: submissionState ?? .orders, onAppear: false)
     }
     
     func filterSubmissions(by name: String) {
         if name.isEmpty {
-            filteredSubmissions = submissions
+            filteredSubmissions.removeAll()
+            getGroupedSubmissions()
         } else {
             filteredSubmissions = submissions.filter { submission in
                 submission.questions.contains { question in
@@ -197,52 +245,52 @@ final class SubmissionsViewModel: ObservableObject {
         getGroupedSubmissions()
     }
     
-    func fetchNewOrders(state: SubmissionState) {
-        setTitle(state: state)
-        filloutService.fetchSubmissions { [weak self] result in
-            guard let self else { return }
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let filloutSubmissions):
-                    
-                    self.db.collection(ServerConfig.shared.collectionName).getDocuments { snapshot, error in
-                        if let error = error {
-                            print("Error fetching submissions from Firestore: \(error)")
-                            return
-                        }
-
-                        guard let documents = snapshot?.documents else {
-                            print("No documents found in Firestore")
-                            return
-                        }
-
-                        let firebaseSubmissions = documents.compactMap { queryDocumentSnapshot in
-                            try? queryDocumentSnapshot.data(as: FirebaseSubmission.self)
-                        }
-
-                        // loopFilloutSubmissionsIfNotExistAddtoExistingSubbmisions
-                        self.newOrders = 0
-                        for filloutSubmission in filloutSubmissions {
-                            if let _ = firebaseSubmissions.firstIndex(where: { $0.submissionId == filloutSubmission.submissionId }) {
-                               
-                            } else {
-                                self.newOrders = (self.newOrders) + 1
-                            }
-                        }
-                        self.newOrdersText = "\(self.newOrders) New Orders"
-                        
-                        if self.newOrders > 0 {
-                            self.isNewOrdersViewVisible = true
-                        } else {
-                            self.isNewOrdersViewVisible = false
-                        }
-                    }
-                case .failure(let error):
-                    print("Error fetching submissions from Fillout: \(error)")
-                }
-            }
-        }
-    }
+//    func fetchNewOrders(state: SubmissionState) {
+//        setTitle(state: state)
+//        filloutService.fetchSubmissions { [weak self] result in
+//            guard let self else { return }
+//            DispatchQueue.main.async {
+//                switch result {
+//                case .success(let filloutSubmissions):
+//                    
+//                    self.db.collection(ServerConfig.shared.collectionName).getDocuments { snapshot, error in
+//                        if let error = error {
+//                            print("Error fetching submissions from Firestore: \(error)")
+//                            return
+//                        }
+//
+//                        guard let documents = snapshot?.documents else {
+//                            print("No documents found in Firestore")
+//                            return
+//                        }
+//
+//                        let firebaseSubmissions = documents.compactMap { queryDocumentSnapshot in
+//                            try? queryDocumentSnapshot.data(as: FirebaseSubmission.self)
+//                        }
+//
+//                        // loopFilloutSubmissionsIfNotExistAddtoExistingSubbmisions
+//                        self.newOrders = 0
+//                        for filloutSubmission in filloutSubmissions {
+//                            if let _ = firebaseSubmissions.firstIndex(where: { $0.submissionId == filloutSubmission.submissionId }) {
+//                               
+//                            } else {
+//                                self.newOrders = (self.newOrders) + 1
+//                            }
+//                        }
+//                        self.newOrdersText = "\(self.newOrders) New Orders"
+//                        
+//                        if self.newOrders > 0 {
+//                            self.isNewOrdersViewVisible = true
+//                        } else {
+//                            self.isNewOrdersViewVisible = false
+//                        }
+//                    }
+//                case .failure(let error):
+//                    print("Error fetching submissions from Fillout: \(error)")
+//                }
+//            }
+//        }
+//    }
     
     func setTitle(state: SubmissionState) {
         switch state {
@@ -326,7 +374,6 @@ final class SubmissionsViewModel: ObservableObject {
             return date ?? Date()
         }
 
-        // Sort grouped submissions by date in descending order
         groupedSubmissions = grouped.sorted(by: { $0.key > $1.key }).reduce(into: [Date: [MappedSubmission]]()) {
             $0[$1.key] = $1.value
         }
@@ -407,9 +454,6 @@ final class SubmissionsViewModel: ObservableObject {
     }
     
     func preloadImages() {
-        guard !isPreloadedImages else {
-            return
-        }
         for submission in submissions {
             for question in submission.questions {
                 if let valueType = question.value {
@@ -437,11 +481,18 @@ final class SubmissionsViewModel: ObservableObject {
         
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let data = data, let image = UIImage(data: data) {
-                // Cache the image
-                ImageCache.shared.setObject(image, forKey: urlKey)
+                DispatchQueue.global(qos: .userInitiated).async {
+                    // Resize the image in the background thread
+                    let resizedImage = image.resizedMaintainingAspectRatio(targetSize: CGSize(width: 1000, height: 1000))
+                    
+                    // Cache and update UI on the main thread
+                    DispatchQueue.main.async {
+                        ImageCache.shared.setObject(resizedImage, forKey: urlKey)
+                    }
+                }
             }
         }.resume()
-        isPreloadedImages = true
+//        isPreloadedImages = true
     }
     
     func markSubmissionAsViewed(_ submission: MappedSubmission) {

@@ -136,7 +136,14 @@ enum ValueType: Codable, Equatable, Hashable {
         } else if let stringValue = try? container.decode(String?.self) {
             self = .string(stringValue)
         } else {
-            print("Error decoding ValueType: Unrecognized data type. Raw value: ")
+            // Try decoding the raw JSON data to understand the type that failed
+            if let data = try? container.decode(Data.self),
+               let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) {
+                print("Error decoding ValueType: Unrecognized data type. Raw JSON value: \(json)")
+            } else {
+                print("Error decoding ValueType: Unable to determine raw value.")
+            }
+            
             throw SubError.error
         }
     }

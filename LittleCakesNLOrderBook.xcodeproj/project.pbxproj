@@ -26,7 +26,6 @@
 		403338BF2C77AE49009DE459 /* FirebaseDynamicLinks in Frameworks */ = {isa = PBXBuildFile; productRef = 403338BE2C77AE49009DE459 /* FirebaseDynamicLinks */; };
 		403338C12C77AE49009DE459 /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = 403338C02C77AE49009DE459 /* FirebaseFunctions */; };
 		403338C32C77AE49009DE459 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 403338C22C77AE49009DE459 /* FirebaseStorage */; };
-		403338C52C77AEE8009DE459 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 403338C42C77AEE8009DE459 /* GoogleService-Info.plist */; };
 		403338C72C77B0CE009DE459 /* SubmissionsDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338C62C77B0CE009DE459 /* SubmissionsDetailView.swift */; };
 		403338CB2C7CDA89009DE459 /* ServerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338CA2C7CDA89009DE459 /* ServerConfig.swift */; };
 		403338CD2C7D2D66009DE459 /* EnvLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338CC2C7D2D66009DE459 /* EnvLoader.swift */; };
@@ -34,6 +33,8 @@
 		406C48BC2C8E29B100FE3BB8 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406C48BB2C8E29B100FE3BB8 /* ContentViewModel.swift */; };
 		406C48BE2C8E2A4200FE3BB8 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406C48BD2C8E2A4200FE3BB8 /* DatabaseManager.swift */; };
 		406C48C02C978B7E00FE3BB8 /* SubmissionRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406C48BF2C978B7E00FE3BB8 /* SubmissionRowView.swift */; };
+		406C48CB2CB4947F00FE3BB8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 406C48CA2CB4947F00FE3BB8 /* GoogleService-Info.plist */; };
+		40FFD9ED2CB6ED6B0005E7CD /* EventStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40FFD9EC2CB6ED6B0005E7CD /* EventStoreManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,7 +47,6 @@
 		403338A32C77AD5A009DE459 /* Submission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Submission.swift; sourceTree = "<group>"; };
 		403338A42C77AD5A009DE459 /* SubmissionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubmissionsView.swift; sourceTree = "<group>"; };
 		403338A52C77AD5A009DE459 /* SubmissionsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubmissionsViewModel.swift; sourceTree = "<group>"; };
-		403338C42C77AEE8009DE459 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		403338C62C77B0CE009DE459 /* SubmissionsDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmissionsDetailView.swift; sourceTree = "<group>"; };
 		403338C82C7A8BB2009DE459 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		403338CA2C7CDA89009DE459 /* ServerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConfig.swift; sourceTree = "<group>"; };
@@ -55,6 +55,8 @@
 		406C48BB2C8E29B100FE3BB8 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		406C48BD2C8E2A4200FE3BB8 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		406C48BF2C978B7E00FE3BB8 /* SubmissionRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmissionRowView.swift; sourceTree = "<group>"; };
+		406C48CA2CB4947F00FE3BB8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		40FFD9EC2CB6ED6B0005E7CD /* EventStoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStoreManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,7 +104,7 @@
 				403338CE2C7D32A0009DE459 /* .env */,
 				403338962C77AD09009DE459 /* Assets.xcassets */,
 				403338C82C7A8BB2009DE459 /* Info.plist */,
-				403338C42C77AEE8009DE459 /* GoogleService-Info.plist */,
+				406C48CA2CB4947F00FE3BB8 /* GoogleService-Info.plist */,
 				403338922C77AD06009DE459 /* LittleCakesNLOrderBookApp.swift */,
 				403338D02C7DD7D8009DE459 /* Config */,
 				406C48C12C9A181000FE3BB8 /* Model */,
@@ -179,6 +181,7 @@
 			isa = PBXGroup;
 			children = (
 				403338C62C77B0CE009DE459 /* SubmissionsDetailView.swift */,
+				40FFD9EC2CB6ED6B0005E7CD /* EventStoreManager.swift */,
 			);
 			path = SubmissionDetailsView;
 			sourceTree = "<group>";
@@ -258,7 +261,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4033389A2C77AD09009DE459 /* Preview Assets.xcassets in Resources */,
-				403338C52C77AEE8009DE459 /* GoogleService-Info.plist in Resources */,
+				406C48CB2CB4947F00FE3BB8 /* GoogleService-Info.plist in Resources */,
 				403338972C77AD09009DE459 /* Assets.xcassets in Resources */,
 				403338CF2C7D32A0009DE459 /* .env in Resources */,
 			);
@@ -282,6 +285,7 @@
 				403338AB2C77AD5A009DE459 /* SubmissionsViewModel.swift in Sources */,
 				403338A82C77AD5A009DE459 /* FilloutService.swift in Sources */,
 				403338A72C77AD5A009DE459 /* Extensions.swift in Sources */,
+				40FFD9ED2CB6ED6B0005E7CD /* EventStoreManager.swift in Sources */,
 				403338A92C77AD5A009DE459 /* Submission.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

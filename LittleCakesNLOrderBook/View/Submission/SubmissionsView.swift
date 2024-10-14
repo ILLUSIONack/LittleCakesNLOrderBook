@@ -53,6 +53,9 @@ struct SubmissionsView: View {
     let submissionState: SubmissionState
     @State private var searchText: String = ""
     @State private var isSearchBarVisible: Bool = false
+    @FocusState private var isSearchBarFocused: Bool
+    private let feedbackGenerator = UIImpactFeedbackGenerator(style: .soft)
+
     private let today = Date()
 
     init(submissionState: SubmissionState, firestoreManager: FirestoreManager) {
@@ -76,7 +79,7 @@ struct SubmissionsView: View {
                         buildNewOrdersView()
 
                         ScrollViewReader { scrollViewProxy in
-                            List(viewModel.groupedSubmissions.keys.sorted(by: >), id: \.self) { date in
+                            List(viewModel.groupedSubmissions.keys.sorted(by: <), id: \.self) { date in
                                 Section(header: buildSectionHeader(for: date)) {
                                     if let submissionsForDate = viewModel.groupedSubmissions[date] {
                                         ForEach(submissionsForDate) { submission in
@@ -100,6 +103,7 @@ struct SubmissionsView: View {
                 }
             }
             .refreshable {
+                feedbackGenerator.impactOccurred()
                 viewModel.fetchSubmissions(state: submissionState, onAppear: false)
             }
             .onAppear {
@@ -119,8 +123,10 @@ struct SubmissionsView: View {
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {
-                            isSearchBarVisible.toggle()
                             searchText = ""
+                            isSearchBarVisible.toggle()
+                            viewModel.filterSubmissions(by: "")
+                            isSearchBarFocused = isSearchBarVisible
                         }) {
                             Image(systemName: "magnifyingglass")
                         }
@@ -173,12 +179,26 @@ struct SubmissionsView: View {
     @ViewBuilder
     private func buildSearchBar() -> some View {
         if isSearchBarVisible {
-            TextField("Search by name", text: $searchText)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal, 8)
-                .onChange(of: searchText) { newValue in
-                    viewModel.filterSubmissions(by: newValue)
+            HStack {
+                TextField("Search by name", text: $searchText)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding(.leading, 8)
+                    .focused($isSearchBarFocused)
+                    .onChange(of: searchText) { newValue in
+                        viewModel.filterSubmissions(by: newValue)
+                    }
+                
+                if !searchText.isEmpty {
+                    Button(action: {
+                        searchText = ""
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.gray)
+                    }
+                    .padding(.trailing, 8)
                 }
+            }
+            .padding(.horizontal, 8)
         }
     }
     

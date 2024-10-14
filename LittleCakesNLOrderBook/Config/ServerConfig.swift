@@ -26,7 +26,8 @@ final class ServerConfig {
     private func setupServerConfig() {
         
         #if DEV
-        self.baseURL = ProcessInfo.processInfo.environment[BaseUrl.DEV.rawValue] ?? ""
+//        self.baseURL = ProcessInfo.processInfo.environment[BaseUrl.DEV.rawValue] ?? ""
+        self.baseURL = ProcessInfo.processInfo.environment[BaseUrl.RELEASE.rawValue] ?? ""
         self.collectionName = "submissionsDev"
         #else
         self.baseURL = ProcessInfo.processInfo.environment[BaseUrl.RELEASE.rawValue] ?? ""
