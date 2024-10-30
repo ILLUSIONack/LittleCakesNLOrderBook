@@ -11,8 +11,6 @@ enum SubmissionState {
 final class SubmissionsViewModel: ObservableObject {
     @Published var submissions: [MappedSubmission] = []
     @Published var title: String = ""
-    @Published var isNewOrdersViewVisible: Bool = false
-    @Published var newOrdersText: String = "0 New orders"
     @Published var groupedSubmissions: [Date : [MappedSubmission]] = [:]
     @Published var filteredSubmissions: [MappedSubmission] = []
     @Published var isLoading: Bool = false
@@ -20,50 +18,17 @@ final class SubmissionsViewModel: ObservableObject {
     @Published var isShowTodayButtonVisible: Bool = false
     @Published var dateKey: Dictionary<Date, [MappedSubmission]>.Keys.Element?
 
-    private var isPreloadedImages: Bool = false
     private var isNewFilteredActive: Bool = false
     private var submissionState: SubmissionState?
     private var db: Firestore
     private let filloutService = FilloutService()
-    private var pollingTimer: Timer?
-    var newOrders:Int = 0
     private var allOrders: [MappedSubmission] = []
-    
-    func startPolling(state: SubmissionState) {
-        stopPolling() 
-        pollingTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { [weak self] _ in
-//            self?.fetchNewOrders(state: state)
-        }
-    }
-    
+
     init(firestoreManager: FirestoreManager) {
         self.db = firestoreManager.db
-
         getGroupedSubmissions()
     }
-    
-    func stopPolling() {
-        pollingTimer?.invalidate()
-        pollingTimer = nil
-    }
-    
-    deinit {
-        stopPolling()
-    }
 
-    func setPolling(state: SubmissionState) {
-        if case .deleted = state {
-            stopPolling()
-            return
-        } else if case .completed = state {
-            stopPolling()
-        } else {
-            if pollingTimer == nil {
-                startPolling(state: state)
-            }
-        }
-    }
-    
     func fetchSubmissions(state: SubmissionState, onAppear: Bool = false) {
         submissionState = state
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -73,11 +38,10 @@ final class SubmissionsViewModel: ObservableObject {
                 }
             }
         }
-        isNewOrdersViewVisible = false
         setTitle(state: state)
 
         var currentOffset = 0
-        let limit = 50 // Define your desired limit
+        let limit = 50 
 
         func fetchBatch() {
             filloutService.fetchSubmissions(limit: limit, offset: currentOffset) { [weak self] result in
@@ -158,7 +122,8 @@ final class SubmissionsViewModel: ObservableObject {
                                     isConfirmed: $0.isConfirmed,
                                     isDeleted: $0.isDeleted,
                                     isViewed: $0.isViewed,
-                                    isCompleted: $0.isCompleted
+                                    isCompleted: $0.isCompleted,
+                                    isRead: $0.isRead ?? false
                                 )
                             }
 
@@ -193,7 +158,7 @@ final class SubmissionsViewModel: ObservableObject {
                                 currentOffset += limit
                                 fetchBatch()
                             } else {
-                                self.preloadImages()
+                                print("Finished count")
                             }
                         }
                     case .failure(let error):
@@ -204,16 +169,12 @@ final class SubmissionsViewModel: ObservableObject {
             }
         }
 
-        // Start fetching the first batch
         fetchBatch()
-//        self.preloadImages()
-        newOrders = 0
     }
     
     func filterNewButtonPressed() {
         isNewFilteredActive.toggle()
-        print(isNewFilteredActive)
-        if isNewFilteredActive == true {
+        if isNewFilteredActive {
             let filteredList = submissions.filter { !$0.isConfirmed && !$0.isCompleted && !$0.isDeleted }
             self.submissions = filteredList
             setTitle(state: .orders)
@@ -224,7 +185,6 @@ final class SubmissionsViewModel: ObservableObject {
             setTitle(state: .orders)
             getGroupedSubmissions()
         }
-//        fetchSubmissions(state: submissionState ?? .orders, onAppear: false)
     }
     
     func filterSubmissions(by name: String) {
@@ -244,54 +204,7 @@ final class SubmissionsViewModel: ObservableObject {
 
         getGroupedSubmissions()
     }
-    
-//    func fetchNewOrders(state: SubmissionState) {
-//        setTitle(state: state)
-//        filloutService.fetchSubmissions { [weak self] result in
-//            guard let self else { return }
-//            DispatchQueue.main.async {
-//                switch result {
-//                case .success(let filloutSubmissions):
-//                    
-//                    self.db.collection(ServerConfig.shared.collectionName).getDocuments { snapshot, error in
-//                        if let error = error {
-//                            print("Error fetching submissions from Firestore: \(error)")
-//                            return
-//                        }
-//
-//                        guard let documents = snapshot?.documents else {
-//                            print("No documents found in Firestore")
-//                            return
-//                        }
-//
-//                        let firebaseSubmissions = documents.compactMap { queryDocumentSnapshot in
-//                            try? queryDocumentSnapshot.data(as: FirebaseSubmission.self)
-//                        }
-//
-//                        // loopFilloutSubmissionsIfNotExistAddtoExistingSubbmisions
-//                        self.newOrders = 0
-//                        for filloutSubmission in filloutSubmissions {
-//                            if let _ = firebaseSubmissions.firstIndex(where: { $0.submissionId == filloutSubmission.submissionId }) {
-//                               
-//                            } else {
-//                                self.newOrders = (self.newOrders) + 1
-//                            }
-//                        }
-//                        self.newOrdersText = "\(self.newOrders) New Orders"
-//                        
-//                        if self.newOrders > 0 {
-//                            self.isNewOrdersViewVisible = true
-//                        } else {
-//                            self.isNewOrdersViewVisible = false
-//                        }
-//                    }
-//                case .failure(let error):
-//                    print("Error fetching submissions from Fillout: \(error)")
-//                }
-//            }
-//        }
-//    }
-    
+
     func setTitle(state: SubmissionState) {
         switch state {
         case .confirmed:
@@ -304,29 +217,7 @@ final class SubmissionsViewModel: ObservableObject {
             title = isNewFilteredActive ? "New" :" Orders"
         }
     }
-    func confirmSubmission(withId id: String) {
-        guard let index = submissions.firstIndex(where: { $0.id == id }) else { return }
-        
-        DispatchQueue.main.async {
-            self.submissions[index].isConfirmed = true
-        }
-        var submissionData = submissions[index]
-        submissionData.isConfirmed = true
-        
-        fetchSubmission(by: submissionData.submissionId) { result in
-            switch result {
-            case .success(let submission):
-                if let submission = submission {
-                    try? self.db.collection(ServerConfig.shared.collectionName).document(submission.id ?? "").setData(from: submissionData)
-                } else {
-                    print("No submission found with the given ID.")
-                }
-            case .failure(let error):
-                print("Error fetching submission: \(error.localizedDescription)")
-            }
-        }
-        
-    }
+
     
     func fetchSubmission(by submissionId: String, completion: @escaping (Result<FirebaseSubmission?, Error>) -> Void) {
         let db = Firestore.firestore()
@@ -453,46 +344,81 @@ final class SubmissionsViewModel: ObservableObject {
         return Date()
     }
     
-    func preloadImages() {
-        for submission in submissions {
-            for question in submission.questions {
-                if let valueType = question.value {
-                    switch valueType {
-                    case .file(let files):
-                        for file in files {
-                            if let url = URL(string: file.url) {
-                                preloadImage(from: url)
-                            }
+    func getCachedImage(for file: File) -> UIImage? {
+        if let cachedImage = ImageCache.shared.object(forKey: NSURL(string: file.url)! as NSURL) {
+             return cachedImage
+        } else if let url = URL(string: file.url) {
+            let urlKey = NSURL(string: file.url)!
+
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                if let data = data, let image = UIImage(data: data) {
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        // Resize the image in the background thread
+                        let resizedImage = image.resizedMaintainingAspectRatio(targetSize: CGSize(width: 1000, height: 1000))
+                        
+                        // Cache and update UI on the main thread
+                        DispatchQueue.main.async {
+                            ImageCache.shared.setObject(resizedImage, forKey: urlKey)
                         }
-                    default:
-                        break
                     }
                 }
-            }
+            }.resume()
+        }
+        return nil
+    }
+    
+    
+    
+    func updateSubmission(_ submission: MappedSubmission, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let index = submissions.firstIndex(where: { $0.submissionId == submission.submissionId }) else { return }
+
+        let editedSubmission = MappedSubmission(
+            collectionId: submission.collectionId,
+            submissionId: submission.submissionId,
+            submissionTime: submission.submissionTime,
+            lastUpdatedAt: submission.lastUpdatedAt,
+            questions: submission.questions,
+            isConfirmed: submission.isConfirmed,
+            isDeleted: submission.isDeleted,
+            isViewed: true,
+            isCompleted: submission.isCompleted
+        )
+        
+        do {
+            try db.collection(ServerConfig.shared.collectionName).document(submissions[index].collectionId).setData(from: editedSubmission)
+            completion(.success(()))
+            
+        } catch let error {
+            print("Error updating submission: \(error.localizedDescription)")
+            completion(.failure(error))
         }
     }
     
-    private func preloadImage(from url: URL) {
-
-        let urlKey = NSURL(string: url.absoluteString)!
-        if ImageCache.shared.object(forKey: urlKey) != nil {
-            return
+    // MARK: - Mark submissions as Viewed/Confirmed/Deleted/Completed
+    
+    func confirmSubmission(withId id: String) {
+        guard let index = submissions.firstIndex(where: { $0.id == id }) else { return }
+        
+        DispatchQueue.main.async {
+            self.submissions[index].isConfirmed = true
+        }
+        var submissionData = submissions[index]
+        submissionData.isConfirmed = true
+        submissionData.isRead = false
+        
+        fetchSubmission(by: submissionData.submissionId) { result in
+            switch result {
+            case .success(let submission):
+                if let submission = submission {
+                    try? self.db.collection(ServerConfig.shared.collectionName).document(submission.id ?? "").setData(from: submissionData)
+                } else {
+                    print("No submission found with the given ID.")
+                }
+            case .failure(let error):
+                print("Error fetching submission: \(error.localizedDescription)")
+            }
         }
         
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let data = data, let image = UIImage(data: data) {
-                DispatchQueue.global(qos: .userInitiated).async {
-                    // Resize the image in the background thread
-                    let resizedImage = image.resizedMaintainingAspectRatio(targetSize: CGSize(width: 1000, height: 1000))
-                    
-                    // Cache and update UI on the main thread
-                    DispatchQueue.main.async {
-                        ImageCache.shared.setObject(resizedImage, forKey: urlKey)
-                    }
-                }
-            }
-        }.resume()
-//        isPreloadedImages = true
     }
     
     func markSubmissionAsViewed(_ submission: MappedSubmission) {
@@ -506,8 +432,8 @@ final class SubmissionsViewModel: ObservableObject {
             print("Error updating submission: \(error.localizedDescription)")
         }
     }
+    
     func markSubmissionAsDeleted(_ submission: MappedSubmission, state: Bool) {
-        // Remove from the main submissions array
         guard let index = submissions.firstIndex(where: { $0.id == submission.id }) else {
             return
         }
@@ -565,28 +491,17 @@ final class SubmissionsViewModel: ObservableObject {
         }
     }
     
-    func updateSubmission(_ submission: MappedSubmission, completion: @escaping (Result<Void, Error>) -> Void) {
+    func markSubmissionAsRead(_ submission: MappedSubmission) {
         guard let index = submissions.firstIndex(where: { $0.submissionId == submission.submissionId }) else { return }
-
-        let editedSubmission = MappedSubmission(
-            collectionId: submission.collectionId,
-            submissionId: submission.submissionId,
-            submissionTime: submission.submissionTime,
-            lastUpdatedAt: submission.lastUpdatedAt,
-            questions: submission.questions,
-            isConfirmed: submission.isConfirmed,
-            isDeleted: submission.isDeleted,
-            isViewed: true,
-            isCompleted: submission.isCompleted
-        )
+    
+        submissions[index].isRead = !submissions[index].isRead
         
+        let updatedSubmission = submissions[index]
         do {
-            try db.collection(ServerConfig.shared.collectionName).document(submissions[index].collectionId).setData(from: editedSubmission)
-            completion(.success(()))
-            
+            try db.collection(ServerConfig.shared.collectionName).document(submissions[index].collectionId).setData(from: updatedSubmission)
+                getGroupedSubmissions()
         } catch let error {
             print("Error updating submission: \(error.localizedDescription)")
-            completion(.failure(error))
         }
     }
 }

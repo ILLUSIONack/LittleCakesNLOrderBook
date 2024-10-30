@@ -87,6 +87,13 @@ struct SubmissionRowView: View {
                     }
                 }
                 
+                if submission.isRead {
+                    Text("Messaged")
+                        .font(.footnote)
+                        .foregroundColor(.yellow)
+                        .fontWeight(.bold)
+                }
+                
                 if submission.isCompleted {
                     Text("Completed")
                         .font(.footnote)
@@ -121,7 +128,7 @@ struct SubmissionRowView: View {
     @ViewBuilder
     func buildFile(list: [File]) -> some View {
         ForEach(list, id: \.self) { file in
-            if let cachedImage = ImageCache.shared.object(forKey: NSURL(string: file.url)! as NSURL) {
+            if let cachedImage = viewModel.getCachedImage(for: file) {
                 Image(uiImage: cachedImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)

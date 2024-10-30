@@ -43,7 +43,8 @@ struct SubmissionDetailView: View {
                         case .string(let text):
                             if question.name == Questions.name.rawValue {
                                 if !isEditEnabled, let instaText = text {
-                                    Button(action: { openInstagramProfile(instagramName: instaText) }) {
+                                    Button(action: { openInstagramProfile(instagramName: instaText) }
+                                    ) {
                                         Text(instaText)
                                             .foregroundColor(.blue)
                                             .underline()
@@ -61,17 +62,23 @@ struct SubmissionDetailView: View {
                                 }
                             } else {
                                 if isEditEnabled {
-                                    TextField(
-                                        question.name,
-                                        text: Binding(
-                                            get: { editedSubmission.questions[index].value?.stringValue ?? "" },
-                                            set: { newValue in
-                                                editedSubmission.questions[index].value = .string(newValue)
-                                            }
-                                        )
-                                    )
+                                    TextEditor(text: Binding(
+                                        get: { editedSubmission.questions[index].value?.stringValue ?? "" },
+                                        set: { newValue in
+                                            editedSubmission.questions[index].value = .string(newValue)
+                                        }
+                                    ))
+                                    .frame(minHeight: 20)
                                 } else {
-                                    Text(editedSubmission.questions[index].value?.stringValue ?? "")
+                                    if let text = editedSubmission.questions[index].value?.stringValue {
+                                        Button(action: {
+                                            UIPasteboard.general.string = text
+                                            feedbackGenerator.impactOccurred()
+                                        }) {
+                                            buildText(stringItem: text)
+                                        }
+                                        .foregroundStyle(.primary)
+                                    }
                                 }
                             }
                         case .null:
@@ -158,6 +165,11 @@ struct SubmissionDetailView: View {
         }
     }
     
+    func buildText(stringItem: String) -> some View {
+        Text(stringItem)
+            .padding(.vertical, 4)
+    }
+    
     @ViewBuilder
     func buildTextField(list: [String], index: Int) -> some View {
         ForEach(list.indices, id: \.self) { itemIndex in
@@ -176,7 +188,7 @@ struct SubmissionDetailView: View {
     @ViewBuilder
     func buildFile(list: [File]) -> some View {
         ForEach(list, id: \.self) { file in
-            if let cachedImage = ImageCache.shared.object(forKey: NSURL(string: file.url)! as NSURL) {
+            if let cachedImage = viewModel.getCachedImage(for: file) {
                 Image(uiImage: cachedImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)

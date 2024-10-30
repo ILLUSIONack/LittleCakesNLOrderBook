@@ -45,6 +45,7 @@ struct FirebaseSubmission: Codable, Identifiable {
     var isDeleted: Bool = false
     var isViewed: Bool = false
     var isCompleted: Bool = false
+    var isRead: Bool? = nil
 
     var submissionTimeDate: Date? {
         return ISO8601DateFormatter.extended.date(from: submissionTime)
@@ -73,6 +74,7 @@ struct MappedSubmission: Codable, Identifiable {
     var isDeleted: Bool = false 
     var isViewed: Bool = false 
     var isCompleted: Bool = false
+    var isRead: Bool = false
 
     var id: String { submissionId }
     var submissionTimeDate: Date? {

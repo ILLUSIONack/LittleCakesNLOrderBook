@@ -1,51 +1,5 @@
 import SwiftUI
 
-final class ImageCache {
-    static let shared = NSCache<NSURL, UIImage>()
-}
-
-struct ContentView: View {
-    @EnvironmentObject var firestoreManager: FirestoreManager
-    @StateObject private var viewModel: ContentViewModel
-
-    init() {
-        _viewModel = StateObject(wrappedValue: ContentViewModel(firestoreManager: FirestoreManager.shared))
-    }
-    var body: some View {
-        TabView {
-            SubmissionsView(submissionState: .orders, firestoreManager: firestoreManager)
-                .tabItem {
-                    Image(systemName: "list.bullet")
-                    Text("Orders")
-                }
-            if viewModel.isConfirmedTabVisible {
-                SubmissionsView(submissionState: .confirmed, firestoreManager: firestoreManager)
-                    .tabItem {
-                        Image(systemName: "checkmark.seal.fill")
-                        Text("Confirmed")
-                    }
-            }
-            if viewModel.isCompletedTabVisible {
-                SubmissionsView(submissionState: .completed, firestoreManager: firestoreManager)
-                    .tabItem {
-                        Image(systemName: "square.and.pencil")
-                        Text("Completed")
-                    }
-            }
-            if viewModel.isDeletedTabVisible {
-                SubmissionsView(submissionState: .deleted, firestoreManager: firestoreManager)
-                    .tabItem {
-                        Image(systemName: "arrow.up.trash.fill")
-                        Text("Deleted")
-                    }
-            }
-        }
-        .onAppear {
-            viewModel.fetchSubmissions()
-        }
-    }
-}
-
 struct SubmissionsView: View {
     
     @EnvironmentObject var firestoreManager: FirestoreManager
@@ -76,7 +30,6 @@ struct SubmissionsView: View {
                 } else {
                     VStack(spacing: 0) {
                         buildSearchBar()
-                        buildNewOrdersView()
 
                         ScrollViewReader { scrollViewProxy in
                             List(viewModel.groupedSubmissions.keys.sorted(by: <), id: \.self) { date in
@@ -109,9 +62,6 @@ struct SubmissionsView: View {
             .onAppear {
                 viewModel.fetchSubmissions(state: submissionState, onAppear: true)
                 viewModel.getGroupedSubmissions()
-            }
-            .onDisappear {
-                viewModel.stopPolling()
             }
             .navigationTitle(viewModel.title)
             .toolbar {
@@ -163,17 +113,6 @@ struct SubmissionsView: View {
 
     private func scrollToToday(scrollViewProxy: ScrollViewProxy) {
         scrollViewProxy.scrollTo(viewModel.dateKey, anchor: .center)
-    }
-    
-    @ViewBuilder
-    private func buildNewOrdersView() -> some View {
-        if viewModel.isNewOrdersViewVisible {
-            Text(viewModel.newOrdersText)
-                .frame(minWidth: 400)
-                .font(Font.footnote.weight(.bold))
-                .multilineTextAlignment(.center)
-                .foregroundColor(.primary)
-        }
     }
     
     @ViewBuilder
@@ -242,6 +181,13 @@ struct SubmissionsView: View {
                     } label: {
                         Label("Complete", systemImage: "checkmark.seal")
                     }
+                }
+            }
+            .swipeActions(edge: .leading) {
+                Button(role: .cancel) {
+                    viewModel.markSubmissionAsRead(submission)
+                } label: {
+                    Label("Messaged", systemImage: "eye")
                 }
             }
     }

@@ -1,3 +1,5 @@
 # .gitignore
 .env
 GoogleService-Info.plist
+local-bakers/node_modules
+local-bakers/.next

@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 import FirebaseFirestore
 
-final class ContentViewModel: ObservableObject {
+final class BottomTabViewModel: ObservableObject {
 
     private var listener: ListenerRegistration?
     @Published var isConfirmedTabVisible: Bool = false

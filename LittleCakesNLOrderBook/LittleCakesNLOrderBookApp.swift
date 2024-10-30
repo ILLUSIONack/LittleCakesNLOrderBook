@@ -25,7 +25,7 @@ struct LittleCakesNLAgenaApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            BottomTabView()
                 .environmentObject(FirestoreManager.shared)
         }
     }
