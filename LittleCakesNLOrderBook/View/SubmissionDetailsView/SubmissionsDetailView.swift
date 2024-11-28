@@ -14,6 +14,7 @@ struct SubmissionDetailView: View {
     
     @State private var showEventEditView = false
     @State private var event: EKEvent?
+    @State private var copiedText = "Your text to copy"
 
     private let eventStore = EventStoreManager.shared
     private let feedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
@@ -153,6 +154,15 @@ struct SubmissionDetailView: View {
                 Button(action: { isEditEnabled.toggle() }) {
                     Image(systemName: "pencil")
                 }
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    UIPasteboard.general.string = viewModel.getConfirmationMessageCopy(editedSubmission)
+                    feedbackGenerator.impactOccurred()
+                }) {
+                    Image(systemName: "doc.on.clipboard")
+                }
+                .help("Copy to Clipboard")
             }
         }
     }

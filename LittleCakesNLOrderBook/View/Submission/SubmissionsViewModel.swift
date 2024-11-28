@@ -21,11 +21,12 @@ final class SubmissionsViewModel: ObservableObject {
     private var isNewFilteredActive: Bool = false
     private var submissionState: SubmissionState?
     private var db: Firestore
-    private let filloutService = FilloutService()
+    private let filloutService: FilloutService
     private var allOrders: [MappedSubmission] = []
 
-    init(firestoreManager: FirestoreManager) {
+    init(firestoreManager: FirestoreManager, filloutService: FilloutService) {
         self.db = firestoreManager.db
+        self.filloutService = filloutService
         getGroupedSubmissions()
     }
 
@@ -287,6 +288,21 @@ final class SubmissionsViewModel: ObservableObject {
         return  dateFormatter.date(from: stringDate) ?? Date()
     }
     
+    func dateFormatterProper(stringDate: String) -> String {
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yyyy-MM-dd"
+        inputFormatter.locale = Locale(identifier: "en_US_POSIX")
+
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "dd/MM/yyyy"
+        outputFormatter.locale = Locale(identifier: "en_US_POSIX")
+
+        if let date = inputFormatter.date(from: stringDate) {
+            return outputFormatter.string(from: date)
+        } else {
+            return outputFormatter.string(from: Date())
+        }
+    }
     func getDaysAgo(submissionDate: Date?) -> String? {
         guard let submissionDate else { return nil }
         
@@ -301,6 +317,98 @@ final class SubmissionsViewModel: ObservableObject {
             return "today"
         }
         return "-\(String(day)) days ago"
+    }
+    
+    func getConfirmationMessageCopy(_ submission: MappedSubmission) -> String {
+        var dateOfPickup = ""
+        var order = ""
+        var flavour = ""
+        var filling = ""
+        var people = ""
+        var extras = ""
+        var cakeTextAndColor = ""
+        var cakeTextType = ""
+        var cupcakesAmount = ""
+
+        for question in submission.questions {
+            if question.name == Questions.dateOfPickup.rawValue
+            {
+                if case .string(let value) = question.value, let stringValue = value {
+                    dateOfPickup = stringValue
+                }
+            }
+            if question.name == Questions.cakeFlavour.rawValue ||
+                question.name == Questions.cakeFlavour1to4.rawValue
+            {
+                if case .string(let value) = question.value, let stringValue = value {
+                    flavour = stringValue
+                }
+            }
+            
+            if question.name == Questions.cakeFilling.rawValue ||
+                question.name == Questions.cakeFilling1to4.rawValue
+            {
+                if case .string(let value) = question.value, let stringValue = value {
+                    filling = stringValue
+                }
+            }
+            
+            if question.name == Questions.order.rawValue
+            {
+                if case .string(let value) = question.value, let stringValue = value {
+                    order = stringValue
+                }
+            }
+            if question.name == Questions.order.rawValue
+            {
+                if case .string(let value) = question.value, let stringValue = value {
+                    order = stringValue
+                }
+            }
+            
+            if question.name == Questions.orderSize.rawValue ||
+                question.name == Questions.orderSize1.rawValue
+            {
+                if case .string(let value) = question.value, let stringValue = value {
+                    people = stringValue
+                }
+            }
+            
+            if question.name == Questions.extras.rawValue
+            {
+                if case .string(let value) = question.value, let stringValue = value {
+                    extras = stringValue
+                }
+            }
+            
+            if question.name == Questions.cakeTextAndColor.rawValue
+            {
+                if case .string(let value) = question.value, let stringValue = value {
+                    cakeTextAndColor = stringValue
+                }
+            }
+            
+            if question.name == Questions.cakeTextType.rawValue
+            {
+                if case .string(let value) = question.value, let stringValue = value {
+                    cakeTextType = stringValue
+                }
+            }
+            
+            if question.name == Questions.cupcakesAmount.rawValue ||
+                question.name == Questions.cupcakesAmount1.rawValue
+            {
+                if case .string(let value) = question.value, let stringValue = value {
+                    cupcakesAmount = stringValue
+                }
+            }
+        }
+        
+        if cupcakesAmount.count > 0 {
+            return "Goededag dankjewel voor het invullen van de bestelformulier, je gekozen bestelling is mogelijk op \(dateFormatterProper(stringDate: dateOfPickup)). Hieronder vind je een samenvatting: \n - \(order) \n - \(cupcakesAmount) \n - Extra: \(extras) \n \n Totaal prijs wordt: \n Aanbetaling om te bevestigen wordt:"
+        } else {
+            return "Goededag dankjewel voor het invullen van de bestelformulier, je gekozen bestelling is mogelijk op \(dateFormatterProper(stringDate: dateOfPickup)). Hieronder vind je een samenvatting: \n - \(flavour) \n - \(order) \n - \(people) \n - \(filling)\n - \(cakeTextAndColor) \n - \(cakeTextType) \n - Extra: \(extras) \n \n Totaal prijs wordt: \n Aanbetaling om te bevestigen wordt:"
+        }
     }
     
     func fetchSubmissionCakeDescription(_ submission: MappedSubmission) -> String {
@@ -381,7 +489,8 @@ final class SubmissionsViewModel: ObservableObject {
             isConfirmed: submission.isConfirmed,
             isDeleted: submission.isDeleted,
             isViewed: true,
-            isCompleted: submission.isCompleted
+            isCompleted: submission.isCompleted,
+            isRead: submission.isRead
         )
         
         do {
@@ -418,7 +527,6 @@ final class SubmissionsViewModel: ObservableObject {
                 print("Error fetching submission: \(error.localizedDescription)")
             }
         }
-        
     }
     
     func markSubmissionAsViewed(_ submission: MappedSubmission) {

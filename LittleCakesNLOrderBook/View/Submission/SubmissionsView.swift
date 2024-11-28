@@ -12,8 +12,8 @@ struct SubmissionsView: View {
 
     private let today = Date()
 
-    init(submissionState: SubmissionState, firestoreManager: FirestoreManager) {
-        _viewModel = StateObject(wrappedValue: SubmissionsViewModel(firestoreManager: firestoreManager))
+    init(submissionState: SubmissionState, firestoreManager: FirestoreManager, filloutService: FilloutService) {
+        _viewModel = StateObject(wrappedValue: SubmissionsViewModel(firestoreManager: firestoreManager, filloutService: filloutService))
         self.submissionState = submissionState
     }
     
@@ -65,7 +65,7 @@ struct SubmissionsView: View {
             }
             .navigationTitle(viewModel.title)
             .toolbar {
-                if submissionState == .orders {
+                if submissionState == .orders || submissionState == .deleted {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: viewModel.filterNewButtonPressed) {
                             Image(systemName: "camera.filters")
