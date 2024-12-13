@@ -4,17 +4,15 @@ struct SubmissionsView: View {
     
     @EnvironmentObject var firestoreManager: FirestoreManager
     @StateObject private var viewModel: SubmissionsViewModel
-    let submissionState: SubmissionState
     @State private var searchText: String = ""
     @State private var isSearchBarVisible: Bool = false
     @FocusState private var isSearchBarFocused: Bool
     private let feedbackGenerator = UIImpactFeedbackGenerator(style: .soft)
-
+    
     private let today = Date()
-
-    init(submissionState: SubmissionState, firestoreManager: FirestoreManager, filloutService: FilloutService) {
+    
+    init(firestoreManager: FirestoreManager, filloutService: FilloutService) {
         _viewModel = StateObject(wrappedValue: SubmissionsViewModel(firestoreManager: firestoreManager, filloutService: filloutService))
-        self.submissionState = submissionState
     }
     
     var body: some View {
@@ -28,58 +26,86 @@ struct SubmissionsView: View {
                         Spacer()
                     }
                 } else {
-                    VStack(spacing: 0) {
+                    ScrollViewReader { scrollViewProxy in
                         buildSearchBar()
-
-                        ScrollViewReader { scrollViewProxy in
-                            List(viewModel.groupedSubmissions.keys.sorted(by: <), id: \.self) { date in
-                                Section(header: buildSectionHeader(for: date)) {
-                                    if let submissionsForDate = viewModel.groupedSubmissions[date] {
-                                        ForEach(submissionsForDate) { submission in
-                                            HStack(spacing: 8) {
-                                                buildIsViewedView(submission)
-                                                buildSubmissionRowView(submission)
-                                            }
-                                            .padding(.horizontal, 0)
+                        
+                        List(viewModel.groupedSubmissions.keys.sorted(by: <), id: \.self) { date in
+                            Section(header: buildSectionHeader(for: date)) {
+                                if let submissionsForDate = viewModel.groupedSubmissions[date] {
+                                    ForEach(submissionsForDate) { submission in
+                                        HStack(spacing: 8) {
+                                            buildIsViewedView(submission)
+                                            buildSubmissionRowView(submission)
                                         }
+                                        .padding(.horizontal, 0)
                                     }
                                 }
-                                .id(date)
                             }
-                            .listStyle(.grouped)
-                            
-                            if viewModel.isShowTodayButtonVisible {
-                                buildShowTodayButton(scrollViewProxy: scrollViewProxy)
-                            }
+                            .id(date)
+                        }
+                        .listStyle(.grouped)
+                        
+                        if viewModel.isShowTodayButtonVisible {
+                            buildShowTodayButton(scrollViewProxy: scrollViewProxy)
                         }
                     }
                 }
             }
             .refreshable {
                 feedbackGenerator.impactOccurred()
-                viewModel.fetchSubmissions(state: submissionState, onAppear: false)
+                viewModel.fetchSubmissions()
             }
             .onAppear {
-                viewModel.fetchSubmissions(state: submissionState, onAppear: true)
-                viewModel.getGroupedSubmissions()
+                viewModel.getSubmissionByType(field: "type", value: viewModel.submissionType.rawValue)
             }
             .navigationTitle(viewModel.title)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                if submissionState == .orders || submissionState == .deleted {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: viewModel.filterNewButtonPressed) {
-                            Image(systemName: "camera.filters")
-                        }
-                    }
-                    ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
                         Button(action: {
-                            searchText = ""
-                            isSearchBarVisible.toggle()
-                            viewModel.filterSubmissions(by: "")
-                            isSearchBarFocused = isSearchBarVisible
+                            viewModel.submissionType = .new
+                            viewModel.getSubmissionByType(field: "type", value: SubmissionType.new.rawValue)
                         }) {
-                            Image(systemName: "magnifyingglass")
+                            Label("New", systemImage: "star")
                         }
+                        Button(action: {
+                            viewModel.submissionType = .confirmed
+                            viewModel.getSubmissionByType(field: "type", value: SubmissionType.confirmed.rawValue)
+
+                        }) {
+                            Label("Confirmed", systemImage: "checkmark.seal")
+                        }
+                        Button(action: {
+                            viewModel.submissionType = .completed
+                            viewModel.getSubmissionByType(field: "type", value: SubmissionType.completed.rawValue)
+                        }) {
+                            Label("Completed", systemImage: "flag.checkered")
+                        }
+                        Button(action: {
+                            viewModel.submissionType = .deleted
+                            viewModel.getSubmissionByType(field: "type", value: SubmissionType.deleted.rawValue)
+                        }) {
+                            Label("Deleted", systemImage: "delete.left.fill")
+                        }
+                        
+                        Button(action: {
+                            viewModel.getSubmissionByType(field: "state", value: SubmissionState.unviewed.rawValue)
+                        }) {
+                            Label("Unread", systemImage: "book.pages")
+                        }
+                    } label: {
+                        Image(systemName: "camera.filters")
+                    }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        searchText = ""
+                        isSearchBarVisible.toggle()
+                        viewModel.filterSubmissions(by: "")
+                        isSearchBarFocused = isSearchBarVisible
+                    }) {
+                        Image(systemName: "magnifyingglass")
                     }
                 }
             }
@@ -110,7 +136,7 @@ struct SubmissionsView: View {
             .foregroundColor(.primary)
             .fontWeight(isToday ? .bold : .regular)
     }
-
+    
     private func scrollToToday(scrollViewProxy: ScrollViewProxy) {
         scrollViewProxy.scrollTo(viewModel.dateKey, anchor: .center)
     }
@@ -143,7 +169,7 @@ struct SubmissionsView: View {
     
     @ViewBuilder
     private func buildIsViewedView(_ submission: MappedSubmission) -> some View {
-        if !submission.isViewed {
+        if submission.state == .unviewed {
             Circle()
                 .fill(Color.blue)
                 .frame(width: 8, height: 8)
@@ -161,21 +187,21 @@ struct SubmissionsView: View {
     private func buildSubmissionRowView(_ submission: MappedSubmission) -> some View {
         SubmissionRowView(submission: submission, viewModel: viewModel)
             .swipeActions {
-                if !submission.isDeleted {
+                if submission.type != .deleted {
                     Button(role: .destructive) {
-                        viewModel.markSubmissionAsDeleted(submission, state: true)
+                        viewModel.markSubmissionAsDeleted(submission, type: .deleted)
                     } label: {
                         Label("Delete", systemImage: "trash")
                     }
                 }
-                if submission.isDeleted {
+                if submission.type == .deleted {
                     Button(role: .destructive) {
-                        viewModel.markSubmissionAsDeleted(submission, state: false)
+                        viewModel.markSubmissionAsDeleted(submission, type: .new)
                     } label: {
                         Label("Undelete", systemImage: "trash")
                     }
                 }
-                if !submission.isCompleted {
+                if submission.type != .completed  {
                     Button(role: .cancel) {
                         viewModel.markSubmissionAsCompleted(submission)
                     } label: {
@@ -184,14 +210,16 @@ struct SubmissionsView: View {
                 }
             }
             .swipeActions(edge: .leading) {
-                Button(role: .cancel) {
-                    viewModel.markSubmissionAsRead(submission)
-                } label: {
-                    Label("Messaged", systemImage: "eye")
+                if submission.state != .messaged && submission.type == .new {
+                    Button(role: .cancel) {
+                        viewModel.markSubmissionAsMessaged(submission)
+                    } label: {
+                        Label("Messaged", systemImage: "eye")
+                    }
                 }
             }
     }
-
+    
     func dateFormatted(date: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .long

@@ -79,33 +79,32 @@ struct SubmissionRowView: View {
                             .font(.footnote)
                             .foregroundColor(.secondary)
                     }
-                    if let daysAgo = viewModel.getDaysAgo(submissionDate: submission.submissionTimeDate),
-                       !submission.isConfirmed, !submission.isCompleted, !submission.isDeleted {
+                    if let daysAgo = viewModel.getDaysAgo(submissionDate: submission.submissionTimeDate), submission.type == .new{
                         Text(daysAgo)
                             .font(.footnote)
                             .foregroundColor(.red)
                     }
                 }
                 
-                if submission.isRead {
+                if submission.state == .messaged {
                     Text("Messaged")
                         .font(.footnote)
                         .foregroundColor(.yellow)
                         .fontWeight(.bold)
                 }
                 
-                if submission.isCompleted {
+                if submission.type == .completed {
                     Text("Completed")
                         .font(.footnote)
                         .foregroundColor(.green)
                         .fontWeight(.bold)
-                } else if submission.isConfirmed {
+                } else if submission.type == .confirmed  {
                     Text("Confirmed")
                         .font(.footnote)
                         .foregroundColor(.blue)
                         .fontWeight(.bold)
                     
-                } else if submission.isDeleted {
+                } else if submission.type == .deleted  {
                     Text("Deleted")
                         .font(.footnote)
                         .foregroundColor(.red)

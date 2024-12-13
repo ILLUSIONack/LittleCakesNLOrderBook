@@ -28,7 +28,9 @@ final class ServerConfig {
         #if DEV
 //        self.baseURL = ProcessInfo.processInfo.environment[BaseUrl.DEV.rawValue] ?? ""
         self.baseURL = ProcessInfo.processInfo.environment[BaseUrl.RELEASE.rawValue] ?? ""
-        self.collectionName = "submissionsDev"
+//        self.collectionName = "submissionsDev"
+        // MARK: - This is here due to migration testing
+        self.collectionName = "submissionsReleaseBackup"
         #else
         self.baseURL = ProcessInfo.processInfo.environment[BaseUrl.RELEASE.rawValue] ?? ""
         self.collectionName = "submissions"

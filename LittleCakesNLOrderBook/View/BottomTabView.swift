@@ -15,35 +15,12 @@ struct BottomTabView: View {
     
     var body: some View {
         TabView {
-            SubmissionsView(submissionState: .orders, firestoreManager: firestoreManager, filloutService: filloutService)
+            SubmissionsView(firestoreManager: firestoreManager, filloutService: filloutService)
                 .tabItem {
                     Image(systemName: "list.bullet")
                     Text("Orders")
                 }
-            if viewModel.isConfirmedTabVisible {
-                SubmissionsView(submissionState: .confirmed, firestoreManager: firestoreManager, filloutService: filloutService)
-                    .tabItem {
-                        Image(systemName: "checkmark.seal.fill")
-                        Text("Confirmed")
-                    }
-            }
-            if viewModel.isCompletedTabVisible {
-                SubmissionsView(submissionState: .completed, firestoreManager: firestoreManager, filloutService: filloutService)
-                    .tabItem {
-                        Image(systemName: "square.and.pencil")
-                        Text("Completed")
-                    }
-            }
-            if viewModel.isDeletedTabVisible {
-                SubmissionsView(submissionState: .deleted, firestoreManager: firestoreManager, filloutService: filloutService)
-                    .tabItem {
-                        Image(systemName: "delete.left.fill")
-                        Text("Deleted")
-                    }
-            }
-        }
-        .onAppear {
-            viewModel.fetchSubmissions()
+                .badge(viewModel.unviewedSubmissionsCount) 
         }
     }
 }

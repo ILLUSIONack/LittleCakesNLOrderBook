@@ -41,14 +41,47 @@ struct FirebaseSubmission: Codable, Identifiable {
     var submissionTime: String
     var lastUpdatedAt: String
     var questions: [SubmissionQuestion]
-    var isConfirmed: Bool = false
-    var isDeleted: Bool = false
-    var isViewed: Bool = false
-    var isCompleted: Bool = false
-    var isRead: Bool? = nil
+    var type: SubmissionType
+    var state: SubmissionState
 
     var submissionTimeDate: Date? {
         return ISO8601DateFormatter.extended.date(from: submissionTime)
+    }
+}
+
+enum SubmissionType: String, Codable {
+    case deleted = "deleted"
+    case completed = "completed"
+    case confirmed = "confirmed"
+    case new = "new"
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(String.self)
+        self = SubmissionType(rawValue: rawValue) ?? .new // Default to `.new`
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(self.rawValue)
+    }
+}
+
+enum SubmissionState: String, Codable {
+    case unviewed = "unviewed"
+    case viewed = "viewed"
+    case messaged = "messaged"
+
+    // Custom initializer for handling unknown values
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(String.self)
+        self = SubmissionState(rawValue: rawValue) ?? .unviewed // Default to `.unviewed`
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(self.rawValue)
     }
 }
 
@@ -70,11 +103,8 @@ struct MappedSubmission: Codable, Identifiable {
     var submissionTime: String
     var lastUpdatedAt: String
     var questions: [SubmissionQuestion]
-    var isConfirmed: Bool = false
-    var isDeleted: Bool = false 
-    var isViewed: Bool = false 
-    var isCompleted: Bool = false
-    var isRead: Bool = false
+    var type: SubmissionType
+    var state: SubmissionState
 
     var id: String { submissionId }
     var submissionTimeDate: Date? {

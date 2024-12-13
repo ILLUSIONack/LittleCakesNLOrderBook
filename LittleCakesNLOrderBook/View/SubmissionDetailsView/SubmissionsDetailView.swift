@@ -124,13 +124,13 @@ struct SubmissionDetailView: View {
                             }
                         }
                     })  {
-                        Text(editedSubmission.isConfirmed || showConfirmationAlert ? "Order Confirmed" : "Confirm Order")
+                        Text(editedSubmission.type != .new || showConfirmationAlert ? "Order Confirmed" : "Confirm Order")
                             .foregroundColor(.white)
                             .padding()
-                            .background(editedSubmission.isConfirmed || showConfirmationAlert ? Color.gray : Color.blue)
+                            .background(editedSubmission.type != .new || showConfirmationAlert ? Color.gray : Color.blue)
                             .cornerRadius(8)
                     }
-                    .disabled(editedSubmission.isConfirmed || showConfirmationAlert)
+                    .disabled(editedSubmission.type != .new || showConfirmationAlert)
                 }
             }
         }
