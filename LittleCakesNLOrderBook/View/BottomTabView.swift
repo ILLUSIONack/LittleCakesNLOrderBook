@@ -5,12 +5,13 @@ final class ImageCache {
 }
 
 struct BottomTabView: View {
-    @EnvironmentObject var firestoreManager: FirestoreManager
+    @ObservedObject var firestoreManager: FirestoreManager
     @StateObject private var viewModel: BottomTabViewModel
     private let filloutService: FilloutService = FilloutService()
 
-    init() {
-        _viewModel = StateObject(wrappedValue: BottomTabViewModel(firestoreManager: FirestoreManager.shared))
+    init(firestoreManager: FirestoreManager) {
+        self.firestoreManager = firestoreManager
+        _viewModel = StateObject(wrappedValue: BottomTabViewModel(firestoreManager: firestoreManager))
     }
     
     var body: some View {

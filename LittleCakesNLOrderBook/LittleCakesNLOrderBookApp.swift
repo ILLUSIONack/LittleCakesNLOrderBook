@@ -22,11 +22,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct LittleCakesNLAgenaApp: App {
     
+    @StateObject var firestoreManager = FirestoreManager.shared
+
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     var body: some Scene {
         WindowGroup {
-            BottomTabView()
-                .environmentObject(FirestoreManager.shared)
+            BottomTabView(firestoreManager: firestoreManager)
         }
     }
 }

@@ -17,7 +17,7 @@ final class ServerConfig {
     static let shared: ServerConfig = ServerConfig()
     
     var baseURL: String = ""
-    var collectionName: String = "submissions"
+    var collectionName: String = ""
     
     private init() {
         setupServerConfig()

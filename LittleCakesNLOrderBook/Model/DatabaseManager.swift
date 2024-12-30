@@ -1,7 +1,7 @@
 import Foundation
 import FirebaseFirestore
 
-class FirestoreManager: ObservableObject {
+final class FirestoreManager: ObservableObject {
     static let shared = FirestoreManager()
     
     private init() {

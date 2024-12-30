@@ -384,6 +384,36 @@
             endingLineNumber = "133"
             landmarkName = "getSubmissionByType(field:value:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "9F70DC8E-1153-4151-9CAA-0BD4B5F98824 - 4b0ba84ad4ef58cd"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "LittleCakesNLOrderBook.SubmissionsViewModel.getSubmissionByType(field: Swift.String, value: Swift.String) -&gt; ()"
+                  moduleName = "LittleCakesNLOrderBook.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/usmansiddiqui/LittleCakesNLOrderBook/LittleCakesNLOrderBook/View/Submission/SubmissionsViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "133"
+                  endingLineNumber = "133">
+               </Location>
+               <Location
+                  uuid = "9F70DC8E-1153-4151-9CAA-0BD4B5F98824 - 49d2b679b4e1326e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;Swift.Array&lt;LittleCakesNLOrderBook.MappedSubmission&gt;&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in LittleCakesNLOrderBook.SubmissionsViewModel.getSubmissionByType(field: Swift.String, value: Swift.String) -&gt; ()"
+                  moduleName = "LittleCakesNLOrderBook.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/usmansiddiqui/LittleCakesNLOrderBook/LittleCakesNLOrderBook/View/Submission/SubmissionsViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "134"
+                  endingLineNumber = "134">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -415,6 +445,22 @@
             startingLineNumber = "564"
             endingLineNumber = "564"
             landmarkName = "markSubmissionAsDeleted(_:type:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "AB212BB4-B2F4-4461-A3BC-9D233F9EDA55"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "LittleCakesNLOrderBook/View/Submission/SubmissionsViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "163"
+            endingLineNumber = "163"
+            landmarkName = "fetchAndMapSubmissions(field:value:completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
