@@ -5,23 +5,28 @@ final class ImageCache {
 }
 
 struct BottomTabView: View {
+    @ObservedObject var authenticationManager: AuthenticationManager
     @ObservedObject var firestoreManager: FirestoreManager
     @StateObject private var viewModel: BottomTabViewModel
     private let filloutService: FilloutService = FilloutService()
 
-    init(firestoreManager: FirestoreManager) {
-        self.firestoreManager = firestoreManager
-        _viewModel = StateObject(wrappedValue: BottomTabViewModel(firestoreManager: firestoreManager))
+    init(authenticationManager: AuthenticationManager) {
+        self.authenticationManager = authenticationManager
+        self.firestoreManager = authenticationManager.firestoreManager
+        _viewModel = StateObject(wrappedValue: BottomTabViewModel(firestoreManager: authenticationManager.firestoreManager))
     }
     
     var body: some View {
         TabView {
-            SubmissionsView(firestoreManager: firestoreManager, filloutService: filloutService)
+            SubmissionsView(
+                authenticationManager: authenticationManager,
+                filloutService: filloutService
+            )
                 .tabItem {
                     Image(systemName: "list.bullet")
                     Text("Orders")
                 }
-                .badge(viewModel.unviewedSubmissionsCount) 
+                .badge(viewModel.unviewedSubmissionsCount)
         }
     }
 }

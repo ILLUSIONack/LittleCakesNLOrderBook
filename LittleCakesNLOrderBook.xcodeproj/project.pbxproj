@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		400BC2F62D19E5C80017C090 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400BC2F52D19E5C80017C090 /* AuthenticationManager.swift */; };
+		400BC2F92D19E5EE0017C090 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400BC2F82D19E5EE0017C090 /* SignUpView.swift */; };
+		400BC2FB2D19E60B0017C090 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400BC2FA2D19E60B0017C090 /* SignInView.swift */; };
+		400BC2FE2D19E6910017C090 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400BC2FD2D19E6910017C090 /* OnboardingView.swift */; };
+		400BC3002D19F31E0017C090 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400BC2FF2D19F31E0017C090 /* User.swift */; };
 		403338932C77AD06009DE459 /* LittleCakesNLOrderBookApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338922C77AD06009DE459 /* LittleCakesNLOrderBookApp.swift */; };
 		403338972C77AD09009DE459 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 403338962C77AD09009DE459 /* Assets.xcassets */; };
 		4033389A2C77AD09009DE459 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 403338992C77AD09009DE459 /* Preview Assets.xcassets */; };
@@ -39,6 +44,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		400BC2F52D19E5C80017C090 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
+		400BC2F82D19E5EE0017C090 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		400BC2FA2D19E60B0017C090 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
+		400BC2FD2D19E6910017C090 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		400BC2FF2D19F31E0017C090 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		4033388F2C77AD06009DE459 /* LittleCakesNLOrderBook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LittleCakesNLOrderBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		403338922C77AD06009DE459 /* LittleCakesNLOrderBookApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LittleCakesNLOrderBookApp.swift; sourceTree = "<group>"; };
 		403338962C77AD09009DE459 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -83,6 +93,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		400BC2F72D19E5D80017C090 /* Signup */ = {
+			isa = PBXGroup;
+			children = (
+				400BC2F82D19E5EE0017C090 /* SignUpView.swift */,
+				400BC2FA2D19E60B0017C090 /* SignInView.swift */,
+			);
+			path = Signup;
+			sourceTree = "<group>";
+		};
+		400BC2FC2D19E6810017C090 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				400BC2FD2D19E6910017C090 /* OnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
 		403338862C77AD06009DE459 = {
 			isa = PBXGroup;
 			children = (
@@ -130,6 +157,7 @@
 			children = (
 				403338A02C77AD5A009DE459 /* Extensions.swift */,
 				403338A12C77AD5A009DE459 /* FilloutService.swift */,
+				400BC2F52D19E5C80017C090 /* AuthenticationManager.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -165,6 +193,7 @@
 			children = (
 				406C48BD2C8E2A4200FE3BB8 /* DatabaseManager.swift */,
 				403338A32C77AD5A009DE459 /* Submission.swift */,
+				400BC2FF2D19F31E0017C090 /* User.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -172,6 +201,8 @@
 		406C48C22C9A185300FE3BB8 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				400BC2FC2D19E6810017C090 /* Onboarding */,
+				400BC2F72D19E5D80017C090 /* Signup */,
 				406C48BB2C8E29B100FE3BB8 /* BottomTabViewModel.swift */,
 				40FFD9EE2CC95F120005E7CD /* BottomTabView.swift */,
 				403338A62C77AD5A009DE459 /* Submission */,
@@ -280,17 +311,22 @@
 				403338C72C77B0CE009DE459 /* SubmissionsDetailView.swift in Sources */,
 				406C48BE2C8E2A4200FE3BB8 /* DatabaseManager.swift in Sources */,
 				403338CD2C7D2D66009DE459 /* EnvLoader.swift in Sources */,
+				400BC2FE2D19E6910017C090 /* OnboardingView.swift in Sources */,
+				400BC2F62D19E5C80017C090 /* AuthenticationManager.swift in Sources */,
 				403338932C77AD06009DE459 /* LittleCakesNLOrderBookApp.swift in Sources */,
 				40FFD9EF2CC95F120005E7CD /* BottomTabView.swift in Sources */,
+				400BC2FB2D19E60B0017C090 /* SignInView.swift in Sources */,
 				403338CB2C7CDA89009DE459 /* ServerConfig.swift in Sources */,
 				406C48C02C978B7E00FE3BB8 /* SubmissionRowView.swift in Sources */,
 				406C48BC2C8E29B100FE3BB8 /* BottomTabViewModel.swift in Sources */,
 				403338AA2C77AD5A009DE459 /* SubmissionsView.swift in Sources */,
 				403338AB2C77AD5A009DE459 /* SubmissionsViewModel.swift in Sources */,
 				403338A82C77AD5A009DE459 /* FilloutService.swift in Sources */,
+				400BC2F92D19E5EE0017C090 /* SignUpView.swift in Sources */,
 				403338A72C77AD5A009DE459 /* Extensions.swift in Sources */,
 				40FFD9ED2CB6ED6B0005E7CD /* EventStoreManager.swift in Sources */,
 				403338A92C77AD5A009DE459 /* Submission.swift in Sources */,
+				400BC3002D19F31E0017C090 /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

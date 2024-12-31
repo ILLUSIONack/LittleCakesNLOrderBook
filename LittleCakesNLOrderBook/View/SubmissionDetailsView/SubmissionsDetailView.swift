@@ -141,7 +141,8 @@ struct SubmissionDetailView: View {
             if let event = event {
                 EventEditViewController(eventStore: eventStore, event: event) {
                     print("Cofnirm")
-                    viewModel.confirmSubmission(withId: editedSubmission.submissionId)
+//                    viewModel.confirmSubmission(withId: editedSubmission.submissionId)
+                    viewModel.confirmSubmission(withId: editedSubmission, type: .confirmed)
                     calendarEventSaved = false
                     showConfirmationAlert = true
                 } onCancel: {

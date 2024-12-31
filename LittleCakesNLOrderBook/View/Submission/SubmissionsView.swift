@@ -3,6 +3,7 @@ import SwiftUI
 struct SubmissionsView: View {
     
     @ObservedObject var firestoreManager: FirestoreManager
+    @ObservedObject var authenticationManager: AuthenticationManager
     @StateObject private var viewModel: SubmissionsViewModel
     
     @State private var searchText: String = ""
@@ -12,11 +13,20 @@ struct SubmissionsView: View {
     
     private let today = Date()
     
-    init(firestoreManager: FirestoreManager, filloutService: FilloutService) {
-        self.firestoreManager = firestoreManager
-//        self.viewModel = SubmissionsViewModel(firestoreManager: firestoreManager, filloutService: filloutService)
-        _viewModel = StateObject(wrappedValue: SubmissionsViewModel(firestoreManager: firestoreManager, filloutService: filloutService))
-//        self.viewModel = SubmissionsViewModel(firestoreManager: firestoreManager, filloutService: filloutService)
+    init(
+        authenticationManager: AuthenticationManager,
+        filloutService: FilloutService
+    ) {
+        self.firestoreManager = authenticationManager.firestoreManager
+        self.authenticationManager = authenticationManager
+        _viewModel = StateObject(
+            wrappedValue:
+                SubmissionsViewModel(
+                    firestoreManager: authenticationManager.firestoreManager,
+                    authenticationManager: authenticationManager,
+                    filloutService: filloutService
+                )
+        )
     }
     
     var body: some View {
@@ -47,6 +57,7 @@ struct SubmissionsView: View {
                 }
                 
                 if viewModel.isLoading {
+                    Color.white
                     VStack {
                         Spacer()
                         ProgressView()
@@ -65,6 +76,7 @@ struct SubmissionsView: View {
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            // First ToolbarItem: Filter Menu
             ToolbarItem(placement: .navigationBarTrailing) {
                 Menu {
                     Button(action: {
@@ -76,7 +88,6 @@ struct SubmissionsView: View {
                     Button(action: {
                         viewModel.submissionType = .confirmed
                         viewModel.getSubmissionByType(field: "type", value: SubmissionType.confirmed.rawValue)
-                        
                     }) {
                         Label("Confirmed", systemImage: "checkmark.seal")
                     }
@@ -92,16 +103,17 @@ struct SubmissionsView: View {
                     }) {
                         Label("Deleted", systemImage: "delete.left.fill")
                     }
-                    
-                    Button(action: {
-                        viewModel.getSubmissionByType(field: "state", value: SubmissionState.unviewed.rawValue)
-                    }) {
-                        Label("Unread", systemImage: "book.pages")
-                    }
+//                    Button(action: {
+//                        viewModel.getSubmissionByType(field: "state", value: SubmissionState.unviewed.rawValue)
+//                    }) {
+//                        Label("Unread", systemImage: "book.pages")
+//                    }
                 } label: {
                     Image(systemName: "camera.filters")
                 }
             }
+
+            // Second ToolbarItem: Search Button
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     searchText = ""
@@ -110,6 +122,15 @@ struct SubmissionsView: View {
                     isSearchBarFocused = isSearchBarVisible
                 }) {
                     Image(systemName: "magnifyingglass")
+                }
+            }
+
+            // Third ToolbarItem: Sign Out Button
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    viewModel.signOut()
+                }) {
+                    Image(systemName: "door.left.hand.open")
                 }
             }
         }
@@ -206,11 +227,12 @@ struct SubmissionsView: View {
                     }
                 }
                 if submission.type != .completed  {
-                    Button(role: .cancel) {
+                    Button(role: .destructive) {
                         viewModel.markSubmissionAsCompleted(submission)
                     } label: {
                         Label("Complete", systemImage: "checkmark.seal")
                     }
+                    .tint(.green)
                 }
             }
             .swipeActions(edge: .leading) {

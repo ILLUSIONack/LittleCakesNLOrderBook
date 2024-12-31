@@ -5,17 +5,23 @@ final class SubmissionsViewModel: ObservableObject {
     @Published var submissions: [MappedSubmission] = []
     @Published var groupedSubmissions: [Date : [MappedSubmission]] = [:]
     @Published var filteredSubmissions: [MappedSubmission] = []
-    @Published var isLoading: Bool = false
+    @Published var isLoading: Bool = true
     @Published var isShowTodayButtonVisible: Bool = false
     @Published var dateKey: Dictionary<Date, [MappedSubmission]>.Keys.Element?
     @Published var submissionType: SubmissionType = .new
     @Published var title: String = ""
 
     private var db: Firestore
+    private let authenticationManager: AuthenticationManager
     private let filloutService: FilloutService
 
-    init(firestoreManager: FirestoreManager, filloutService: FilloutService) {
+    init(
+        firestoreManager: FirestoreManager,
+        authenticationManager: AuthenticationManager,
+        filloutService: FilloutService
+    ) {
         self.db = firestoreManager.db
+        self.authenticationManager = authenticationManager
         self.filloutService = filloutService
         fetchSubmissions()
     }
@@ -115,7 +121,6 @@ final class SubmissionsViewModel: ObservableObject {
                             fetchBatch()
                         } else {
                             print("Finished count")
-
                         }
                     }
                 case .failure(let error):
@@ -128,8 +133,6 @@ final class SubmissionsViewModel: ObservableObject {
     }
     
     func getSubmissionByType(field: String, value: String) {
-        self.isLoading = true
-
         fetchAndMapSubmissions(field: field, value: value) { mappedSubmissions, error in
             if let error = error {
                 print("Failed to fetch submissions: \(error.localizedDescription)")
@@ -151,9 +154,7 @@ final class SubmissionsViewModel: ObservableObject {
         value: String,
         completion: @escaping ([MappedSubmission]?, Error?) -> Void
     ) {
-        let submissionsCollection = db.collection("submissionsReleaseBackup")
-        
-        submissionsCollection.whereField(field, isEqualTo: value).getDocuments { snapshot, error in
+        db.collection("submissionsReleaseBackup").whereField(field, isEqualTo: value).getDocuments { snapshot, error in
             if let error = error {
                 print("Error fetching submissions by \(field): \(error.localizedDescription)")
                 completion(nil, error)
@@ -212,8 +213,6 @@ final class SubmissionsViewModel: ObservableObject {
     }
     
     func fetchSubmission(by submissionId: String, completion: @escaping (Result<FirebaseSubmission?, Error>) -> Void) {
-        let db = Firestore.firestore()
-        
         db.collection(ServerConfig.shared.collectionName)
             .whereField("submissionId", isEqualTo: submissionId)
             .getDocuments { (snapshot, error) in
@@ -505,26 +504,18 @@ final class SubmissionsViewModel: ObservableObject {
     
     // MARK: - Mark submissions as Viewed/Confirmed/Deleted/Completed
     
-    func confirmSubmission(withId id: String) {
-        guard let index = submissions.firstIndex(where: { $0.id == id }) else { return }
-        
-        DispatchQueue.main.async {
-            self.submissions[index].type = .confirmed
+    func confirmSubmission(withId submission: MappedSubmission, type: SubmissionType) {
+        guard let index = submissions.firstIndex(where: { $0.id == submission.id }) else {
+            return
         }
-        var submissionData = submissions[index]
-        submissionData.type = .confirmed
         
-        fetchSubmission(by: submissionData.submissionId) { result in
-            switch result {
-            case .success(let submission):
-                if let submission = submission {
-                    try? self.db.collection(ServerConfig.shared.collectionName).document(submission.id ?? "").setData(from: submissionData)
-                } else {
-                    print("No submission found with the given ID.")
-                }
-            case .failure(let error):
-                print("Error fetching submission: \(error.localizedDescription)")
-            }
+        submissions[index].type = type
+
+        let updatedSubmission = submissions[index]
+        do {
+            try db.collection(ServerConfig.shared.collectionName).document(submissions[index].collectionId).setData(from: updatedSubmission)
+        } catch let error {
+            print("Error updating submission: \(error.localizedDescription)")
         }
     }
     
@@ -586,18 +577,13 @@ final class SubmissionsViewModel: ObservableObject {
         
         // Perform UI update on the main thread
         DispatchQueue.main.async {
-            withAnimation {
-                for (date, var submissionsForDate) in self.groupedSubmissions {
-                    if let index = submissionsForDate.firstIndex(where: { $0.id == submission.id }) {
-                        // Remove the submission and update the grouped submissions
-                        submissionsForDate.remove(at: index)
-                        if submissionsForDate.isEmpty {
-                            // Remove the empty date group if no submissions remain
-                            self.groupedSubmissions.removeValue(forKey: date)
-                        } else {
-                            // Otherwise, update the date group with the remaining submissions
-                            self.groupedSubmissions[date] = submissionsForDate
-                        }
+            for (date, var submissionsForDate) in self.groupedSubmissions {
+                if let index = submissionsForDate.firstIndex(where: { $0.id == submission.id }) {
+                    submissionsForDate.remove(at: index)
+                    if submissionsForDate.isEmpty {
+                        self.groupedSubmissions.removeValue(forKey: date)
+                    } else {
+                        self.groupedSubmissions[date] = submissionsForDate
                     }
                 }
             }
@@ -619,6 +605,17 @@ final class SubmissionsViewModel: ObservableObject {
                    }
         } catch let error {
             print("Error updating submission: \(error.localizedDescription)")
+        }
+    }
+    
+    // MARK: - Authentication
+    func signOut() {
+        authenticationManager.signOut { error in
+            if let error {
+                print(error.localizedDescription)
+            } else {
+                print("Signed out")
+            }
         }
     }
 }
