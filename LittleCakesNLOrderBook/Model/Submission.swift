@@ -85,18 +85,6 @@ enum SubmissionState: String, Codable {
     }
 }
 
-struct Submission: Codable, Identifiable {
-    let submissionId: String
-    var submissionTime: String
-    var lastUpdatedAt: String
-    var questions: [SubmissionQuestion]
-    
-    var id: String { submissionId }
-    var submissionTimeDate: Date? {
-        return ISO8601DateFormatter.extended.date(from: submissionTime)
-    }
-}
-
 struct MappedSubmission: Codable, Identifiable {
     var collectionId: String
     let submissionId: String
@@ -106,6 +94,18 @@ struct MappedSubmission: Codable, Identifiable {
     var type: SubmissionType
     var state: SubmissionState
 
+    var id: String { submissionId }
+    var submissionTimeDate: Date? {
+        return ISO8601DateFormatter.extended.date(from: submissionTime)
+    }
+}
+
+struct Submission: Codable, Identifiable {
+    let submissionId: String
+    var submissionTime: String
+    var lastUpdatedAt: String
+    var questions: [SubmissionQuestion]
+    
     var id: String { submissionId }
     var submissionTimeDate: Date? {
         return ISO8601DateFormatter.extended.date(from: submissionTime)

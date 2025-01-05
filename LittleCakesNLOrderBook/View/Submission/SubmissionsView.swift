@@ -9,8 +9,8 @@ struct SubmissionsView: View {
     @State private var searchText: String = ""
     @State private var isSearchBarVisible: Bool = false
     @FocusState private var isSearchBarFocused: Bool
-    private let feedbackGenerator = UIImpactFeedbackGenerator(style: .soft)
     
+    private let feedbackGenerator = UIImpactFeedbackGenerator(style: .soft)
     private let today = Date()
     
     init(
@@ -31,8 +31,8 @@ struct SubmissionsView: View {
     
     var body: some View {
         NavigationView {
-            ZStack {
-                ScrollViewReader { scrollViewProxy in
+            ScrollViewReader { scrollViewProxy in
+                ZStack {
                     buildSearchBar()
                     
                     List(viewModel.groupedSubmissions.keys.sorted(by: <), id: \.self) { date in
@@ -51,26 +51,28 @@ struct SubmissionsView: View {
                     }
                     .listStyle(.grouped)
                     
+                    if viewModel.isLoading {
+                        Color.white
+                        VStack {
+                            Spacer()
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle())
+                            Spacer()
+                        }
+                    }
+                }
+                .overlay(alignment: .bottom, content: {
                     if viewModel.isShowTodayButtonVisible {
                         buildShowTodayButton(scrollViewProxy: scrollViewProxy)
                     }
-                }
-                
-                if viewModel.isLoading {
-                    Color.white
-                    VStack {
-                        Spacer()
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle())
-                        Spacer()
-                    }
-                }
+                })
             }
         .refreshable {
             feedbackGenerator.impactOccurred()
-            viewModel.fetchSubmissions()
+            viewModel.getSubmissionByType(field: "type", value: viewModel.submissionType.rawValue)
         }
         .onAppear {
+//            viewModel.callHelloWorldFunction()
             viewModel.getSubmissionByType(field: "type", value: viewModel.submissionType.rawValue)
         }
         .navigationTitle(viewModel.title)
@@ -142,12 +144,14 @@ struct SubmissionsView: View {
             scrollToToday(scrollViewProxy: scrollViewProxy)
         }) {
             Text("Go to Today")
-                .frame(height: 36)
+                .frame(width: 100, height: 36)
                 .font(.headline)
-                .background(Color.blue)
+                .background(Color.black)
                 .foregroundColor(.white)
                 .cornerRadius(8)
+                .padding(.horizontal, 8)
         }
+        .padding(.bottom, 8)
     }
     
     @ViewBuilder

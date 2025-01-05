@@ -1,5 +1,6 @@
 import SwiftUI
 import FirebaseFirestore
+import FirebaseFunctions
 
 final class SubmissionsViewModel: ObservableObject {
     @Published var submissions: [MappedSubmission] = []
@@ -23,113 +24,6 @@ final class SubmissionsViewModel: ObservableObject {
         self.db = firestoreManager.db
         self.authenticationManager = authenticationManager
         self.filloutService = filloutService
-        fetchSubmissions()
-    }
-    
-    func fetchSubmissions() {
-        var currentOffset = 0
-        let limit = 50
-        
-        func fetchBatch() {
-            filloutService.fetchSubmissions(limit: limit, offset: currentOffset) { [weak self] result in
-                guard let self else { return }
-                
-                switch result {
-                case .success(let filloutSubmissions):
-                    self.db.collection(ServerConfig.shared.collectionName).getDocuments { snapshot, error in
-                        if let error = error {
-                            print("Error fetching submissions from Firestore: \(error)")
-                            return
-                        }
-                        
-                        guard let documents = snapshot?.documents else {
-                            print("No documents found in Firestore")
-                            return
-                        }
-                        
-                        let firebaseSubmissions = documents.compactMap { queryDocumentSnapshot in
-                            do {
-                                return try queryDocumentSnapshot.data(as: FirebaseSubmission.self)
-                            } catch {
-                                print("Failed to decode document: \(error)")
-                                return nil
-                            }
-                        }
-                        
-                        var filteredList: [MappedSubmission] = []
-                        let batch = self.db.batch()
-                        
-                        // Iterate over filloutSubmissions
-                        for filloutSubmission in filloutSubmissions {
-                            let isExistsFirebaseSubmission = firebaseSubmissions.contains {
-                                $0.submissionId == filloutSubmission.submissionId
-                            }
-                            
-                            if !isExistsFirebaseSubmission {
-                                let newDocRef = self.db.collection(ServerConfig.shared.collectionName).document()
-                                
-                                var questions = filloutSubmission.questions
-                                questions.append(SubmissionQuestion(id: String(filloutSubmission.questions.count), name: "Total amount €", type: "ShortAnswer", value: ValueType(string: " ")))
-                                questions.append(SubmissionQuestion(id: String(filloutSubmission.questions.count + 1), name: "Remaining amount €", type: "ShortAnswer", value: ValueType(string: " ")))
-                                questions.append(SubmissionQuestion(id: String(filloutSubmission.questions.count + 2), name: "Notitie", type: "ShortAnswer", value: ValueType(string: " ")))
-                                
-                                let mappedSubmission = MappedSubmission(
-                                    collectionId: newDocRef.documentID,
-                                    submissionId: filloutSubmission.submissionId,
-                                    submissionTime: filloutSubmission.submissionTime,
-                                    lastUpdatedAt: filloutSubmission.lastUpdatedAt,
-                                    questions: questions,
-                                    type: .new,
-                                    state: .unviewed
-                                )
-                                
-                                filteredList.append(mappedSubmission)
-                                
-                                do {
-                                    try batch.setData(from: mappedSubmission, forDocument: newDocRef)
-                                } catch {
-                                    print("Error encoding mapped submission: \(error)")
-                                }
-                            }
-                        }
-                        
-                        batch.commit { error in
-                            if let error = error {
-                                print("Error committing batch write: \(error)")
-                            } else {
-                                print("Batch write successfully committed.")
-                            }
-                        }
-                        
-                        var list = firebaseSubmissions.map {
-                            MappedSubmission(
-                                collectionId: $0.id ?? "no-id",
-                                submissionId: $0.submissionId,
-                                submissionTime: $0.submissionTime,
-                                lastUpdatedAt: $0.lastUpdatedAt,
-                                questions: $0.questions,
-                                type: $0.type,
-                                state: $0.state
-                            )
-                        }
-                        
-                        list.append(contentsOf: filteredList)
-                        print(self.submissions.count)
-                        
-                        if filloutSubmissions.count == limit {
-                            currentOffset += limit
-                            fetchBatch()
-                        } else {
-                            print("Finished count")
-                        }
-                    }
-                case .failure(let error):
-                    print("Error fetching submissions from Fillout: \(error)")
-                }
-            }
-        }
-        
-        fetchBatch()
     }
     
     func getSubmissionByType(field: String, value: String) {
@@ -154,6 +48,7 @@ final class SubmissionsViewModel: ObservableObject {
         value: String,
         completion: @escaping ([MappedSubmission]?, Error?) -> Void
     ) {
+        // TODO: - Move collection name to env variable
         db.collection("submissionsReleaseBackup").whereField(field, isEqualTo: value).getDocuments { snapshot, error in
             if let error = error {
                 print("Error fetching submissions by \(field): \(error.localizedDescription)")
