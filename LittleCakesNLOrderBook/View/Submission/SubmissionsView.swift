@@ -61,9 +61,6 @@ struct SubmissionsView: View {
                     viewModel.generateFeedback(style: .medium)
                     viewModel.getSubmissionByType(field: "type", value: viewModel.submissionType.rawValue)
                 }
-                .onAppear {
-                    viewModel.getSubmissionByType(field: "type", value: viewModel.submissionType.rawValue)
-                }
                 .navigationTitle(viewModel.title)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {

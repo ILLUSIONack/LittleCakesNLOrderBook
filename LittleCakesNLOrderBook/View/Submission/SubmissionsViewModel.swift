@@ -3,7 +3,6 @@ import FirebaseFirestore
 import FirebaseFunctions
 
 final class SubmissionsViewModel: ObservableObject {
-    @Published var submissions: [MappedSubmission] = []
     @Published var groupedSubmissions: [Date : [MappedSubmission]] = [:]
     @Published var filteredSubmissions: [MappedSubmission] = []
     @Published var isLoading: Bool = true
@@ -13,10 +12,11 @@ final class SubmissionsViewModel: ObservableObject {
     @Published var title: String = ""
     let today = Date()
 
+    private var submissions: [MappedSubmission] = []
     private var db: Firestore
     private let authenticationManager: AuthenticationManager
     private let filloutService: FilloutService
-    
+
     init(
         firestoreManager: FirestoreManager,
         authenticationManager: AuthenticationManager,
@@ -25,6 +25,7 @@ final class SubmissionsViewModel: ObservableObject {
         self.db = firestoreManager.db
         self.authenticationManager = authenticationManager
         self.filloutService = filloutService
+        getSubmissionByType(field: "type", value: submissionType.rawValue)
     }
     
     func getSubmissionByType(field: String, value: String) {
@@ -158,9 +159,9 @@ final class SubmissionsViewModel: ObservableObject {
             groupedSubmissions = grouped.sorted(by: { $0.key > $1.key }).reduce(into: [Date: [MappedSubmission]]()) {
                 $0[$1.key] = $1.value
             }
+            self.isLoading = false
             
             setupShowTodayButton()
-            self.isLoading = false
         }
     }
     
@@ -423,6 +424,7 @@ final class SubmissionsViewModel: ObservableObject {
         }
 
         let updatedSubmission = submissions[index]
+        getGroupedSubmissions()
         do {
             try db.collection(ServerConfig.shared.collectionName).document(submissions[index].collectionId).setData(from: updatedSubmission)
         } catch let error {
@@ -493,13 +495,10 @@ final class SubmissionsViewModel: ObservableObject {
         submissions[index].state = .messaged
         
         let updatedSubmission = submissions[index]
+        self.getGroupedSubmissions()
+
         do {
             try db.collection(ServerConfig.shared.collectionName).document(submissions[index].collectionId).setData(from: updatedSubmission)
-            DispatchQueue.main.async {
-                       withAnimation {
-                           self.getGroupedSubmissions()
-                       }
-                   }
         } catch let error {
             print("Error updating submission: \(error.localizedDescription)")
         }
