@@ -10,9 +10,6 @@ struct SubmissionsView: View {
     @State private var isSearchBarVisible: Bool = false
     @FocusState private var isSearchBarFocused: Bool
     
-    private let feedbackGenerator = UIImpactFeedbackGenerator(style: .soft)
-    private let today = Date()
-    
     init(
         authenticationManager: AuthenticationManager,
         filloutService: FilloutService
@@ -31,10 +28,10 @@ struct SubmissionsView: View {
     
     var body: some View {
         NavigationView {
-            ScrollViewReader { scrollViewProxy in
-                ZStack {
-                    buildSearchBar()
-                    
+            ZStack {
+                loadingView
+                
+                ScrollViewReader { scrollViewProxy in
                     List(viewModel.groupedSubmissions.keys.sorted(by: <), id: \.self) { date in
                         Section(header: buildSectionHeader(for: date)) {
                             if let submissionsForDate = viewModel.groupedSubmissions[date] {
@@ -51,114 +48,126 @@ struct SubmissionsView: View {
                     }
                     .listStyle(.grouped)
                     
-                    if viewModel.isLoading {
-                        Color.white
-                        VStack {
-                            Spacer()
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle())
-                            Spacer()
+                    .overlay(alignment: .bottom, content: {
+                        if viewModel.isShowTodayButtonVisible {
+                            buildShowTodayButton(scrollViewProxy: scrollViewProxy)
                         }
+                    })
+                    .overlay(alignment: .top) {
+                        buildSearchBar()
                     }
                 }
-                .overlay(alignment: .bottom, content: {
-                    if viewModel.isShowTodayButtonVisible {
-                        buildShowTodayButton(scrollViewProxy: scrollViewProxy)
+                .refreshable {
+                    viewModel.generateFeedback(style: .medium)
+                    viewModel.getSubmissionByType(field: "type", value: viewModel.submissionType.rawValue)
+                }
+                .onAppear {
+                    viewModel.getSubmissionByType(field: "type", value: viewModel.submissionType.rawValue)
+                }
+                .navigationTitle(viewModel.title)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    // First ToolbarItem: Filter Menu
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Menu {
+                            Button(action: {
+                                viewModel.submissionType = .new
+                                viewModel.getSubmissionByType(field: "type", value: SubmissionType.new.rawValue)
+                            }) {
+                                Label("New", systemImage: "star")
+                            }
+                            Button(action: {
+                                viewModel.submissionType = .confirmed
+                                viewModel.getSubmissionByType(field: "type", value: SubmissionType.confirmed.rawValue)
+                            }) {
+                                Label("Confirmed", systemImage: "checkmark.seal")
+                            }
+                            Button(action: {
+                                viewModel.submissionType = .completed
+                                viewModel.getSubmissionByType(field: "type", value: SubmissionType.completed.rawValue)
+                            }) {
+                                Label("Completed", systemImage: "flag.checkered")
+                            }
+                            Button(action: {
+                                viewModel.submissionType = .deleted
+                                viewModel.getSubmissionByType(field: "type", value: SubmissionType.deleted.rawValue)
+                            }) {
+                                Label("Deleted", systemImage: "delete.left.fill")
+                            }
+                            //                    Button(action: {
+                            //                        viewModel.getSubmissionByType(field: "state", value: SubmissionState.unviewed.rawValue)
+                            //                    }) {
+                            //                        Label("Unread", systemImage: "book.pages")
+                            //                    }
+                        } label: {
+                            Image(systemName: "camera.filters")
+                        }
+                        .tint(Color.black)
                     }
-                })
+                    
+                    // Second ToolbarItem: Search Button
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            searchText = ""
+                            isSearchBarVisible.toggle()
+                            viewModel.filterSubmissions(by: "")
+                            isSearchBarFocused = isSearchBarVisible
+                        }) {
+                            Image(systemName: "magnifyingglass")
+                        }
+                        .tint(Color.black)
+                        
+                    }
+                    
+                    // Third ToolbarItem: Sign Out Button
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            viewModel.signOut()
+                        }) {
+                            Image(systemName: "door.left.hand.open")
+                        }
+                        .tint(Color.black)
+                    }
+                }
             }
-        .refreshable {
-            feedbackGenerator.impactOccurred()
-            viewModel.getSubmissionByType(field: "type", value: viewModel.submissionType.rawValue)
         }
-        .onAppear {
-//            viewModel.callHelloWorldFunction()
-            viewModel.getSubmissionByType(field: "type", value: viewModel.submissionType.rawValue)
-        }
-        .navigationTitle(viewModel.title)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            // First ToolbarItem: Filter Menu
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Menu {
-                    Button(action: {
-                        viewModel.submissionType = .new
-                        viewModel.getSubmissionByType(field: "type", value: SubmissionType.new.rawValue)
-                    }) {
-                        Label("New", systemImage: "star")
-                    }
-                    Button(action: {
-                        viewModel.submissionType = .confirmed
-                        viewModel.getSubmissionByType(field: "type", value: SubmissionType.confirmed.rawValue)
-                    }) {
-                        Label("Confirmed", systemImage: "checkmark.seal")
-                    }
-                    Button(action: {
-                        viewModel.submissionType = .completed
-                        viewModel.getSubmissionByType(field: "type", value: SubmissionType.completed.rawValue)
-                    }) {
-                        Label("Completed", systemImage: "flag.checkered")
-                    }
-                    Button(action: {
-                        viewModel.submissionType = .deleted
-                        viewModel.getSubmissionByType(field: "type", value: SubmissionType.deleted.rawValue)
-                    }) {
-                        Label("Deleted", systemImage: "delete.left.fill")
-                    }
-//                    Button(action: {
-//                        viewModel.getSubmissionByType(field: "state", value: SubmissionState.unviewed.rawValue)
-//                    }) {
-//                        Label("Unread", systemImage: "book.pages")
-//                    }
-                } label: {
-                    Image(systemName: "camera.filters")
-                }
+        
+    }
+    
+    @ViewBuilder
+    private var loadingView: some View {
+        if viewModel.isLoading {
+            Color.white
+            VStack(spacing: 8) {
+                LottieView(animationName: "skeletonLoading")
+                LottieView(animationName: "skeletonLoading")
+                LottieView(animationName: "skeletonLoading")
+                LottieView(animationName: "skeletonLoading")
+                LottieView(animationName: "skeletonLoading")
             }
-
-            // Second ToolbarItem: Search Button
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    searchText = ""
-                    isSearchBarVisible.toggle()
-                    viewModel.filterSubmissions(by: "")
-                    isSearchBarFocused = isSearchBarVisible
-                }) {
-                    Image(systemName: "magnifyingglass")
-                }
-            }
-
-            // Third ToolbarItem: Sign Out Button
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    viewModel.signOut()
-                }) {
-                    Image(systemName: "door.left.hand.open")
-                }
-            }
+            .padding(.horizontal, 8)
         }
     }
-}
     
     private func buildShowTodayButton(scrollViewProxy: ScrollViewProxy) -> some View {
         Button(action: {
             scrollToToday(scrollViewProxy: scrollViewProxy)
         }) {
             Text("Go to Today")
-                .frame(width: 100, height: 36)
+                .padding([.horizontal, .vertical], 8)
                 .font(.headline)
                 .background(Color.black)
                 .foregroundColor(.white)
                 .cornerRadius(8)
-                .padding(.horizontal, 8)
         }
         .padding(.bottom, 8)
     }
     
     @ViewBuilder
     private func buildSectionHeader(for date: Date) -> some View {
-        let isToday = Calendar.current.isDate(date, inSameDayAs: today)
+        let isToday = Calendar.current.isDate(date, inSameDayAs: viewModel.today)
         
-        Text(dateFormatted(date: date))
+        Text(viewModel.dateFormatted(date: date))
             .padding(.top, 0)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(isToday ? Color.gray.opacity(0.2) : Color.clear)
@@ -248,11 +257,5 @@ struct SubmissionsView: View {
                     }
                 }
             }
-    }
-    
-    func dateFormatted(date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .long
-        return dateFormatter.string(from: date)
     }
 }

@@ -28,5 +28,6 @@ struct BottomTabView: View {
                 }
                 .badge(viewModel.unviewedSubmissionsCount)
         }
+        .accentColor(.black)
     }
 }

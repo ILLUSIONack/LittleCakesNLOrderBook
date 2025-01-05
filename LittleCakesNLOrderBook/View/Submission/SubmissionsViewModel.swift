@@ -11,11 +11,12 @@ final class SubmissionsViewModel: ObservableObject {
     @Published var dateKey: Dictionary<Date, [MappedSubmission]>.Keys.Element?
     @Published var submissionType: SubmissionType = .new
     @Published var title: String = ""
+    let today = Date()
 
     private var db: Firestore
     private let authenticationManager: AuthenticationManager
     private let filloutService: FilloutService
-
+    
     init(
         firestoreManager: FirestoreManager,
         authenticationManager: AuthenticationManager,
@@ -27,6 +28,7 @@ final class SubmissionsViewModel: ObservableObject {
     }
     
     func getSubmissionByType(field: String, value: String) {
+        isLoading = true
         fetchAndMapSubmissions(field: field, value: value) { mappedSubmissions, error in
             if let error = error {
                 print("Failed to fetch submissions: \(error.localizedDescription)")
@@ -38,7 +40,6 @@ final class SubmissionsViewModel: ObservableObject {
                 
                 self.submissions = mappedSubmissions
                 self.getGroupedSubmissions()
-                self.isLoading = false
             }
         }
     }
@@ -159,6 +160,7 @@ final class SubmissionsViewModel: ObservableObject {
             }
             
             setupShowTodayButton()
+            self.isLoading = false
         }
     }
     
@@ -501,6 +503,17 @@ final class SubmissionsViewModel: ObservableObject {
         } catch let error {
             print("Error updating submission: \(error.localizedDescription)")
         }
+    }
+    
+    func generateFeedback(style: UIImpactFeedbackGenerator.FeedbackStyle) {
+        let feedbackGenerator = UIImpactFeedbackGenerator(style: .soft)
+        feedbackGenerator.impactOccurred()
+    }
+    
+    func dateFormatted(date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .long
+        return dateFormatter.string(from: date)
     }
     
     // MARK: - Authentication

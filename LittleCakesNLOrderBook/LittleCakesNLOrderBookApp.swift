@@ -2,6 +2,7 @@ import SwiftUI
 import FirebaseCore
 import FirebaseAuth
 import Firebase
+import Lottie
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
@@ -26,8 +27,10 @@ struct LittleCakesNLAgenaApp: App {
                 if authManager.isLoading {
                     VStack {
                         Spacer()
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle())
+//                        ProgressView()
+//                            .progressViewStyle(CircularProgressViewStyle())
+                        LottieView(animationName: "loading")
+                            .frame(width: 100, height: 100)
                         Spacer()
                     }
                 } else if authManager.isSignedIn {
