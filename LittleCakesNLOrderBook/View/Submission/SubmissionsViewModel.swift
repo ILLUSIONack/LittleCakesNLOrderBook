@@ -51,7 +51,7 @@ final class SubmissionsViewModel: ObservableObject {
         completion: @escaping ([MappedSubmission]?, Error?) -> Void
     ) {
         // TODO: - Move collection name to env variable
-        db.collection("submissionsReleaseBackup").whereField(field, isEqualTo: value).getDocuments { snapshot, error in
+        db.collection(ServerConfig.shared.collectionName).whereField(field, isEqualTo: value).getDocuments { snapshot, error in
             if let error = error {
                 print("Error fetching submissions by \(field): \(error.localizedDescription)")
                 completion(nil, error)

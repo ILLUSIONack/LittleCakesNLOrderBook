@@ -15,7 +15,7 @@ final class BottomTabViewModel: ObservableObject {
     
     // Function to fetch the unviewed submissions count
     func fetchUnviewedSubmissionsCount() {
-        let submissionsCollection = db.collection("submissionsReleaseBackup")
+        let submissionsCollection = db.collection(ServerConfig.shared.collectionName)
         
         listener = submissionsCollection.whereField("state", isEqualTo: "unviewed")
             .addSnapshotListener { [weak self] snapshot, error in
@@ -39,7 +39,7 @@ final class BottomTabViewModel: ObservableObject {
         _ type: SubmissionType,
         completion: @escaping ([MappedSubmission]?, Error?) -> Void
     ) {
-        let submissionsCollection = db.collection("submissionsReleaseBackup")
+        let submissionsCollection = db.collection(ServerConfig.shared.collectionName)
         
         // Query to fetch documents where `type` matches the provided value
         submissionsCollection.whereField("type", isEqualTo: type.rawValue).getDocuments { snapshot, error in
