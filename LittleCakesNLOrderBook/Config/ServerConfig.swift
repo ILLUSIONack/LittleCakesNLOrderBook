@@ -8,7 +8,7 @@
 import Foundation
 
 enum BaseUrl: String {
-    case DEV = "API_DEV_FORM_ID"
+    case DEV = "API_DEV_FORM_ID_REAL"
     case RELEASE = "API_RELEASE_FORM_ID"
     case OLD = "API_RELEASE_FORM_ID_FIRST"
 }
@@ -26,8 +26,8 @@ final class ServerConfig {
     private func setupServerConfig() {
         
         #if DEV
-//        self.baseURL = ProcessInfo.processInfo.environment[BaseUrl.DEV.rawValue] ?? ""
-        self.baseURL = ProcessInfo.processInfo.environment[BaseUrl.RELEASE.rawValue] ?? ""
+        self.baseURL = ProcessInfo.processInfo.environment[BaseUrl.DEV.rawValue] ?? ""
+//        self.baseURL = ProcessInfo.processInfo.environment[BaseUrl.RELEASE.rawValue] ?? ""
 //        self.collectionName = "submissionsDev"
         // MARK: - This is here due to migration testing
         self.collectionName = "submissionsReleaseBackup"
