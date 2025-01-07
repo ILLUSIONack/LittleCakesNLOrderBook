@@ -26,6 +26,10 @@ final class SubmissionsViewModel: ObservableObject {
         self.authenticationManager = authenticationManager
         self.filloutService = filloutService
         getSubmissionByType(field: "type", value: submissionType.rawValue)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            self.startListeningForNewSubmissions()
+        }
     }
     
     func getSubmissionByType(field: String, value: String) {
@@ -524,5 +528,53 @@ final class SubmissionsViewModel: ObservableObject {
                 print("Signed out")
             }
         }
+    }
+    
+    private var listener: ListenerRegistration?
+    @Published var newSubmissionsCount = 0
+    private var seenDocumentIDs: Set<String> = []
+    private var isFirstSnapshot = true // Flag to skip the initial snapshot
+
+    func startListeningForNewSubmissions() {
+        let submissionsCollection = db.collection(ServerConfig.shared.collectionName)
+
+        listener = submissionsCollection.whereField("type", isEqualTo: "new")
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let self else { return }
+                if let error = error {
+                    print("Error listening for submissions: \(error.localizedDescription)")
+                    return
+                }
+
+                guard let snapshot = snapshot else { return }
+
+                // If it's the first snapshot, initialize the seen IDs and skip processing
+                if isFirstSnapshot == true {
+                    seenDocumentIDs = Set(snapshot.documents.map { $0.documentID })
+                    isFirstSnapshot = false
+                    return
+                }
+
+                // Extract the document IDs from the current snapshot
+                let currentDocumentIDs = Set(snapshot.documents.map { $0.documentID })
+
+                // Find new IDs by subtracting the already seen IDs
+                let newDocumentIDs = currentDocumentIDs.subtracting(seenDocumentIDs)
+
+                // Update the seen IDs set
+                seenDocumentIDs.formUnion(newDocumentIDs)
+
+                // Increment the count for new submissions
+                newSubmissionsCount += newDocumentIDs.count
+
+                // Debugging output
+                print("Newly added documents count: \(newDocumentIDs.count)")
+                print("Total new submissions: \(newSubmissionsCount)")
+            }
+    }
+
+    func stopListening() {
+        listener?.remove()
+        listener = nil
     }
 }

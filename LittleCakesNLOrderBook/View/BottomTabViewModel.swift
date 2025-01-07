@@ -13,7 +13,6 @@ final class BottomTabViewModel: ObservableObject {
         fetchUnviewedSubmissionsCount()
     }
     
-    // Function to fetch the unviewed submissions count
     func fetchUnviewedSubmissionsCount() {
         let submissionsCollection = db.collection(ServerConfig.shared.collectionName)
         
@@ -33,52 +32,5 @@ final class BottomTabViewModel: ObservableObject {
     
     deinit {
         listener?.remove()
-    }
-
-    func fetchAndMapSubmissionsByType(
-        _ type: SubmissionType,
-        completion: @escaping ([MappedSubmission]?, Error?) -> Void
-    ) {
-        let submissionsCollection = db.collection(ServerConfig.shared.collectionName)
-        
-        // Query to fetch documents where `type` matches the provided value
-        submissionsCollection.whereField("type", isEqualTo: type.rawValue).getDocuments { snapshot, error in
-            if let error = error {
-                print("Error fetching submissions by type: \(error.localizedDescription)")
-                completion(nil, error)
-                return
-            }
-            
-            guard let documents = snapshot?.documents else {
-                print("No submissions found for type: \(type.rawValue)")
-                completion([], nil)
-                return
-            }
-            
-            do {
-                // Decode the documents into `FirebaseSubmission` objects
-                let firebaseSubmissions = try documents.map { document in
-                    try document.data(as: FirebaseSubmission.self)
-                }
-                
-                // Map FirebaseSubmission to MappedSubmission (without legacy fields)
-                let mappedSubmissions = firebaseSubmissions.map { submission in
-                    MappedSubmission(
-                        collectionId: submission.id ?? "",
-                        submissionId: submission.submissionId,
-                        submissionTime: submission.submissionTime,
-                        lastUpdatedAt: submission.lastUpdatedAt,
-                        questions: submission.questions,
-                        type: submission.type,
-                        state: submission.state
-                    )
-                }
-                
-                completion(mappedSubmissions, nil)
-            } catch {
-                print("Error decoding or mapping submissions: \(error.localizedDescription)")
-                completion(nil, error)
-            }
-        }
     }
 }

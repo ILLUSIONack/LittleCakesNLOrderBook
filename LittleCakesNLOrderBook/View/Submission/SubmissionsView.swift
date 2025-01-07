@@ -53,6 +53,21 @@ struct SubmissionsView: View {
                             buildShowTodayButton(scrollViewProxy: scrollViewProxy)
                         }
                     })
+                    .overlay(alignment: .top, content: {
+                        if viewModel.newSubmissionsCount > 0 {
+                            Button(action: {
+                                viewModel.newSubmissionsCount = 0
+                                viewModel.generateFeedback(style: .medium)
+                                viewModel.getSubmissionByType(field: "type", value: viewModel.submissionType.rawValue)
+                            }) {
+                                Text("\(viewModel.newSubmissionsCount) new submissions added")
+                                    .padding()
+                                    .background(Color.blue)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(8)
+                            }
+                        }
+                    })
                     .overlay(alignment: .top) {
                         buildSearchBar()
                     }
