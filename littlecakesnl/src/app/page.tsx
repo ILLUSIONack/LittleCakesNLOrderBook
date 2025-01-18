@@ -15,12 +15,16 @@ const Home = () => {
       </div>
 
       {/* Right Side */}
-      <div className="hidden lg:block lg:w-2/5">
+      <div className="relative hidden lg:block lg:w-2/5 h-full">
+        {/* Image */}
         <img
           src="/cakesrc.png"
           alt="Cake"
           className="object-cover w-full h-full"
         />
+
+        {/* Black Overlay */}
+        <div className="absolute inset-0 bg-black opacity-55"></div>
       </div>
     </div>
   );
