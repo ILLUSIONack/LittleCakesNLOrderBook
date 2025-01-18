@@ -29,8 +29,6 @@ struct SubmissionsView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                loadingView
-                
                 ScrollViewReader { scrollViewProxy in
                     List(viewModel.groupedSubmissions.keys.sorted(by: <), id: \.self) { date in
                         Section(header: buildSectionHeader(for: date)) {
@@ -68,9 +66,13 @@ struct SubmissionsView: View {
                             }
                         }
                     })
-                    .overlay(alignment: .top) {
-                        buildSearchBar()
-                    }
+                    
+                }
+                .if(isSearchBarVisible) { view in
+                    view.searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic))
+                }
+                .onChange(of: searchText) { newValue in
+                    viewModel.filterSubmissions(by: newValue)
                 }
                 .refreshable {
                     viewModel.generateFeedback(style: .medium)
@@ -141,9 +143,9 @@ struct SubmissionsView: View {
                         .tint(Color.black)
                     }
                 }
+                loadingView
             }
         }
-        
     }
     
     @ViewBuilder
@@ -157,7 +159,7 @@ struct SubmissionsView: View {
                 LottieView(animationName: "skeletonLoading")
                 LottieView(animationName: "skeletonLoading")
             }
-            .padding(.horizontal, 8)
+            .padding([.horizontal, .bottom], 8)
         }
     }
     
@@ -189,32 +191,6 @@ struct SubmissionsView: View {
     
     private func scrollToToday(scrollViewProxy: ScrollViewProxy) {
         scrollViewProxy.scrollTo(viewModel.dateKey, anchor: .center)
-    }
-    
-    @ViewBuilder
-    private func buildSearchBar() -> some View {
-        if isSearchBarVisible {
-            HStack {
-                TextField("Search by name", text: $searchText)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding(.leading, 8)
-                    .focused($isSearchBarFocused)
-                    .onChange(of: searchText) { newValue in
-                        viewModel.filterSubmissions(by: newValue)
-                    }
-                
-                if !searchText.isEmpty {
-                    Button(action: {
-                        searchText = ""
-                    }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(.gray)
-                    }
-                    .padding(.trailing, 8)
-                }
-            }
-            .padding(.horizontal, 8)
-        }
     }
     
     @ViewBuilder
@@ -269,5 +245,16 @@ struct SubmissionsView: View {
                     }
                 }
             }
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
+        if condition {
+            transform(self)
+        } else {
+            self
+        }
     }
 }

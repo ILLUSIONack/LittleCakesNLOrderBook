@@ -27,8 +27,6 @@ struct LittleCakesNLAgenaApp: App {
                 if authManager.isLoading {
                     VStack {
                         Spacer()
-//                        ProgressView()
-//                            .progressViewStyle(CircularProgressViewStyle())
                         LottieView(animationName: "loading")
                             .frame(width: 100, height: 100)
                         Spacer()

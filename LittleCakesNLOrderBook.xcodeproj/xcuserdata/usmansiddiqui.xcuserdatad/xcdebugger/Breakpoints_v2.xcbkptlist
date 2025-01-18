@@ -247,22 +247,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "D1A46BB8-6462-4702-92DA-EDA8BC2A59F9"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "LittleCakesNLOrderBook/View/Submission/SubmissionsViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "106"
-            endingLineNumber = "106"
-            landmarkName = "filterSubmissions(by:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "233B5D41-16EE-4810-95CF-AEC80A1C1CA1"
             shouldBeEnabled = "No"
             ignoreCount = "0"

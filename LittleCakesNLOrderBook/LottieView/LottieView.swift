@@ -14,7 +14,8 @@ struct LottieView: View {
     var body: some View {
         GeometryReader { proxy in
             LottieAnimationViewRepresentable(animationView: animationView, animationName: animationName)
-                .frame(width: proxy.size.width, height: 150) // Use the full screen width from GeometryReader
+                .frame(width: proxy.size.width, height: 150)
+                .padding(.bottom, 8)// Use the full screen width from GeometryReader
         }
     }
 }
