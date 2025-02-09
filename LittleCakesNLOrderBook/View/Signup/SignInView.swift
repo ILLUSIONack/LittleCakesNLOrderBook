@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SignInView: View {
-    @ObservedObject var authManager: AuthenticationManager
+    @ObservedObject var authManager: AuthenticationService
 
     @Binding var isSignedIn: Bool
     @State private var email: String = ""

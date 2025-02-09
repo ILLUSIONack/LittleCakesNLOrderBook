@@ -19,7 +19,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct LittleCakesNLAgenaApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
-    @StateObject private var authManager = AuthenticationManager(firestoreManager: FirestoreManager())
+    @StateObject private var authManager = AuthenticationService(firestoreManager: FirestoreManager())
     
     var body: some Scene {
         WindowGroup {
@@ -32,7 +32,7 @@ struct LittleCakesNLAgenaApp: App {
                         Spacer()
                     }
                 } else if authManager.isSignedIn {
-                    BottomTabView(authenticationManager: authManager)
+                    BottomTabView(authService: authManager)
                 } else {
                     OnboardingView(authManager: authManager, isSignedIn: $authManager.isSignedIn)
                 }

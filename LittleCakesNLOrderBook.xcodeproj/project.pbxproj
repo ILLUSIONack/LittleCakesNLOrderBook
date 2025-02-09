@@ -3,23 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		400BC2F62D19E5C80017C090 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400BC2F52D19E5C80017C090 /* AuthenticationManager.swift */; };
-		400BC2F92D19E5EE0017C090 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400BC2F82D19E5EE0017C090 /* SignUpView.swift */; };
-		400BC2FB2D19E60B0017C090 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400BC2FA2D19E60B0017C090 /* SignInView.swift */; };
-		400BC2FE2D19E6910017C090 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400BC2FD2D19E6910017C090 /* OnboardingView.swift */; };
-		400BC3002D19F31E0017C090 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400BC2FF2D19F31E0017C090 /* User.swift */; };
-		403338932C77AD06009DE459 /* LittleCakesNLOrderBookApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338922C77AD06009DE459 /* LittleCakesNLOrderBookApp.swift */; };
-		403338972C77AD09009DE459 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 403338962C77AD09009DE459 /* Assets.xcassets */; };
-		4033389A2C77AD09009DE459 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 403338992C77AD09009DE459 /* Preview Assets.xcassets */; };
-		403338A72C77AD5A009DE459 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338A02C77AD5A009DE459 /* Extensions.swift */; };
-		403338A82C77AD5A009DE459 /* FilloutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338A12C77AD5A009DE459 /* FilloutService.swift */; };
-		403338A92C77AD5A009DE459 /* Submission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338A32C77AD5A009DE459 /* Submission.swift */; };
-		403338AA2C77AD5A009DE459 /* SubmissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338A42C77AD5A009DE459 /* SubmissionsView.swift */; };
-		403338AB2C77AD5A009DE459 /* SubmissionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338A52C77AD5A009DE459 /* SubmissionsViewModel.swift */; };
 		403338AE2C77AE14009DE459 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 403338AD2C77AE14009DE459 /* FirebaseAnalytics */; };
 		403338B02C77AE14009DE459 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 403338AF2C77AE14009DE459 /* FirebaseAnalyticsOnDeviceConversion */; };
 		403338B22C77AE14009DE459 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 403338B12C77AE14009DE459 /* FirebaseAnalyticsWithoutAdIdSupport */; };
@@ -31,52 +18,26 @@
 		403338BF2C77AE49009DE459 /* FirebaseDynamicLinks in Frameworks */ = {isa = PBXBuildFile; productRef = 403338BE2C77AE49009DE459 /* FirebaseDynamicLinks */; };
 		403338C12C77AE49009DE459 /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = 403338C02C77AE49009DE459 /* FirebaseFunctions */; };
 		403338C32C77AE49009DE459 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 403338C22C77AE49009DE459 /* FirebaseStorage */; };
-		403338C72C77B0CE009DE459 /* SubmissionsDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338C62C77B0CE009DE459 /* SubmissionsDetailView.swift */; };
-		403338CB2C7CDA89009DE459 /* ServerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338CA2C7CDA89009DE459 /* ServerConfig.swift */; };
-		403338CD2C7D2D66009DE459 /* EnvLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403338CC2C7D2D66009DE459 /* EnvLoader.swift */; };
-		403338CF2C7D32A0009DE459 /* .env in Resources */ = {isa = PBXBuildFile; fileRef = 403338CE2C7D32A0009DE459 /* .env */; };
 		404618962D2AE041003991FF /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 404618952D2AE041003991FF /* Lottie */; };
-		404618992D2AE099003991FF /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404618982D2AE099003991FF /* LottieView.swift */; };
-		4046189B2D2AE201003991FF /* loading.json in Resources */ = {isa = PBXBuildFile; fileRef = 4046189A2D2AE201003991FF /* loading.json */; };
-		4046189D2D2AE3EE003991FF /* skeletonLoading.json in Resources */ = {isa = PBXBuildFile; fileRef = 4046189C2D2AE3EE003991FF /* skeletonLoading.json */; };
-		406C48BC2C8E29B100FE3BB8 /* BottomTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406C48BB2C8E29B100FE3BB8 /* BottomTabViewModel.swift */; };
-		406C48BE2C8E2A4200FE3BB8 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406C48BD2C8E2A4200FE3BB8 /* DatabaseManager.swift */; };
-		406C48C02C978B7E00FE3BB8 /* SubmissionRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406C48BF2C978B7E00FE3BB8 /* SubmissionRowView.swift */; };
-		406C48CB2CB4947F00FE3BB8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 406C48CA2CB4947F00FE3BB8 /* GoogleService-Info.plist */; };
-		40FFD9ED2CB6ED6B0005E7CD /* EventStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40FFD9EC2CB6ED6B0005E7CD /* EventStoreManager.swift */; };
-		40FFD9EF2CC95F120005E7CD /* BottomTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40FFD9EE2CC95F120005E7CD /* BottomTabView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		400BC2F52D19E5C80017C090 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
-		400BC2F82D19E5EE0017C090 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
-		400BC2FA2D19E60B0017C090 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
-		400BC2FD2D19E6910017C090 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
-		400BC2FF2D19F31E0017C090 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		4033388F2C77AD06009DE459 /* LittleCakesNLOrderBook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LittleCakesNLOrderBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		403338922C77AD06009DE459 /* LittleCakesNLOrderBookApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LittleCakesNLOrderBookApp.swift; sourceTree = "<group>"; };
-		403338962C77AD09009DE459 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		403338992C77AD09009DE459 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		403338A02C77AD5A009DE459 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		403338A12C77AD5A009DE459 /* FilloutService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilloutService.swift; sourceTree = "<group>"; };
-		403338A32C77AD5A009DE459 /* Submission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Submission.swift; sourceTree = "<group>"; };
-		403338A42C77AD5A009DE459 /* SubmissionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubmissionsView.swift; sourceTree = "<group>"; };
-		403338A52C77AD5A009DE459 /* SubmissionsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubmissionsViewModel.swift; sourceTree = "<group>"; };
-		403338C62C77B0CE009DE459 /* SubmissionsDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmissionsDetailView.swift; sourceTree = "<group>"; };
-		403338C82C7A8BB2009DE459 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		403338CA2C7CDA89009DE459 /* ServerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConfig.swift; sourceTree = "<group>"; };
-		403338CC2C7D2D66009DE459 /* EnvLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvLoader.swift; sourceTree = "<group>"; };
-		403338CE2C7D32A0009DE459 /* .env */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .env; sourceTree = "<group>"; };
-		404618982D2AE099003991FF /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
-		4046189A2D2AE201003991FF /* loading.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = loading.json; sourceTree = "<group>"; };
-		4046189C2D2AE3EE003991FF /* skeletonLoading.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = skeletonLoading.json; sourceTree = "<group>"; };
-		406C48BB2C8E29B100FE3BB8 /* BottomTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomTabViewModel.swift; sourceTree = "<group>"; };
-		406C48BD2C8E2A4200FE3BB8 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
-		406C48BF2C978B7E00FE3BB8 /* SubmissionRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmissionRowView.swift; sourceTree = "<group>"; };
-		406C48CA2CB4947F00FE3BB8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		40FFD9EC2CB6ED6B0005E7CD /* EventStoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStoreManager.swift; sourceTree = "<group>"; };
-		40FFD9EE2CC95F120005E7CD /* BottomTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomTabView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		404023BA2D58D8B50019FF5E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 4033388E2C77AD06009DE459 /* LittleCakesNLOrderBook */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		4086A6BD2D57FADA000F5791 /* LittleCakesNLOrderBook */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (404023BA2D58D8B50019FF5E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LittleCakesNLOrderBook; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		4033388C2C77AD06009DE459 /* Frameworks */ = {
@@ -101,27 +62,10 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		400BC2F72D19E5D80017C090 /* Signup */ = {
-			isa = PBXGroup;
-			children = (
-				400BC2F82D19E5EE0017C090 /* SignUpView.swift */,
-				400BC2FA2D19E60B0017C090 /* SignInView.swift */,
-			);
-			path = Signup;
-			sourceTree = "<group>";
-		};
-		400BC2FC2D19E6810017C090 /* Onboarding */ = {
-			isa = PBXGroup;
-			children = (
-				400BC2FD2D19E6910017C090 /* OnboardingView.swift */,
-			);
-			path = Onboarding;
-			sourceTree = "<group>";
-		};
 		403338862C77AD06009DE459 = {
 			isa = PBXGroup;
 			children = (
-				403338912C77AD06009DE459 /* LittleCakesNLOrderBook */,
+				4086A6BD2D57FADA000F5791 /* LittleCakesNLOrderBook */,
 				403338902C77AD06009DE459 /* Products */,
 				403338B72C77AE2E009DE459 /* Frameworks */,
 			);
@@ -135,108 +79,11 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		403338912C77AD06009DE459 /* LittleCakesNLOrderBook */ = {
-			isa = PBXGroup;
-			children = (
-				404618972D2AE08A003991FF /* LottieView */,
-				403338CE2C7D32A0009DE459 /* .env */,
-				403338962C77AD09009DE459 /* Assets.xcassets */,
-				4046189C2D2AE3EE003991FF /* skeletonLoading.json */,
-				4046189A2D2AE201003991FF /* loading.json */,
-				403338C82C7A8BB2009DE459 /* Info.plist */,
-				406C48CA2CB4947F00FE3BB8 /* GoogleService-Info.plist */,
-				403338922C77AD06009DE459 /* LittleCakesNLOrderBookApp.swift */,
-				403338D02C7DD7D8009DE459 /* Config */,
-				406C48C12C9A181000FE3BB8 /* Model */,
-				406C48C22C9A185300FE3BB8 /* View */,
-				403338A22C77AD5A009DE459 /* Service */,
-				403338982C77AD09009DE459 /* Preview Content */,
-			);
-			path = LittleCakesNLOrderBook;
-			sourceTree = "<group>";
-		};
-		403338982C77AD09009DE459 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				403338992C77AD09009DE459 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		403338A22C77AD5A009DE459 /* Service */ = {
-			isa = PBXGroup;
-			children = (
-				403338A02C77AD5A009DE459 /* Extensions.swift */,
-				403338A12C77AD5A009DE459 /* FilloutService.swift */,
-				400BC2F52D19E5C80017C090 /* AuthenticationManager.swift */,
-			);
-			path = Service;
-			sourceTree = "<group>";
-		};
-		403338A62C77AD5A009DE459 /* Submission */ = {
-			isa = PBXGroup;
-			children = (
-				403338A42C77AD5A009DE459 /* SubmissionsView.swift */,
-				406C48BF2C978B7E00FE3BB8 /* SubmissionRowView.swift */,
-				403338A52C77AD5A009DE459 /* SubmissionsViewModel.swift */,
-			);
-			path = Submission;
-			sourceTree = "<group>";
-		};
 		403338B72C77AE2E009DE459 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		403338D02C7DD7D8009DE459 /* Config */ = {
-			isa = PBXGroup;
-			children = (
-				403338CA2C7CDA89009DE459 /* ServerConfig.swift */,
-				403338CC2C7D2D66009DE459 /* EnvLoader.swift */,
-			);
-			path = Config;
-			sourceTree = "<group>";
-		};
-		404618972D2AE08A003991FF /* LottieView */ = {
-			isa = PBXGroup;
-			children = (
-				404618982D2AE099003991FF /* LottieView.swift */,
-			);
-			path = LottieView;
-			sourceTree = "<group>";
-		};
-		406C48C12C9A181000FE3BB8 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				406C48BD2C8E2A4200FE3BB8 /* DatabaseManager.swift */,
-				403338A32C77AD5A009DE459 /* Submission.swift */,
-				400BC2FF2D19F31E0017C090 /* User.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
-		406C48C22C9A185300FE3BB8 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				400BC2FC2D19E6810017C090 /* Onboarding */,
-				400BC2F72D19E5D80017C090 /* Signup */,
-				406C48BB2C8E29B100FE3BB8 /* BottomTabViewModel.swift */,
-				40FFD9EE2CC95F120005E7CD /* BottomTabView.swift */,
-				403338A62C77AD5A009DE459 /* Submission */,
-				406C48C32C9A186200FE3BB8 /* SubmissionDetailsView */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		406C48C32C9A186200FE3BB8 /* SubmissionDetailsView */ = {
-			isa = PBXGroup;
-			children = (
-				403338C62C77B0CE009DE459 /* SubmissionsDetailView.swift */,
-				40FFD9EC2CB6ED6B0005E7CD /* EventStoreManager.swift */,
-			);
-			path = SubmissionDetailsView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -253,6 +100,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				4086A6BD2D57FADA000F5791 /* LittleCakesNLOrderBook */,
 			);
 			name = LittleCakesNLOrderBook;
 			packageProductDependencies = (
@@ -315,12 +165,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4033389A2C77AD09009DE459 /* Preview Assets.xcassets in Resources */,
-				406C48CB2CB4947F00FE3BB8 /* GoogleService-Info.plist in Resources */,
-				403338972C77AD09009DE459 /* Assets.xcassets in Resources */,
-				4046189D2D2AE3EE003991FF /* skeletonLoading.json in Resources */,
-				403338CF2C7D32A0009DE459 /* .env in Resources */,
-				4046189B2D2AE201003991FF /* loading.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -331,26 +175,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				403338C72C77B0CE009DE459 /* SubmissionsDetailView.swift in Sources */,
-				406C48BE2C8E2A4200FE3BB8 /* DatabaseManager.swift in Sources */,
-				403338CD2C7D2D66009DE459 /* EnvLoader.swift in Sources */,
-				400BC2FE2D19E6910017C090 /* OnboardingView.swift in Sources */,
-				400BC2F62D19E5C80017C090 /* AuthenticationManager.swift in Sources */,
-				403338932C77AD06009DE459 /* LittleCakesNLOrderBookApp.swift in Sources */,
-				40FFD9EF2CC95F120005E7CD /* BottomTabView.swift in Sources */,
-				404618992D2AE099003991FF /* LottieView.swift in Sources */,
-				400BC2FB2D19E60B0017C090 /* SignInView.swift in Sources */,
-				403338CB2C7CDA89009DE459 /* ServerConfig.swift in Sources */,
-				406C48C02C978B7E00FE3BB8 /* SubmissionRowView.swift in Sources */,
-				406C48BC2C8E29B100FE3BB8 /* BottomTabViewModel.swift in Sources */,
-				403338AA2C77AD5A009DE459 /* SubmissionsView.swift in Sources */,
-				403338AB2C77AD5A009DE459 /* SubmissionsViewModel.swift in Sources */,
-				403338A82C77AD5A009DE459 /* FilloutService.swift in Sources */,
-				400BC2F92D19E5EE0017C090 /* SignUpView.swift in Sources */,
-				403338A72C77AD5A009DE459 /* Extensions.swift in Sources */,
-				40FFD9ED2CB6ED6B0005E7CD /* EventStoreManager.swift in Sources */,
-				403338A92C77AD5A009DE459 /* Submission.swift in Sources */,
-				400BC3002D19F31E0017C090 /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -495,7 +319,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -529,7 +353,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

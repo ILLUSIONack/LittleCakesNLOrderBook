@@ -86,30 +86,40 @@ struct SubmissionRowView: View {
                     }
                 }
                 
-                if submission.state == .messaged {
-                    Text("Messaged")
-                        .font(.footnote)
-                        .foregroundColor(.yellow)
-                        .fontWeight(.bold)
+                HStack(spacing: 8) {
+                    if submission.state == .messaged {
+                        Text("Messaged")
+                            .font(.footnote)
+                            .foregroundColor(.yellow)
+                            .fontWeight(.bold)
+                    }
+                    
+                    if submission.type == .completed {
+                        Text("Completed")
+                            .font(.footnote)
+                            .foregroundColor(.green)
+                            .fontWeight(.bold)
+                    } else if submission.type == .confirmed  {
+                        Text("Confirmed")
+                            .font(.footnote)
+                            .foregroundColor(.blue)
+                            .fontWeight(.bold)
+                        
+                    } else if submission.type == .deleted  {
+                        Text("Deleted")
+                            .font(.footnote)
+                            .foregroundColor(.red)
+                            .fontWeight(.bold)
+                    }
+                    
+                    if submission.isDelegated ?? false {
+                        Text("Delegated")
+                            .font(.footnote)
+                            .foregroundColor(.purple)
+                            .fontWeight(.bold)
+                    }
                 }
                 
-                if submission.type == .completed {
-                    Text("Completed")
-                        .font(.footnote)
-                        .foregroundColor(.green)
-                        .fontWeight(.bold)
-                } else if submission.type == .confirmed  {
-                    Text("Confirmed")
-                        .font(.footnote)
-                        .foregroundColor(.blue)
-                        .fontWeight(.bold)
-                    
-                } else if submission.type == .deleted  {
-                    Text("Deleted")
-                        .font(.footnote)
-                        .foregroundColor(.red)
-                        .fontWeight(.bold)
-                }
             }
             .cornerRadius(8)
         }

@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    @ObservedObject var authManager: AuthenticationManager 
+    @ObservedObject var authManager: AuthenticationService 
     @Binding var isSignedIn: Bool
     
     var body: some View {

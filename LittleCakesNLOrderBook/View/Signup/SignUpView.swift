@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SignUpView: View {
-    @ObservedObject var authManager: AuthenticationManager
+    @ObservedObject var authManager: AuthenticationService
 
     @State private var email: String = ""
     @State private var password: String = ""
@@ -51,7 +51,7 @@ struct SignUpView: View {
             return
         }
         
-        authManager.signUp(email: email, password: password, name: name, role: "user") { authResult, error in
+        authManager.signUp(email: email, password: password, name: name, role: .user) { authResult, error in
             if let error = error {
                 alertMessage = "Error: \(error.localizedDescription)"
             } else {

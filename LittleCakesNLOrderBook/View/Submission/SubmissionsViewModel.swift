@@ -2,39 +2,85 @@ import SwiftUI
 import FirebaseFirestore
 import FirebaseFunctions
 
+
 final class SubmissionsViewModel: ObservableObject {
     @Published var groupedSubmissions: [Date : [MappedSubmission]] = [:]
     @Published var filteredSubmissions: [MappedSubmission] = []
     @Published var isLoading: Bool = true
     @Published var isShowTodayButtonVisible: Bool = false
     @Published var dateKey: Dictionary<Date, [MappedSubmission]>.Keys.Element?
-    @Published var submissionType: SubmissionType = .new
+    @Published var submissionTypes: SubmissionFilterType = .newAndConfirmed
     @Published var title: String = ""
+    @Published var newSubmissionsCount = 0
+    @Published var isFilterViewVisible: Bool = true
+    @Published var searchText: String = ""
+    @Published var isSearchBarVisible: Bool = false
+    @FocusState var isSearchBarFocused: Bool
     let today = Date()
 
     private var submissions: [MappedSubmission] = []
     private var db: Firestore
-    private let authenticationManager: AuthenticationManager
+    private let authenticationManager: AuthenticationService
     private let filloutService: FilloutService
+    
+    private var listener: ListenerRegistration?
+    private var seenDocumentIDs: Set<String> = []
+    private var isFirstSnapshot = true
+    @Published var currentUserRole: UserRole = .user
+    var isDelegated: Bool
 
     init(
         firestoreManager: FirestoreManager,
-        authenticationManager: AuthenticationManager,
-        filloutService: FilloutService
+        authenticationManager: AuthenticationService,
+        filloutService: FilloutService,
+        isDelegated: Bool = false
     ) {
         self.db = firestoreManager.db
         self.authenticationManager = authenticationManager
         self.filloutService = filloutService
-        getSubmissionByType(field: "type", value: submissionType.rawValue)
+        self.isDelegated = isDelegated
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.startListeningForNewSubmissions()
+        if let currentUser = authenticationManager.currentUser {
+            currentUserRole = currentUser.role
+        }
+        
+        if currentUserRole == .admin {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.startListeningForNewSubmissions()
+            }
+        }
+        
+        if currentUserRole == .admin && isDelegated {
+            isFilterViewVisible = false
+            fetchAndMapDelegatedSubmissions()
+        } else if currentUserRole == .admin {
+            getSubmissionByType(field: "type", .newAndConfirmed)
+        } else {
+            isFilterViewVisible = false
+            fetchAndMapDelegatedSubmissions()
         }
     }
     
-    func getSubmissionByType(field: String, value: String) {
+    func swipeToRefresh() {
+        if currentUserRole == .admin && isDelegated {
+            isFilterViewVisible = false
+            fetchAndMapDelegatedSubmissions()
+        } else if currentUserRole == .admin {
+            getSubmissionByType(field: "type", .newAndConfirmed)
+        } else {
+            isFilterViewVisible = false
+            fetchAndMapDelegatedSubmissions()
+        }
+    }
+    
+    func getSubmissionByType(field: String, _ submissionFilterType: SubmissionFilterType) {
+        generateFeedback(style: .medium)
         isLoading = true
-        fetchAndMapSubmissions(field: field, value: value) { mappedSubmissions, error in
+        submissionTypes = submissionFilterType
+        
+        let stringTypes = submissionFilterType.submissionTypes.map { $0.rawValue }
+
+        fetchAndMapSubmissions(field: field, values: stringTypes) { mappedSubmissions, error in
             if let error = error {
                 print("Failed to fetch submissions: \(error.localizedDescription)")
                 return
@@ -43,19 +89,20 @@ final class SubmissionsViewModel: ObservableObject {
             if let mappedSubmissions = mappedSubmissions {
                 print("Fetched \(mappedSubmissions.count) submissions of type \(field)")
                 
-                self.submissions = mappedSubmissions
-                self.getGroupedSubmissions()
+                DispatchQueue.main.async {
+                    self.submissions = mappedSubmissions
+                    self.getGroupedSubmissions()
+                }
             }
         }
     }
     
     func fetchAndMapSubmissions(
         field: String,
-        value: String,
+        values: [String],
         completion: @escaping ([MappedSubmission]?, Error?) -> Void
     ) {
-        // TODO: - Move collection name to env variable
-        db.collection(ServerConfig.shared.collectionName).whereField(field, isEqualTo: value).getDocuments { snapshot, error in
+        db.collection(ServerConfig.shared.collectionName).whereField(field, in: values).getDocuments { snapshot, error in
             if let error = error {
                 print("Error fetching submissions by \(field): \(error.localizedDescription)")
                 completion(nil, error)
@@ -63,18 +110,16 @@ final class SubmissionsViewModel: ObservableObject {
             }
             
             guard let documents = snapshot?.documents else {
-                print("No submissions found for \(field): \(value)")
+                print("No submissions found for \(field): \(values)")
                 completion([], nil)
                 return
             }
             
             do {
-                // Decode the documents into `FirebaseSubmission` objects
                 let firebaseSubmissions = try documents.map { document in
                     try document.data(as: FirebaseSubmission.self)
                 }
                 
-                // Map FirebaseSubmission to MappedSubmission (without legacy fields)
                 let mappedSubmissions = firebaseSubmissions.map { submission in
                     MappedSubmission(
                         collectionId: submission.id ?? "",
@@ -83,7 +128,8 @@ final class SubmissionsViewModel: ObservableObject {
                         lastUpdatedAt: submission.lastUpdatedAt,
                         questions: submission.questions,
                         type: submission.type,
-                        state: submission.state
+                        state: submission.state,
+                        isDelegated: submission.isDelegated
                     )
                 }
                 
@@ -95,7 +141,48 @@ final class SubmissionsViewModel: ObservableObject {
         }
     }
     
+    func fetchAndMapDelegatedSubmissions() {
+        db.collection(ServerConfig.shared.collectionName).whereField("isDelegated", isEqualTo: true).getDocuments { snapshot, error in
+            if let error = error {
+                print("Error fetching submissions by isDelegated: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let documents = snapshot?.documents else {
+                print("No submissions found for isDelegated:")
+                return
+            }
+            
+            do {
+                let firebaseSubmissions = try documents.map { document in
+                    try document.data(as: FirebaseSubmission.self)
+                }
+                
+                let mappedSubmissions = firebaseSubmissions.map { submission in
+                    MappedSubmission(
+                        collectionId: submission.id ?? "",
+                        submissionId: submission.submissionId,
+                        submissionTime: submission.submissionTime,
+                        lastUpdatedAt: submission.lastUpdatedAt,
+                        questions: submission.questions,
+                        type: submission.type,
+                        state: submission.state,
+                        isDelegated: submission.isDelegated
+                    )
+                }
+                
+                DispatchQueue.main.async {
+                    self.submissions = mappedSubmissions
+                    self.getGroupedSubmissions()
+                }
+            } catch {
+                print("Error decoding or mapping submissions: \(error.localizedDescription)")
+            }
+        }
+    }
+    
     func filterSubmissions(by name: String) {
+        filteredSubmissions.removeAll()
         if name.isEmpty {
             filteredSubmissions.removeAll()
             getGroupedSubmissions()
@@ -163,14 +250,15 @@ final class SubmissionsViewModel: ObservableObject {
             groupedSubmissions = grouped.sorted(by: { $0.key > $1.key }).reduce(into: [Date: [MappedSubmission]]()) {
                 $0[$1.key] = $1.value
             }
-            self.isLoading = false
             
+            self.isLoading = false
             setupShowTodayButton()
         }
     }
     
     func setNavigationTitle() {
-        switch submissionType {
+        switch submissionTypes {
+        case .newAndConfirmed: title = "All"
         case .completed: title = "Completed"
         case .confirmed: title = "Confirmed"
         case .deleted: title = "Deleted"
@@ -425,14 +513,13 @@ final class SubmissionsViewModel: ObservableObject {
         guard let index = submissions.firstIndex(where: { $0.submissionId == submission.submissionId }) else { return }
         if submissions[index].state != .messaged {
             submissions[index].state = .viewed
-        }
-
-        let updatedSubmission = submissions[index]
-        getGroupedSubmissions()
-        do {
-            try db.collection(ServerConfig.shared.collectionName).document(submissions[index].collectionId).setData(from: updatedSubmission)
-        } catch let error {
-            print("Error updating submission: \(error.localizedDescription)")
+            let updatedSubmission = submissions[index]
+            getGroupedSubmissions()
+            do {
+                try db.collection(ServerConfig.shared.collectionName).document(submissions[index].collectionId).setData(from: updatedSubmission)
+            } catch let error {
+                print("Error updating submission: \(error.localizedDescription)")
+            }
         }
     }
     
@@ -467,8 +554,11 @@ final class SubmissionsViewModel: ObservableObject {
     func markSubmissionAsCompleted(_ submission: MappedSubmission) {
         guard let index = submissions.firstIndex(where: { $0.submissionId == submission.submissionId }) else { return }
         
-        // Update the submission's type to .completed
-        submissions[index].type = .completed
+        if submissions[index].type == .completed {
+            submissions[index].type = .confirmed
+        } else {
+            submissions[index].type = .completed
+        }
         
         let updatedSubmission = submissions[index]
         do {
@@ -477,8 +567,7 @@ final class SubmissionsViewModel: ObservableObject {
         } catch let error {
             print("Error updating submission: \(error.localizedDescription)")
         }
-        
-        // Perform UI update on the main thread
+
         DispatchQueue.main.async {
             for (date, var submissionsForDate) in self.groupedSubmissions {
                 if let index = submissionsForDate.firstIndex(where: { $0.id == submission.id }) {
@@ -496,7 +585,27 @@ final class SubmissionsViewModel: ObservableObject {
     func markSubmissionAsMessaged(_ submission: MappedSubmission) {
         guard let index = submissions.firstIndex(where: { $0.submissionId == submission.submissionId }) else { return }
     
-        submissions[index].state = .messaged
+        if submissions[index].state == .messaged {
+            submissions[index].state = .viewed
+        } else {
+            submissions[index].state = .messaged
+        }
+        
+        
+        let updatedSubmission = submissions[index]
+        self.getGroupedSubmissions()
+
+        do {
+            try db.collection(ServerConfig.shared.collectionName).document(submissions[index].collectionId).setData(from: updatedSubmission)
+        } catch let error {
+            print("Error updating submission: \(error.localizedDescription)")
+        }
+    }
+    
+    func markSubmissionAsDelegated(_ submission: MappedSubmission) {
+        guard let index = submissions.firstIndex(where: { $0.submissionId == submission.submissionId }) else { return }
+    
+        submissions[index].isDelegated = !(submissions[index].isDelegated ?? false)
         
         let updatedSubmission = submissions[index]
         self.getGroupedSubmissions()
@@ -530,11 +639,6 @@ final class SubmissionsViewModel: ObservableObject {
         }
     }
     
-    private var listener: ListenerRegistration?
-    @Published var newSubmissionsCount = 0
-    private var seenDocumentIDs: Set<String> = []
-    private var isFirstSnapshot = true // Flag to skip the initial snapshot
-
     func startListeningForNewSubmissions() {
         let submissionsCollection = db.collection(ServerConfig.shared.collectionName)
 
@@ -549,7 +653,7 @@ final class SubmissionsViewModel: ObservableObject {
                 guard let snapshot = snapshot else { return }
 
                 // If it's the first snapshot, initialize the seen IDs and skip processing
-                if isFirstSnapshot == true {
+                if isFirstSnapshot {
                     seenDocumentIDs = Set(snapshot.documents.map { $0.documentID })
                     isFirstSnapshot = false
                     return

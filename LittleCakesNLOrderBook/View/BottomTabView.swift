@@ -5,28 +5,45 @@ final class ImageCache {
 }
 
 struct BottomTabView: View {
-    @ObservedObject var authenticationManager: AuthenticationManager
-    @ObservedObject var firestoreManager: FirestoreManager
+    @ObservedObject var authService: AuthenticationService
     @StateObject private var viewModel: BottomTabViewModel
+    
     private let filloutService: FilloutService = FilloutService()
 
-    init(authenticationManager: AuthenticationManager) {
-        self.authenticationManager = authenticationManager
-        self.firestoreManager = authenticationManager.firestoreManager
-        _viewModel = StateObject(wrappedValue: BottomTabViewModel(firestoreManager: authenticationManager.firestoreManager))
+    init(authService: AuthenticationService) {
+        self.authService = authService
+        _viewModel = StateObject(wrappedValue: BottomTabViewModel(authService: authService))
     }
     
     var body: some View {
         TabView {
-            SubmissionsView(
-                authenticationManager: authenticationManager,
-                filloutService: filloutService
-            )
+            if viewModel.isUserAdmin {
+                SubmissionsView(
+                    authenticationManager: authService,
+                    filloutService: filloutService
+                )
                 .tabItem {
-                    Image(systemName: "list.bullet")
-                    Text("Orders")
+                    Label("Orders", systemImage: "list.bullet")
                 }
                 .badge(viewModel.unviewedSubmissionsCount)
+                SubmissionsView(
+                    authenticationManager: authService,
+                    filloutService: filloutService,
+                    isDelegated: true
+                )
+                .tabItem {
+                    Label("Delegated", systemImage: "list.bullet")
+                }
+            } else {
+                SubmissionsView(
+                    authenticationManager: authService,
+                    filloutService: filloutService
+                )
+                .tabItem {
+                    Label("Orders", systemImage: "list.bullet")
+                }
+                .badge(viewModel.unviewedSubmissionsCount)
+            }
         }
         .accentColor(.black)
     }
