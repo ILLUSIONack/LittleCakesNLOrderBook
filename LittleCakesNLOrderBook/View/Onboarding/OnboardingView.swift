@@ -16,11 +16,7 @@ struct OnboardingView: View {
                         .cornerRadius(8)
                 }
                 
-                NavigationLink(destination:
-                                SignInView(
-                                    authManager: authManager,
-                                    isSignedIn: $isSignedIn
-                                )
+                NavigationLink(destination: SignInView(authManager: authManager, isSignedIn: $isSignedIn)
                 ) {
                     Text("Sign In")
                         .padding()

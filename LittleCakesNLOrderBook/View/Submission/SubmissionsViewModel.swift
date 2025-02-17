@@ -500,6 +500,7 @@ final class SubmissionsViewModel: ObservableObject {
         }
         
         submissions[index].type = type
+        submissions[index].state = .viewed
 
         let updatedSubmission = submissions[index]
         do {

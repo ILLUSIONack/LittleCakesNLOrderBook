@@ -5,7 +5,7 @@ struct SignUpView: View {
 
     @State private var email: String = ""
     @State private var password: String = ""
-    @State private var name: String = ""  // Added name property
+    @State private var name: String = ""
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
     
@@ -23,7 +23,7 @@ struct SignUpView: View {
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(8)
 
-            TextField("Name", text: $name)  // Added TextField for Name
+            TextField("Name", text: $name)
                 .padding()
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(8)
@@ -44,7 +44,6 @@ struct SignUpView: View {
     }
     
     private func signUp() {
-        // Ensure the required fields are set (email, password, name)
         guard !email.isEmpty, !password.isEmpty, !name.isEmpty else {
             alertMessage = "Please fill in all fields"
             showAlert = true

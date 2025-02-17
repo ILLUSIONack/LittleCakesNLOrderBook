@@ -5,14 +5,10 @@ struct SubmissionRowView: View {
     @ObservedObject var viewModel: SubmissionsViewModel
 
     var body: some View {
-        NavigationLink(destination:
-                        SubmissionDetailView(
-                            submission: submission,
-                            viewModel: viewModel
-                        )
-                            .onAppear {
-                                viewModel.markSubmissionAsViewed(submission)
-                            }
+        NavigationLink(destination: SubmissionDetailView(submission: submission, viewModel: viewModel)
+            .onAppear {
+                viewModel.markSubmissionAsViewed(submission)
+            }
         ) {
             VStack(alignment: .leading, spacing: 0){
                 if let name = viewModel.fetchSubmissionWithQuestion(submission, .name),
