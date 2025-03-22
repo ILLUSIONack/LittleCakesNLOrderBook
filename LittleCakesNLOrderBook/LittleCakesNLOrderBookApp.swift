@@ -1,12 +1,8 @@
-//
-//  LittleCakesNLOrderBookApp.swift
-//  LittleCakesNLOrderBook
-//
-//  Created by Usman Siddiqui on 22/08/2024.
-//
-
 import SwiftUI
 import FirebaseCore
+import FirebaseAuth
+import Firebase
+import Lottie
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
@@ -21,12 +17,26 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct LittleCakesNLAgenaApp: App {
-    
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
+    @StateObject private var authManager = AuthenticationService(firestoreManager: FirestoreManager())
+    
     var body: some Scene {
         WindowGroup {
-            BottomTabView()
-                .environmentObject(FirestoreManager.shared)
+            Group {
+                if authManager.isLoading {
+                    VStack {
+                        Spacer()
+                        LottieView(animationName: "loading")
+                            .frame(width: 100, height: 100)
+                        Spacer()
+                    }
+                } else if authManager.isSignedIn {
+                    BottomTabView(authService: authManager)
+                } else {
+                    OnboardingView(authManager: authManager, isSignedIn: $authManager.isSignedIn)
+                }
+            }
         }
     }
 }

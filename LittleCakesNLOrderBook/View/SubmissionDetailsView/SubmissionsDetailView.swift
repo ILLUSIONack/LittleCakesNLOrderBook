@@ -88,49 +88,55 @@ struct SubmissionDetailView: View {
                     }
                 }
             }
+            .listStyle(.plain)
             .navigationTitle("Submission Details")
-
-            HStack {
-                if isEditEnabled {
-                    Button(action: {
-                        saveChangesToFirebase()
-                    }) {
-                        Text("Save Changes")
-                            .foregroundColor(.white)
-                            .padding()
-                            .background(Color.green)
-                            .cornerRadius(8)
-                    }
-                    .alert(isPresented: $showSaveAlert) {
-                        Alert(title: Text("Success"), message: Text("Changes saved successfully!"), dismissButton: .default(Text("OK")))
-                    }
-                } else {
-                    Button(action: {
-                        requestCalendarAccess { granted in
-                            if granted {
-                                var eventTitle: String?
-                                if let name = viewModel.fetchSubmissionWithQuestion(editedSubmission, .name),
-                                   let pickupLocation = viewModel.fetchSubmissionWithQuestion(editedSubmission, .pickupLocation) {
-                                    eventTitle = "\(name) - \(pickupLocation)"
-                                }
-                                
-                                let startDate = viewModel.fetchSubmissionPickupDateAsDate(editedSubmission)
-                                let endDate = startDate.addingTimeInterval(3600 * 3)
-                                
-                                createEvent(title: eventTitle ?? "", startDate: startDate, endDate: endDate)
-                                
-                            } else {
-                                print("Calendar access denied")
-                            }
+            .onAppear {
+                viewModel.isSearchBarVisible = false
+            }
+            if viewModel.currentUserRole == .admin {
+                HStack {
+                    if isEditEnabled {
+                        Button(action: saveChangesToFirebase) {
+                            Text("Save Changes")
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(Color.green)
+                                .cornerRadius(8)
                         }
-                    })  {
-                        Text(editedSubmission.isConfirmed || showConfirmationAlert ? "Order Confirmed" : "Confirm Order")
-                            .foregroundColor(.white)
-                            .padding()
-                            .background(editedSubmission.isConfirmed || showConfirmationAlert ? Color.gray : Color.blue)
-                            .cornerRadius(8)
+                        .alert(isPresented: $showSaveAlert) {
+                            Alert(title: Text("Success"), message: Text("Changes saved successfully!"), dismissButton: .default(Text("OK")))
+                        }
+                    } else {
+                        Button(action: {
+                            requestCalendarAccess { granted in
+                                if granted {
+                                    var eventTitle: String?
+                                    if let name = viewModel.fetchSubmissionWithQuestion(editedSubmission, .name),
+                                       let pickupLocation = viewModel.fetchSubmissionWithQuestion(editedSubmission, .pickupLocation) {
+                                        eventTitle = "\(name) - \(pickupLocation)"
+                                    }
+                                    
+                                    let startDate = viewModel.fetchSubmissionPickupDateAsDate(editedSubmission)
+                                    let endDate = startDate.addingTimeInterval(3600 * 3)
+                                    
+                                    createEvent(title: eventTitle ?? "", startDate: startDate, endDate: endDate)
+                                    
+                                } else {
+                                    print("Calendar access denied")
+                                }
+                            }
+                        })  {
+                            
+                            
+                            
+                            Text(editedSubmission.type != .new || showConfirmationAlert ? "Order Confirmed" : "Confirm Order")
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(editedSubmission.type != .new || showConfirmationAlert ? Color.gray : Color.blue)
+                                .cornerRadius(8)
+                        }
+                        .disabled(editedSubmission.type != .new || showConfirmationAlert)
                     }
-                    .disabled(editedSubmission.isConfirmed || showConfirmationAlert)
                 }
             }
         }
@@ -140,8 +146,7 @@ struct SubmissionDetailView: View {
         .sheet(isPresented: $showEventEditView) {
             if let event = event {
                 EventEditViewController(eventStore: eventStore, event: event) {
-                    print("Cofnirm")
-                    viewModel.confirmSubmission(withId: editedSubmission.submissionId)
+                    viewModel.confirmSubmission(withId: editedSubmission, type: .confirmed)
                     calendarEventSaved = false
                     showConfirmationAlert = true
                 } onCancel: {
@@ -150,19 +155,21 @@ struct SubmissionDetailView: View {
             }
         }
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: { isEditEnabled.toggle() }) {
-                    Image(systemName: "pencil")
+            if viewModel.currentUserRole == .admin {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { isEditEnabled.toggle() }) {
+                        Image(systemName: "pencil")
+                    }
                 }
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    UIPasteboard.general.string = viewModel.getConfirmationMessageCopy(editedSubmission)
-                    feedbackGenerator.impactOccurred()
-                }) {
-                    Image(systemName: "doc.on.clipboard")
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        UIPasteboard.general.string = viewModel.getConfirmationMessageCopy(editedSubmission)
+                        feedbackGenerator.impactOccurred()
+                    }) {
+                        Image(systemName: "doc.on.clipboard")
+                    }
+                    .help("Copy to Clipboard")
                 }
-                .help("Copy to Clipboard")
             }
         }
     }
@@ -225,7 +232,7 @@ struct SubmissionDetailView: View {
     }
 
     private func requestCalendarAccess(completion: @escaping (Bool) -> Void) {
-        eventStore.requestAccess(to: .event) { granted, error in
+        eventStore.requestFullAccessToEvents { granted, error in
             if let error = error {
                 print("Error requesting access to calendar: \(error.localizedDescription)")
                 completion(false)

@@ -1,59 +1,52 @@
 import Foundation
 import SwiftUI
 import FirebaseFirestore
+import Combine
 
 final class BottomTabViewModel: ObservableObject {
-
-    private var listener: ListenerRegistration?
-    @Published var isConfirmedTabVisible: Bool = false
-    @Published var isCompletedTabVisible: Bool = false
-    @Published var isDeletedTabVisible: Bool = false
-
     private var db: Firestore
+    private var listener: ListenerRegistration?
+    private var authService: AuthenticationService
+    private var cancellables = Set<AnyCancellable>()
+
+    @Published var unviewedSubmissionsCount: Int = 0
+    @Published var isUserAdmin: Bool = false
     
-    init(firestoreManager: FirestoreManager) {
-        self.db = firestoreManager.db
-        fetchSubmissions()
+    init(authService: AuthenticationService) {
+        self.db = authService.firestoreManager.db
+        self.authService = authService
+        observeCurrentUser()
     }
     
-    func fetchSubmissions() {
-        listener?.remove()
-
-        listener = db.collection(ServerConfig.shared.collectionName).addSnapshotListener { snapshot, error in
-            if let error = error {
-                print("Error fetching submissions from Firestore: \(error)")
-                return
-            }
-            
-            guard let documents = snapshot?.documents else {
-                print("No documents found in Firestore")
-                return
-            }
-            
-            let firebaseSubmissions = documents.compactMap { queryDocumentSnapshot in
-                do {
-                    return try queryDocumentSnapshot.data(as: FirebaseSubmission.self)
-                } catch {
-                    print("Failed to decode document: \(error)")
-                    return nil
+    private func observeCurrentUser() {
+        authService.currentUserPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] user in
+                guard let self else { return }
+                isUserAdmin = user?.role == .admin
+                if self.isUserAdmin {
+                    self.fetchUnviewedSubmissionsCount()
                 }
             }
-            
-            self.isCompletedTabVisible = firebaseSubmissions.contains { sub in
-                return sub.isCompleted == true
+            .store(in: &cancellables)
+    }
+    
+    func fetchUnviewedSubmissionsCount() {
+        listener = db.collection(ServerConfig.shared.collectionName).whereField("state", isEqualTo: "unviewed")
+            .addSnapshotListener { [weak self] snapshot, error in
+                if let error = error {
+                    print("Error fetching unviewed submissions count: \(error.localizedDescription)")
+                    return
+                }
+                
+                // Update the unviewedSubmissionsCount based on the snapshot
+                if let snapshot = snapshot {
+                    self?.unviewedSubmissionsCount = snapshot.count
+                }
             }
-            self.isConfirmedTabVisible = firebaseSubmissions.contains { sub in
-                return sub.isConfirmed == true
-            }
-            self.isDeletedTabVisible = firebaseSubmissions.contains { sub in
-                return sub.isDeleted == true
-            }
-            
-        }
     }
     
     deinit {
         listener?.remove()
     }
 }
-

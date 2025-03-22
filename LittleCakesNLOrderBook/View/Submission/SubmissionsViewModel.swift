@@ -1,194 +1,188 @@
 import SwiftUI
 import FirebaseFirestore
+import FirebaseFunctions
 
-enum SubmissionState {
-    case deleted
-    case completed
-    case confirmed
-    case orders
-}
 
 final class SubmissionsViewModel: ObservableObject {
-    @Published var submissions: [MappedSubmission] = []
-    @Published var title: String = ""
     @Published var groupedSubmissions: [Date : [MappedSubmission]] = [:]
     @Published var filteredSubmissions: [MappedSubmission] = []
-    @Published var isLoading: Bool = false
-    @Published var isLoaded: Bool = false
+    @Published var isLoading: Bool = true
     @Published var isShowTodayButtonVisible: Bool = false
     @Published var dateKey: Dictionary<Date, [MappedSubmission]>.Keys.Element?
+    @Published var submissionTypes: SubmissionFilterType = .newAndConfirmed
+    @Published var title: String = ""
+    @Published var newSubmissionsCount = 0
+    @Published var isFilterViewVisible: Bool = true
+    @Published var searchText: String = ""
+    @Published var isSearchBarVisible: Bool = false
+    @FocusState var isSearchBarFocused: Bool
+    let today = Date()
 
-    private var isNewFilteredActive: Bool = false
-    private var submissionState: SubmissionState?
+    private var submissions: [MappedSubmission] = []
     private var db: Firestore
+    private let authenticationManager: AuthenticationService
     private let filloutService: FilloutService
-    private var allOrders: [MappedSubmission] = []
+    
+    private var listener: ListenerRegistration?
+    private var seenDocumentIDs: Set<String> = []
+    private var isFirstSnapshot = true
+    @Published var currentUserRole: UserRole = .user
+    var isDelegated: Bool
 
-    init(firestoreManager: FirestoreManager, filloutService: FilloutService) {
+    init(
+        firestoreManager: FirestoreManager,
+        authenticationManager: AuthenticationService,
+        filloutService: FilloutService,
+        isDelegated: Bool = false
+    ) {
         self.db = firestoreManager.db
+        self.authenticationManager = authenticationManager
         self.filloutService = filloutService
-        getGroupedSubmissions()
-    }
-
-    func fetchSubmissions(state: SubmissionState, onAppear: Bool = false) {
-        submissionState = state
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            if onAppear {
-                if !self.isLoaded {
-                    self.isLoading = true
-                }
+        self.isDelegated = isDelegated
+        
+        if let currentUser = authenticationManager.currentUser {
+            currentUserRole = currentUser.role
+        }
+        
+        if currentUserRole == .admin {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.startListeningForNewSubmissions()
             }
         }
-        setTitle(state: state)
-
-        var currentOffset = 0
-        let limit = 50 
-
-        func fetchBatch() {
-            filloutService.fetchSubmissions(limit: limit, offset: currentOffset) { [weak self] result in
-                guard let self else { return }
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let filloutSubmissions):
-                        self.db.collection(ServerConfig.shared.collectionName).getDocuments { snapshot, error in
-                            if let error = error {
-                                print("Error fetching submissions from Firestore: \(error)")
-                                return
-                            }
-
-                            guard let documents = snapshot?.documents else {
-                                print("No documents found in Firestore")
-                                return
-                            }
-
-                            let firebaseSubmissions = documents.compactMap { queryDocumentSnapshot in
-                                do {
-                                    return try queryDocumentSnapshot.data(as: FirebaseSubmission.self)
-                                } catch {
-                                    print("Failed to decode document: \(error)")
-                                    return nil
-                                }
-                            }
-
-                            var filteredList: [MappedSubmission] = []
-                            let batch = self.db.batch()
-
-                            // Iterate over filloutSubmissions
-                            for filloutSubmission in filloutSubmissions {
-                                let isExistsFirebaseSubmission = firebaseSubmissions.contains {
-                                    $0.submissionId == filloutSubmission.submissionId
-                                }
-
-                                if !isExistsFirebaseSubmission {
-                                    let newDocRef = self.db.collection(ServerConfig.shared.collectionName).document()
-
-                                    var questions = filloutSubmission.questions
-                                    questions.append(SubmissionQuestion(id: String(filloutSubmission.questions.count), name: "Total amount €", type: "ShortAnswer", value: ValueType(string: " ")))
-                                    questions.append(SubmissionQuestion(id: String(filloutSubmission.questions.count + 1), name: "Remaining amount €", type: "ShortAnswer", value: ValueType(string: " ")))
-                                    questions.append(SubmissionQuestion(id: String(filloutSubmission.questions.count + 2), name: "Notitie", type: "ShortAnswer", value: ValueType(string: " ")))
-
-                                    let mappedSubmission = MappedSubmission(
-                                        collectionId: newDocRef.documentID,
-                                        submissionId: filloutSubmission.submissionId,
-                                        submissionTime: filloutSubmission.submissionTime,
-                                        lastUpdatedAt: filloutSubmission.lastUpdatedAt,
-                                        questions: questions
-                                    )
-
-                                    filteredList.append(mappedSubmission)
-
-                                    do {
-                                        try batch.setData(from: mappedSubmission, forDocument: newDocRef)
-                                    } catch {
-                                        print("Error encoding mapped submission: \(error)")
-                                    }
-                                }
-                            }
-
-                            batch.commit { error in
-                                if let error = error {
-                                    print("Error committing batch write: \(error)")
-                                } else {
-                                    print("Batch write successfully committed.")
-                                }
-                            }
-
-                            var list = firebaseSubmissions.map {
-                                MappedSubmission(
-                                    collectionId: $0.id ?? "no-id",
-                                    submissionId: $0.submissionId,
-                                    submissionTime: $0.submissionTime,
-                                    lastUpdatedAt: $0.lastUpdatedAt,
-                                    questions: $0.questions,
-                                    isConfirmed: $0.isConfirmed,
-                                    isDeleted: $0.isDeleted,
-                                    isViewed: $0.isViewed,
-                                    isCompleted: $0.isCompleted,
-                                    isRead: $0.isRead ?? false
-                                )
-                            }
-
-                            list.append(contentsOf: filteredList)
-
-                            switch state {
-                            case .completed:
-                                filteredList = list.filter { $0.isCompleted }
-                            case .deleted:
-                                filteredList = list.filter { $0.isDeleted }
-                            case .confirmed:
-                                filteredList = list.filter { $0.isConfirmed }
-                            case .orders:
-                                if self.isNewFilteredActive {
-                                    filteredList = list.filter { !$0.isConfirmed && !$0.isCompleted && !$0.isDeleted }
-                                } else {
-                                    filteredList = list.filter { !$0.isDeleted && !$0.isCompleted }
-                                    self.allOrders = list.filter { !$0.isDeleted && !$0.isCompleted }
-                                    
-                                }
-                            }
-
-                            self.submissions = filteredList
-                            self.getGroupedSubmissions()
-                            print(self.submissions.count)
-
-                            self.isLoaded = true
-                            self.isLoading = false
-
-                            // Check if more submissions were fetched and fetch the next batch if necessary
-                            if filloutSubmissions.count == limit {
-                                currentOffset += limit
-                                fetchBatch()
-                            } else {
-                                print("Finished count")
-                            }
-                        }
-                    case .failure(let error):
-                        print("Error fetching submissions from Fillout: \(error)")
-                        self.isLoading = false
-                    }
-                }
-            }
+        
+        if currentUserRole == .admin && isDelegated {
+            isFilterViewVisible = false
+            fetchAndMapDelegatedSubmissions()
+        } else if currentUserRole == .admin {
+            getSubmissionByType(field: "type", .newAndConfirmed)
+        } else {
+            isFilterViewVisible = false
+            fetchAndMapDelegatedSubmissions()
         }
-
-        fetchBatch()
     }
     
-    func filterNewButtonPressed() {
-        isNewFilteredActive.toggle()
-        if isNewFilteredActive {
-            let filteredList = submissions.filter { !$0.isConfirmed && !$0.isCompleted && !$0.isDeleted }
-            self.submissions = filteredList
-            setTitle(state: .orders)
-            getGroupedSubmissions()
-
+    func swipeToRefresh() {
+        if currentUserRole == .admin && isDelegated {
+            isFilterViewVisible = false
+            fetchAndMapDelegatedSubmissions()
+        } else if currentUserRole == .admin {
+            getSubmissionByType(field: "type", .newAndConfirmed)
         } else {
-            self.submissions = allOrders
-            setTitle(state: .orders)
-            getGroupedSubmissions()
+            isFilterViewVisible = false
+            fetchAndMapDelegatedSubmissions()
+        }
+    }
+    
+    func getSubmissionByType(field: String, _ submissionFilterType: SubmissionFilterType) {
+        generateFeedback(style: .medium)
+        isLoading = true
+        submissionTypes = submissionFilterType
+        
+        let stringTypes = submissionFilterType.submissionTypes.map { $0.rawValue }
+
+        fetchAndMapSubmissions(field: field, values: stringTypes) { mappedSubmissions, error in
+            if let error = error {
+                print("Failed to fetch submissions: \(error.localizedDescription)")
+                return
+            }
+            
+            if let mappedSubmissions = mappedSubmissions {
+                print("Fetched \(mappedSubmissions.count) submissions of type \(field)")
+                
+                DispatchQueue.main.async {
+                    self.submissions = mappedSubmissions
+                    self.getGroupedSubmissions()
+                }
+            }
+        }
+    }
+    
+    func fetchAndMapSubmissions(
+        field: String,
+        values: [String],
+        completion: @escaping ([MappedSubmission]?, Error?) -> Void
+    ) {
+        db.collection(ServerConfig.shared.collectionName).whereField(field, in: values).getDocuments { snapshot, error in
+            if let error = error {
+                print("Error fetching submissions by \(field): \(error.localizedDescription)")
+                completion(nil, error)
+                return
+            }
+            
+            guard let documents = snapshot?.documents else {
+                print("No submissions found for \(field): \(values)")
+                completion([], nil)
+                return
+            }
+            
+            do {
+                let firebaseSubmissions = try documents.map { document in
+                    try document.data(as: FirebaseSubmission.self)
+                }
+                
+                let mappedSubmissions = firebaseSubmissions.map { submission in
+                    MappedSubmission(
+                        collectionId: submission.id ?? "",
+                        submissionId: submission.submissionId,
+                        submissionTime: submission.submissionTime,
+                        lastUpdatedAt: submission.lastUpdatedAt,
+                        questions: submission.questions,
+                        type: submission.type,
+                        state: submission.state,
+                        isDelegated: submission.isDelegated
+                    )
+                }
+                
+                completion(mappedSubmissions, nil)
+            } catch {
+                print("Error decoding or mapping submissions: \(error.localizedDescription)")
+                completion(nil, error)
+            }
+        }
+    }
+    
+    func fetchAndMapDelegatedSubmissions() {
+        db.collection(ServerConfig.shared.collectionName).whereField("isDelegated", isEqualTo: true).getDocuments { snapshot, error in
+            if let error = error {
+                print("Error fetching submissions by isDelegated: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let documents = snapshot?.documents else {
+                print("No submissions found for isDelegated:")
+                return
+            }
+            
+            do {
+                let firebaseSubmissions = try documents.map { document in
+                    try document.data(as: FirebaseSubmission.self)
+                }
+                
+                let mappedSubmissions = firebaseSubmissions.map { submission in
+                    MappedSubmission(
+                        collectionId: submission.id ?? "",
+                        submissionId: submission.submissionId,
+                        submissionTime: submission.submissionTime,
+                        lastUpdatedAt: submission.lastUpdatedAt,
+                        questions: submission.questions,
+                        type: submission.type,
+                        state: submission.state,
+                        isDelegated: submission.isDelegated
+                    )
+                }
+                
+                DispatchQueue.main.async {
+                    self.submissions = mappedSubmissions
+                    self.getGroupedSubmissions()
+                }
+            } catch {
+                print("Error decoding or mapping submissions: \(error.localizedDescription)")
+            }
         }
     }
     
     func filterSubmissions(by name: String) {
+        filteredSubmissions.removeAll()
         if name.isEmpty {
             filteredSubmissions.removeAll()
             getGroupedSubmissions()
@@ -205,24 +199,8 @@ final class SubmissionsViewModel: ObservableObject {
 
         getGroupedSubmissions()
     }
-
-    func setTitle(state: SubmissionState) {
-        switch state {
-        case .confirmed:
-            title = "Confirmed"
-        case .completed:
-            title = "Completed"
-        case .deleted:
-            title = "Deleted"
-        case .orders:
-            title = isNewFilteredActive ? "New" :" Orders"
-        }
-    }
-
     
     func fetchSubmission(by submissionId: String, completion: @escaping (Result<FirebaseSubmission?, Error>) -> Void) {
-        let db = Firestore.firestore()
-        
         db.collection(ServerConfig.shared.collectionName)
             .whereField("submissionId", isEqualTo: submissionId)
             .getDocuments { (snapshot, error) in
@@ -248,29 +226,44 @@ final class SubmissionsViewModel: ObservableObject {
     }
 
     func getGroupedSubmissions(){
-        var subs = submissions
-        if !filteredSubmissions.isEmpty {
-            subs = filteredSubmissions
-        }
-        let grouped = Dictionary(grouping: subs) { submission in
-            
-            var date: Date?
-            for question in submission.questions {
-                if question.name == "Date of pickup" {
-                    if case .string(let dateString) = question.value, let dateStr = dateString {
-                        date = dateFormatter(stringDate: dateStr)
-                        break
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            setNavigationTitle()
+            var subs = submissions
+            if !filteredSubmissions.isEmpty {
+                subs = filteredSubmissions
+            }
+            let grouped = Dictionary(grouping: subs) { submission in
+                
+                var date: Date?
+                for question in submission.questions {
+                    if question.name == Questions.dateOfPickup.rawValue {
+                        if case .string(let dateString) = question.value, let dateStr = dateString {
+                            date = self.dateFormatter(stringDate: dateStr)
+                            break
+                        }
                     }
                 }
+                return date ?? Date()
             }
-            return date ?? Date()
+            
+            groupedSubmissions = grouped.sorted(by: { $0.key > $1.key }).reduce(into: [Date: [MappedSubmission]]()) {
+                $0[$1.key] = $1.value
+            }
+            
+            self.isLoading = false
+            setupShowTodayButton()
         }
-
-        groupedSubmissions = grouped.sorted(by: { $0.key > $1.key }).reduce(into: [Date: [MappedSubmission]]()) {
-            $0[$1.key] = $1.value
+    }
+    
+    func setNavigationTitle() {
+        switch submissionTypes {
+        case .newAndConfirmed: title = "All"
+        case .completed: title = "Completed"
+        case .confirmed: title = "Confirmed"
+        case .deleted: title = "Deleted"
+        case .new: title = "New"
         }
-        
-        setupShowTodayButton()
     }
     
     func setupShowTodayButton() {
@@ -303,6 +296,7 @@ final class SubmissionsViewModel: ObservableObject {
             return outputFormatter.string(from: Date())
         }
     }
+    
     func getDaysAgo(submissionDate: Date?) -> String? {
         guard let submissionDate else { return nil }
         
@@ -475,8 +469,6 @@ final class SubmissionsViewModel: ObservableObject {
         return nil
     }
     
-    
-    
     func updateSubmission(_ submission: MappedSubmission, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let index = submissions.firstIndex(where: { $0.submissionId == submission.submissionId }) else { return }
 
@@ -486,11 +478,8 @@ final class SubmissionsViewModel: ObservableObject {
             submissionTime: submission.submissionTime,
             lastUpdatedAt: submission.lastUpdatedAt,
             questions: submission.questions,
-            isConfirmed: submission.isConfirmed,
-            isDeleted: submission.isDeleted,
-            isViewed: true,
-            isCompleted: submission.isCompleted,
-            isRead: submission.isRead
+            type: submission.type,
+            state: submission.state
         )
         
         do {
@@ -505,33 +494,13 @@ final class SubmissionsViewModel: ObservableObject {
     
     // MARK: - Mark submissions as Viewed/Confirmed/Deleted/Completed
     
-    func confirmSubmission(withId id: String) {
-        guard let index = submissions.firstIndex(where: { $0.id == id }) else { return }
-        
-        DispatchQueue.main.async {
-            self.submissions[index].isConfirmed = true
+    func confirmSubmission(withId submission: MappedSubmission, type: SubmissionType) {
+        guard let index = submissions.firstIndex(where: { $0.id == submission.id }) else {
+            return
         }
-        var submissionData = submissions[index]
-        submissionData.isConfirmed = true
-        submissionData.isRead = false
         
-        fetchSubmission(by: submissionData.submissionId) { result in
-            switch result {
-            case .success(let submission):
-                if let submission = submission {
-                    try? self.db.collection(ServerConfig.shared.collectionName).document(submission.id ?? "").setData(from: submissionData)
-                } else {
-                    print("No submission found with the given ID.")
-                }
-            case .failure(let error):
-                print("Error fetching submission: \(error.localizedDescription)")
-            }
-        }
-    }
-    
-    func markSubmissionAsViewed(_ submission: MappedSubmission) {
-        guard let index = submissions.firstIndex(where: { $0.submissionId == submission.submissionId }) else { return }
-        submissions[index].isViewed = true
+        submissions[index].type = type
+        submissions[index].state = .viewed
 
         let updatedSubmission = submissions[index]
         do {
@@ -541,14 +510,26 @@ final class SubmissionsViewModel: ObservableObject {
         }
     }
     
-    func markSubmissionAsDeleted(_ submission: MappedSubmission, state: Bool) {
+    func markSubmissionAsViewed(_ submission: MappedSubmission) {
+        guard let index = submissions.firstIndex(where: { $0.submissionId == submission.submissionId }) else { return }
+        if submissions[index].state != .messaged {
+            submissions[index].state = .viewed
+            let updatedSubmission = submissions[index]
+            getGroupedSubmissions()
+            do {
+                try db.collection(ServerConfig.shared.collectionName).document(submissions[index].collectionId).setData(from: updatedSubmission)
+            } catch let error {
+                print("Error updating submission: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    func markSubmissionAsDeleted(_ submission: MappedSubmission, type: SubmissionType) {
         guard let index = submissions.firstIndex(where: { $0.id == submission.id }) else {
             return
         }
         
-        submissions[index].isDeleted = state
-        submissions[index].isCompleted = false
-        submissions[index].isConfirmed = false
+        submissions[index].type = type
 
         let updatedSubmission = submissions[index]
         do {
@@ -573,18 +554,21 @@ final class SubmissionsViewModel: ObservableObject {
     
     func markSubmissionAsCompleted(_ submission: MappedSubmission) {
         guard let index = submissions.firstIndex(where: { $0.submissionId == submission.submissionId }) else { return }
-    
-        submissions[index].isCompleted = true
-        submissions[index].isConfirmed = false
-        submissions[index].isDeleted = false
+        
+        if submissions[index].type == .completed {
+            submissions[index].type = .confirmed
+        } else {
+            submissions[index].type = .completed
+        }
         
         let updatedSubmission = submissions[index]
         do {
+            // Update the Firestore database with the new state
             try db.collection(ServerConfig.shared.collectionName).document(submissions[index].collectionId).setData(from: updatedSubmission)
         } catch let error {
             print("Error updating submission: \(error.localizedDescription)")
         }
-        
+
         DispatchQueue.main.async {
             for (date, var submissionsForDate) in self.groupedSubmissions {
                 if let index = submissionsForDate.firstIndex(where: { $0.id == submission.id }) {
@@ -599,17 +583,103 @@ final class SubmissionsViewModel: ObservableObject {
         }
     }
     
-    func markSubmissionAsRead(_ submission: MappedSubmission) {
+    func markSubmissionAsMessaged(_ submission: MappedSubmission) {
         guard let index = submissions.firstIndex(where: { $0.submissionId == submission.submissionId }) else { return }
     
-        submissions[index].isRead = !submissions[index].isRead
+        if submissions[index].state == .messaged {
+            submissions[index].state = .viewed
+        } else {
+            submissions[index].state = .messaged
+        }
+        
         
         let updatedSubmission = submissions[index]
+        self.getGroupedSubmissions()
+
         do {
             try db.collection(ServerConfig.shared.collectionName).document(submissions[index].collectionId).setData(from: updatedSubmission)
-                getGroupedSubmissions()
         } catch let error {
             print("Error updating submission: \(error.localizedDescription)")
         }
+    }
+    
+    func markSubmissionAsDelegated(_ submission: MappedSubmission) {
+        guard let index = submissions.firstIndex(where: { $0.submissionId == submission.submissionId }) else { return }
+    
+        submissions[index].isDelegated = !(submissions[index].isDelegated ?? false)
+        
+        let updatedSubmission = submissions[index]
+        self.getGroupedSubmissions()
+
+        do {
+            try db.collection(ServerConfig.shared.collectionName).document(submissions[index].collectionId).setData(from: updatedSubmission)
+        } catch let error {
+            print("Error updating submission: \(error.localizedDescription)")
+        }
+    }
+    
+    func generateFeedback(style: UIImpactFeedbackGenerator.FeedbackStyle) {
+        let feedbackGenerator = UIImpactFeedbackGenerator(style: .soft)
+        feedbackGenerator.impactOccurred()
+    }
+    
+    func dateFormatted(date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .long
+        return dateFormatter.string(from: date)
+    }
+    
+    // MARK: - Authentication
+    func signOut() {
+        authenticationManager.signOut { error in
+            if let error {
+                print(error.localizedDescription)
+            } else {
+                print("Signed out")
+            }
+        }
+    }
+    
+    func startListeningForNewSubmissions() {
+        let submissionsCollection = db.collection(ServerConfig.shared.collectionName)
+
+        listener = submissionsCollection.whereField("type", isEqualTo: "new")
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let self else { return }
+                if let error = error {
+                    print("Error listening for submissions: \(error.localizedDescription)")
+                    return
+                }
+
+                guard let snapshot = snapshot else { return }
+
+                // If it's the first snapshot, initialize the seen IDs and skip processing
+                if isFirstSnapshot {
+                    seenDocumentIDs = Set(snapshot.documents.map { $0.documentID })
+                    isFirstSnapshot = false
+                    return
+                }
+
+                // Extract the document IDs from the current snapshot
+                let currentDocumentIDs = Set(snapshot.documents.map { $0.documentID })
+
+                // Find new IDs by subtracting the already seen IDs
+                let newDocumentIDs = currentDocumentIDs.subtracting(seenDocumentIDs)
+
+                // Update the seen IDs set
+                seenDocumentIDs.formUnion(newDocumentIDs)
+
+                // Increment the count for new submissions
+                newSubmissionsCount += newDocumentIDs.count
+
+                // Debugging output
+                print("Newly added documents count: \(newDocumentIDs.count)")
+                print("Total new submissions: \(newSubmissionsCount)")
+            }
+    }
+
+    func stopListening() {
+        listener?.remove()
+        listener = nil
     }
 }

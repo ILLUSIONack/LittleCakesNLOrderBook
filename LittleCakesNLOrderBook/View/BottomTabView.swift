@@ -5,45 +5,46 @@ final class ImageCache {
 }
 
 struct BottomTabView: View {
-    @EnvironmentObject var firestoreManager: FirestoreManager
+    @ObservedObject var authService: AuthenticationService
     @StateObject private var viewModel: BottomTabViewModel
+    
     private let filloutService: FilloutService = FilloutService()
 
-    init() {
-        _viewModel = StateObject(wrappedValue: BottomTabViewModel(firestoreManager: FirestoreManager.shared))
+    init(authService: AuthenticationService) {
+        self.authService = authService
+        _viewModel = StateObject(wrappedValue: BottomTabViewModel(authService: authService))
     }
     
     var body: some View {
         TabView {
-            SubmissionsView(submissionState: .orders, firestoreManager: firestoreManager, filloutService: filloutService)
+            if viewModel.isUserAdmin {
+                SubmissionsView(
+                    authenticationManager: authService,
+                    filloutService: filloutService
+                )
                 .tabItem {
-                    Image(systemName: "list.bullet")
-                    Text("Orders")
+                    Label("Orders", systemImage: "list.bullet")
                 }
-            if viewModel.isConfirmedTabVisible {
-                SubmissionsView(submissionState: .confirmed, firestoreManager: firestoreManager, filloutService: filloutService)
-                    .tabItem {
-                        Image(systemName: "checkmark.seal.fill")
-                        Text("Confirmed")
-                    }
-            }
-            if viewModel.isCompletedTabVisible {
-                SubmissionsView(submissionState: .completed, firestoreManager: firestoreManager, filloutService: filloutService)
-                    .tabItem {
-                        Image(systemName: "square.and.pencil")
-                        Text("Completed")
-                    }
-            }
-            if viewModel.isDeletedTabVisible {
-                SubmissionsView(submissionState: .deleted, firestoreManager: firestoreManager, filloutService: filloutService)
-                    .tabItem {
-                        Image(systemName: "delete.left.fill")
-                        Text("Deleted")
-                    }
+                .badge(viewModel.unviewedSubmissionsCount)
+                SubmissionsView(
+                    authenticationManager: authService,
+                    filloutService: filloutService,
+                    isDelegated: true
+                )
+                .tabItem {
+                    Label("Delegated", systemImage: "list.bullet")
+                }
+            } else {
+                SubmissionsView(
+                    authenticationManager: authService,
+                    filloutService: filloutService
+                )
+                .tabItem {
+                    Label("Orders", systemImage: "list.bullet")
+                }
+                .badge(viewModel.unviewedSubmissionsCount)
             }
         }
-        .onAppear {
-            viewModel.fetchSubmissions()
-        }
+        .accentColor(.black)
     }
 }

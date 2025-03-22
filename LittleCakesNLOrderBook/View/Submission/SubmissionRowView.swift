@@ -5,14 +5,10 @@ struct SubmissionRowView: View {
     @ObservedObject var viewModel: SubmissionsViewModel
 
     var body: some View {
-        NavigationLink(destination:
-                        SubmissionDetailView(
-                            submission: submission,
-                            viewModel: viewModel
-                        )
-                            .onAppear {
-                                viewModel.markSubmissionAsViewed(submission)
-                            }
+        NavigationLink(destination: SubmissionDetailView(submission: submission, viewModel: viewModel)
+            .onAppear {
+                viewModel.markSubmissionAsViewed(submission)
+            }
         ) {
             VStack(alignment: .leading, spacing: 0){
                 if let name = viewModel.fetchSubmissionWithQuestion(submission, .name),
@@ -79,38 +75,47 @@ struct SubmissionRowView: View {
                             .font(.footnote)
                             .foregroundColor(.secondary)
                     }
-                    if let daysAgo = viewModel.getDaysAgo(submissionDate: submission.submissionTimeDate),
-                       !submission.isConfirmed, !submission.isCompleted, !submission.isDeleted {
+                    if let daysAgo = viewModel.getDaysAgo(submissionDate: submission.submissionTimeDate), submission.type == .new{
                         Text(daysAgo)
                             .font(.footnote)
                             .foregroundColor(.red)
                     }
                 }
                 
-                if submission.isRead {
-                    Text("Messaged")
-                        .font(.footnote)
-                        .foregroundColor(.yellow)
-                        .fontWeight(.bold)
+                HStack(spacing: 8) {
+                    if submission.state == .messaged {
+                        Text("Messaged")
+                            .font(.footnote)
+                            .foregroundColor(.yellow)
+                            .fontWeight(.bold)
+                    }
+                    
+                    if submission.type == .completed {
+                        Text("Completed")
+                            .font(.footnote)
+                            .foregroundColor(.green)
+                            .fontWeight(.bold)
+                    } else if submission.type == .confirmed  {
+                        Text("Confirmed")
+                            .font(.footnote)
+                            .foregroundColor(.blue)
+                            .fontWeight(.bold)
+                        
+                    } else if submission.type == .deleted  {
+                        Text("Deleted")
+                            .font(.footnote)
+                            .foregroundColor(.red)
+                            .fontWeight(.bold)
+                    }
+                    
+                    if submission.isDelegated ?? false {
+                        Text("Delegated")
+                            .font(.footnote)
+                            .foregroundColor(.purple)
+                            .fontWeight(.bold)
+                    }
                 }
                 
-                if submission.isCompleted {
-                    Text("Completed")
-                        .font(.footnote)
-                        .foregroundColor(.green)
-                        .fontWeight(.bold)
-                } else if submission.isConfirmed {
-                    Text("Confirmed")
-                        .font(.footnote)
-                        .foregroundColor(.blue)
-                        .fontWeight(.bold)
-                    
-                } else if submission.isDeleted {
-                    Text("Deleted")
-                        .font(.footnote)
-                        .foregroundColor(.red)
-                        .fontWeight(.bold)
-                }
             }
             .cornerRadius(8)
         }
