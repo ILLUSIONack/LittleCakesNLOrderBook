@@ -103,7 +103,7 @@ exports.filloutWebhook = functions.https.onRequest(async (req, res) => {
         const db = admin.firestore();
 
         // Add the submission to Firestore
-        const docRef = db.collection("submissionsReleaseBackup").doc(); // Auto-generate document ID
+        const docRef = db.collection("submissionsVersion2").doc(); // Auto-generate document ID
         const collectionId = docRef.id; // Get the generated document ID
 
         // Prepare the submission document

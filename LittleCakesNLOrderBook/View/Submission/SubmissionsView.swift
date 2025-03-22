@@ -71,11 +71,11 @@ struct SubmissionsView: View {
             }) {
                 Image(systemName: "magnifyingglass")
             }
-            .tint(Color.black)
+            .tint(Color.green)
             Button(action: viewModel.signOut) {
                 Image(systemName: "door.left.hand.open")
             }
-            .tint(Color.black)
+            .tint(Color.red)
         }
     }
     

@@ -33,7 +33,7 @@ final class ServerConfig {
         self.collectionName = "submissionsReleaseBackup"
         #else
         self.baseURL = ProcessInfo.processInfo.environment[BaseUrl.RELEASE.rawValue] ?? ""
-        self.collectionName = "submissions"
+        self.collectionName = "submissionsVersion2"
         #endif
     }
 }
