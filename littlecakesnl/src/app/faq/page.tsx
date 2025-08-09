@@ -64,7 +64,7 @@ const faqData: FAQItem[] = [
   {
     id: 11,
     question: "What if I don't receive a response within 1-3 working days?",
-    answer: "If you haven't heard back from us within 1-3 working days after submitting your order, please send us another message via Instagram. We want to ensure every inquiry is handled promptly."
+    answer: "If you haven't heard back from us within 1-3 working days after submitting your order, please send us another message via Instagram. We want to ensure every inquiry is handled promptly"
   }
 ];
 
