@@ -14,7 +14,7 @@ const faqData: FAQItem[] = [
   {
     id: 1,
     question: "How do I place a custom cake order?",
-    answer: "Simply click the 'Place Order' button and fill out our detailed form with your requirements. We'll get back to you within 48 hours with a quote and timeline."
+    answer: "Simply click the 'Place Order' button and fill out our detailed form with your requirements. We'll get back to you within 1-3 working days with a quote and timeline."
   },
   {
     id: 2,
@@ -54,7 +54,7 @@ const faqData: FAQItem[] = [
   {
     id: 9,
     question: "Can I see my cake before pickup?",
-    answer: "While not guaranteed, you can request to see a photo of your completed cake before pickup. We'll do our best to accommodate this request."
+    answer: "You can request to see a photo of your completed cake before pickup. We'll do our best to accommodate this request."
   },
   {
     id: 10,
@@ -63,8 +63,8 @@ const faqData: FAQItem[] = [
   },
   {
     id: 11,
-    question: "What if I don't receive a response within 48 hours?",
-    answer: "If you haven't heard back from us within 48 hours after submitting your order, please send us another message via Instagram. We want to ensure every inquiry is handled promptly."
+    question: "What if I don't receive a response within 1-3 working days?",
+    answer: "If you haven't heard back from us within 1-3 working days after submitting your order, please send us another message via Instagram. We want to ensure every inquiry is handled promptly."
   }
 ];
 
@@ -244,7 +244,7 @@ const FAQPage = () => {
                 >
                   <button className="btn-modern px-10 py-4 text-lg font-bold hover-glow group relative overflow-hidden">
                     <span className="relative z-10 flex items-center gap-2">
-                      🎂 Get FREE Quote (48h Response)
+                      🎂 Get FREE Quote (1-3 Days Response)
                       <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                       </svg>

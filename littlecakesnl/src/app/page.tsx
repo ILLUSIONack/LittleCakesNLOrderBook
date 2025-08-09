@@ -117,7 +117,7 @@ const Home = () => {
                 <div className="text-4xl mb-3">📱</div>
                 <h3 className="font-bold text-gray-800 mb-2">Send Screenshot</h3>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  Share a screenshot of your request via Instagram <span className="font-semibold text-pink-600">@littlecakesnl</span>. We&apos;ll respond within 48 hours with details.
+                  Share a screenshot of your request via Instagram <span className="font-semibold text-pink-600">@littlecakesnl</span>. We&apos;ll respond within 1-3 working days with details.
                 </p>
               </div>
               <div className="modern-card p-6 hover-scale text-center relative">
@@ -181,7 +181,7 @@ const Home = () => {
                   </div>
                   <div className="flex items-center gap-1">
                     <span className="text-green-500">✓</span>
-                    <span>48h response</span>
+                    <span>1-3 days response</span>
                   </div>
                 </div>
                 
