@@ -52,6 +52,16 @@ const Navbar = () => {
               FAQ
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-500 to-pink-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
+            
+            <Link 
+              href="/order"
+              className={`nav-link font-medium transition-all duration-300 relative group ${
+                isScrolled ? 'text-gray-700 hover:text-pink-500' : 'text-white hover:text-pink-200'
+              }`}
+            >
+              Orders
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-500 to-pink-600 transition-all duration-300 group-hover:w-full"></span>
+            </Link>
 
             {/* CTA Button */}
             <a 
@@ -107,6 +117,13 @@ const Navbar = () => {
               className="block px-4 py-2 text-gray-700 hover:text-pink-500 font-medium transition-colors duration-200"
             >
               FAQ
+            </Link>
+            <Link 
+              href="/order"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block px-4 py-2 text-gray-700 hover:text-pink-500 font-medium transition-colors duration-200"
+            >
+              Orders
             </Link>
             <div className="px-4">
               <a 
