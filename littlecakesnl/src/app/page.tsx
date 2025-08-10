@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
+import CakeFeed from '@/components/InstagramFeed';
 
 const Home = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -69,8 +70,6 @@ const Home = () => {
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}>
             
-
-
             {/* Main Headline */}
             <h1 className={`text-4xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight transform transition-all duration-1000 delay-200 ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
@@ -267,8 +266,6 @@ const Home = () => {
                 </div>
               </div>
             </div>
-
-
           </div>
         </div>
 
@@ -283,6 +280,9 @@ const Home = () => {
               transform: `scale(${1 + mousePosition.x * 0.00005})`
             }}
           />
+          
+          {/* Dark Overlay - Desktop Only */}
+          <div className="absolute inset-0 bg-black/50" />
           
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-l from-black/60 via-black/30 to-transparent" />
@@ -311,6 +311,9 @@ const Home = () => {
           </div>
         </div>
       </div>
+
+      {/* Cake Feed Section - Social Proof */}
+      <CakeFeed maxPosts={6} />
     </div>
   );
 };
