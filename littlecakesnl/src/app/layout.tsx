@@ -11,8 +11,8 @@ const lato = Lato({
 
 export const metadata: Metadata = {
   title: 'LittleCakesNL - Custom Dream Cakes in Rotterdam & Vlaardingen',
-  description: 'Handcrafted custom cakes made with love in The Netherlands. Wedding cakes, birthday cakes, and special occasion cakes. Pickup in Rotterdam & Vlaardingen. Order your dream cake today!',
-  keywords: 'custom cakes, wedding cakes, birthday cakes, Rotterdam, Vlaardingen, Netherlands, cake delivery, cake pickup, custom cake design',
+  description: 'Handcrafted custom cakes made with love in The Netherlands. Wedding cakes, birthday cakes, and special occasion cakes. Pickup only in Rotterdam & Vlaardingen. Order your dream cake today!',
+  keywords: 'custom cakes, wedding cakes, birthday cakes, Rotterdam, Vlaardingen, Netherlands, cake pickup, custom cake design',
   authors: [{ name: 'LittleCakesNL' }],
   creator: 'LittleCakesNL',
   publisher: 'LittleCakesNL',
@@ -24,6 +24,17 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://littlecakesnl.nl'),
   alternates: {
     canonical: '/',
+    languages: {
+      'en': '/',
+      'nl': '/',
+    },
+  },
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=5',
+  themeColor: '#ec4899',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'LittleCakesNL',
   },
   openGraph: {
     title: 'LittleCakesNL - Custom Dream Cakes in Rotterdam & Vlaardingen',
@@ -70,6 +81,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Performance Optimizations */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.instagram.com" />
+        <link rel="dns-prefetch" href="https://littlecakesnl.fillout.com" />
+        
+        {/* Preload Critical Resources */}
+        <link rel="preload" href="/cakesrc.png" as="image" />
+        
+        {/* Security Headers */}
+        <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
+        <meta httpEquiv="X-Frame-Options" content="DENY" />
+        <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
+      </head>
       <body
         className={`${lato.variable} antialiased`}
       >

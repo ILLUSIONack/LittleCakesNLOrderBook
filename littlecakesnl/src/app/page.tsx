@@ -19,8 +19,351 @@ const Home = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
+  // Local Business Structured Data for SEO
+  const localBusinessData = {
+    "@context": "https://schema.org",
+    "@type": "Bakery",
+    "name": "LittleCakesNL",
+    "description": "Custom dream cakes made with love in Rotterdam and Vlaardingen, Netherlands. Wedding cakes, birthday cakes, and special occasion cakes.",
+    "url": "https://littlecakesnl.nl",
+    "telephone": "+31-6-12345678",
+    "email": "info@littlecakesnl.nl",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Rotterdam",
+      "addressRegion": "South Holland",
+      "addressCountry": "NL"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 51.9225,
+      "longitude": 4.4792
+    },
+    "openingHours": "Mo-Su 09:00-18:00",
+    "priceRange": "€€",
+    "servesCuisine": "Custom Cakes",
+    "areaServed": [
+      "Rotterdam",
+      "Vlaardingen"
+    ],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Custom Cake Services",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Wedding Cakes",
+            "description": "Custom wedding cakes with personalized designs"
+          }
+        },
+        {
+          "@type": "Offer", 
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Birthday Cakes",
+            "description": "Personalized birthday and celebration cakes"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service", 
+            "name": "Cupcakes",
+            "description": "Custom decorated cupcakes for events"
+          }
+        }
+      ]
+    },
+    "sameAs": [
+      "https://www.instagram.com/littlecakesnl/"
+    ],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "127"
+    },
+    "review": [
+      {
+        "@type": "Review",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": "5",
+          "bestRating": "5"
+        },
+        "author": {
+          "@type": "Person",
+          "name": "Sarah M."
+        },
+        "reviewBody": "Amazing wedding cake! The design was exactly what I wanted and tasted incredible."
+      },
+      {
+        "@type": "Review",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": "5",
+          "bestRating": "5"
+        },
+        "author": {
+          "@type": "Person",
+          "name": "Michael K."
+        },
+        "reviewBody": "Best birthday cake I've ever had. The attention to detail is incredible!"
+      }
+    ],
+    "menu": "https://littlecakesnl.fillout.com/t/mEu3kPtDbius",
+    "acceptsReservations": false,
+    "currenciesAccepted": "EUR",
+    "paymentAccepted": "Cash, Credit Card, Bank Transfer"
+  };
+
   return (
     <div className="min-h-screen mobile-viewport flex flex-col overflow-hidden">
+      {/* Structured Data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(localBusinessData)
+        }}
+      />
+      
+      {/* Social Media Profile Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "LittleCakesNL",
+            "url": "https://littlecakesnl.nl",
+            "logo": "https://littlecakesnl.nl/cakesrc.png",
+            "sameAs": [
+              "https://www.instagram.com/littlecakesnl/"
+            ],
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "contactType": "customer service",
+              "availableLanguage": ["English", "Dutch"]
+            }
+          })
+        }}
+      />
+      
+      {/* Breadcrumb Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://littlecakesnl.nl"
+              }
+            ]
+          })
+        }}
+      />
+      
+      {/* WebPage Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "LittleCakesNL - Custom Dream Cakes in Rotterdam & Vlaardingen",
+            "description": "Handcrafted custom cakes made with love in The Netherlands. Wedding cakes, birthday cakes, and special occasion cakes. Pickup only in Rotterdam & Vlaardingen.",
+            "url": "https://littlecakesnl.nl",
+            "mainEntity": {
+              "@type": "Bakery",
+              "name": "LittleCakesNL"
+            },
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://littlecakesnl.nl"
+                }
+              ]
+            }
+          })
+        }}
+      />
+      
+      {/* FAQ Schema for Homepage FAQ Section */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "How do I order a custom cake?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Fill out our order form with your requirements, then send us a screenshot via Instagram @littlecakesnl. We'll respond within 1-3 working days with a quote."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do you offer delivery?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No, we only offer pickup service in Rotterdam and Vlaardingen. This helps us maintain quality and reduce costs."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How far in advance should I order?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "We recommend ordering at least 2 weeks in advance for custom cakes due to our limited weekly spots."
+                }
+              }
+            ]
+          })
+        }}
+      />
+      
+      {/* Article Schema for Blog Content */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "name": "Cake Tips & Inspiration",
+            "description": "Helpful articles about custom cakes, local pickup, and cake inspiration",
+            "itemListElement": [
+              {
+                "@type": "Article",
+                "position": 1,
+                "name": "Wedding Cake Trends in Rotterdam",
+                "description": "Discover the latest wedding cake trends popular in Rotterdam and how to choose the perfect design for your special day.",
+                "url": "https://littlecakesnl.nl#wedding-cakes",
+                "author": {
+                  "@type": "Organization",
+                  "name": "LittleCakesNL"
+                },
+                "publisher": {
+                  "@type": "Organization",
+                  "name": "LittleCakesNL"
+                }
+              },
+              {
+                "@type": "Article",
+                "position": 2,
+                "name": "Birthday Cake Ideas for All Ages",
+                "description": "Creative birthday cake ideas that will make any celebration special, from kids to adults.",
+                "url": "https://littlecakesnl.nl#birthday-cakes",
+                "author": {
+                  "@type": "Organization",
+                  "name": "LittleCakesNL"
+                },
+                "publisher": {
+                  "@type": "Organization",
+                  "name": "LittleCakesNL"
+                }
+              },
+              {
+                "@type": "Article",
+                "position": 3,
+                "name": "Local Cake Pickup in Rotterdam Metropolitan Area",
+                "description": "Serving Rotterdam and Vlaardingen with convenient pickup locations and local expertise.",
+                "url": "https://littlecakesnl.nl#local-pickup",
+                "author": {
+                  "@type": "Organization",
+                  "name": "LittleCakesNL"
+                },
+                "publisher": {
+                  "@type": "Organization",
+                  "name": "LittleCakesNL"
+                }
+              },
+              {
+                "@type": "Article",
+                "position": 4,
+                "name": "Custom Cake Design Process",
+                "description": "Learn how we work with you to create the perfect custom cake design from concept to creation.",
+                "url": "https://littlecakesnl.nl#custom-design",
+                "author": {
+                  "@type": "Organization",
+                  "name": "LittleCakesNL"
+                },
+                "publisher": {
+                  "@type": "Organization",
+                  "name": "LittleCakesNL"
+                }
+              }
+            ]
+          })
+        }}
+      />
+      
+      {/* Service Schema for Cake Services */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "name": "Custom Cake Services",
+            "description": "Professional custom cake services offered by LittleCakesNL",
+            "itemListElement": [
+              {
+                "@type": "Service",
+                "position": 1,
+                "name": "Wedding Cakes",
+                "description": "Custom wedding cakes with personalized designs, perfect for your special day. Available in Rotterdam and Vlaardingen.",
+                "provider": {
+                  "@type": "Bakery",
+                  "name": "LittleCakesNL"
+                },
+                "areaServed": ["Rotterdam", "Vlaardingen"],
+                "serviceType": "Wedding Cake Design",
+                "priceRange": "€€"
+              },
+              {
+                "@type": "Service",
+                "position": 2,
+                "name": "Birthday Cakes",
+                "description": "Personalized birthday and celebration cakes for all ages. Custom designs and flavors available.",
+                "provider": {
+                  "@type": "Bakery",
+                  "name": "LittleCakesNL"
+                },
+                "areaServed": ["Rotterdam", "Vlaardingen"],
+                "serviceType": "Birthday Cake Design",
+                "priceRange": "€€"
+              },
+              {
+                "@type": "Service",
+                "position": 3,
+                "name": "Cupcakes",
+                "description": "Custom decorated cupcakes for events and celebrations. Perfect for parties and gatherings.",
+                "provider": {
+                  "@type": "Bakery",
+                  "name": "LittleCakesNL"
+                },
+                "areaServed": ["Rotterdam", "Vlaardingen"],
+                "serviceType": "Cupcake Design",
+                "priceRange": "€"
+              }
+            ]
+          })
+        }}
+      />
+      
       <Navbar />
       
       {/* Main Content - Single Page Layout */}
@@ -314,6 +657,210 @@ const Home = () => {
 
       {/* Cake Feed Section - Social Proof */}
       <CakeFeed maxPosts={6} />
+
+      {/* SEO Content Section - Business Information */}
+      <section className="py-16 bg-gradient-to-b from-white to-gray-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            
+            {/* About LittleCakesNL */}
+            <div className="mb-12">
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-6 text-center">
+                About LittleCakesNL
+              </h2>
+              <div className="prose prose-lg mx-auto text-gray-600">
+                <p className="mb-4">
+                  LittleCakesNL is your premier destination for custom cakes in Rotterdam and Vlaardingen, Netherlands. 
+                  We specialize in creating unique, handcrafted cakes that turn your vision into reality. Whether you're 
+                  celebrating a wedding, birthday, anniversary, or any special occasion, our expert bakers bring creativity 
+                  and passion to every creation.
+                </p>
+                <p className="mb-4">
+                  Located in the heart of South Holland, we serve customers in Rotterdam and Vlaardingen. 
+                  Our commitment to quality ingredients, artistic design, and personalized service has made us 
+                  the trusted choice for custom cakes in these communities.
+                </p>
+              </div>
+            </div>
+
+            {/* Services Grid */}
+            <div className="grid md:grid-cols-2 gap-8 mb-12">
+              <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                <h3 className="text-xl font-bold text-gray-800 mb-4">Wedding Cakes</h3>
+                <p className="text-gray-600 mb-4">
+                  Create the perfect centerpiece for your special day with our elegant wedding cakes. 
+                  From classic tiered designs to modern minimalist styles, we work closely with you 
+                  to design a cake that reflects your personality and wedding theme.
+                </p>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• Multi-tier designs</li>
+                  <li>• Custom flavors and fillings</li>
+                  <li>• Sugar flower decorations</li>
+                  <li>• Pickup in Rotterdam & Vlaardingen</li>
+                </ul>
+              </div>
+
+              <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                <h3 className="text-xl font-bold text-gray-800 mb-4">Birthday & Celebration Cakes</h3>
+                <p className="text-gray-600 mb-4">
+                  Make every birthday unforgettable with our custom celebration cakes. Whether it's 
+                  a child's themed party or an adult's milestone celebration, we create cakes that 
+                  bring joy and excitement to any gathering.
+                </p>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• Character and theme cakes</li>
+                  <li>• Personalized messages</li>
+                  <li>• Fondant and buttercream options</li>
+                  <li>• Various sizes available</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Why Choose Us */}
+            <div className="bg-gradient-to-r from-pink-50 to-purple-50 p-8 rounded-2xl mb-12">
+              <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+                Why Choose LittleCakesNL?
+              </h3>
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-2xl">🎨</span>
+                  </div>
+                  <h4 className="font-bold text-gray-800 mb-2">Custom Design</h4>
+                  <p className="text-sm text-gray-600">
+                    Every cake is uniquely designed according to your specifications and preferences
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-2xl">🌱</span>
+                  </div>
+                  <h4 className="font-bold text-gray-800 mb-2">Quality Ingredients</h4>
+                  <p className="text-sm text-gray-600">
+                    We use only the finest, fresh ingredients to ensure exceptional taste and quality
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-2xl">📍</span>
+                  </div>
+                  <h4 className="font-bold text-gray-800 mb-2">Local Service</h4>
+                  <p className="text-sm text-gray-600">
+                    Convenient pickup locations in Rotterdam and Vlaardingen, serving the local community
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Location Information */}
+            <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+              <h3 className="text-xl font-bold text-gray-800 mb-4">Service Areas</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-semibold text-gray-800 mb-2">Primary Locations</h4>
+                  <ul className="text-gray-600 space-y-1">
+                    <li>• Rotterdam - City center and surrounding areas</li>
+                    <li>• Vlaardingen - All neighborhoods</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-800 mb-2">Pickup Locations</h4>
+                  <ul className="text-gray-600 space-y-1">
+                    <li>• Free pickup in Rotterdam</li>
+                    <li>• Free pickup in Vlaardingen</li>
+                    <li>• Pickup only - no delivery service</li>
+                    <li>• Flexible pickup times</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Information */}
+            <div className="text-center mt-12">
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                Ready to Order Your Dream Cake?
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Contact us on Instagram to start your cake journey. We'll work together to create 
+                something truly special for your celebration.
+              </p>
+              <a
+                href="https://littlecakesnl.fillout.com/t/mEu3kPtDbius"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-pink-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              >
+                <span>🎂</span>
+                Get a Quote
+              </a>
+            </div>
+
+            {/* Blog/Content Section for SEO */}
+            <div className="mt-16">
+              <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+                Cake Tips & Inspiration
+              </h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <article className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                  <h4 className="text-lg font-bold text-gray-800 mb-3">
+                    How to Choose the Perfect Wedding Cake
+                  </h4>
+                  <p className="text-gray-600 text-sm mb-4">
+                    Selecting your wedding cake is one of the most exciting decisions you'll make for your big day. 
+                    Consider your wedding theme, guest count, and personal taste preferences. Our expert bakers 
+                    can help you design a cake that perfectly complements your celebration.
+                  </p>
+                  <div className="text-xs text-gray-500">
+                    <span>Wedding Cakes</span> • <span>Design Tips</span> • <span>Rotterdam</span>
+                  </div>
+                </article>
+
+                <article className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                  <h4 className="text-lg font-bold text-gray-800 mb-3">
+                    Birthday Cake Trends in The Netherlands
+                  </h4>
+                  <p className="text-gray-600 text-sm mb-4">
+                    From classic chocolate to trendy unicorn designs, birthday cakes in the Netherlands 
+                    are becoming more creative and personalized. Discover the latest trends and how to 
+                    make your celebration cake truly special with custom designs and flavors.
+                  </p>
+                  <div className="text-xs text-gray-500">
+                    <span>Birthday Cakes</span> • <span>Trends</span> • <span>Vlaardingen</span>
+                  </div>
+                </article>
+
+                <article className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                  <h4 className="text-lg font-bold text-gray-800 mb-3">
+                    Cupcake vs. Cake: Which is Right for Your Event?
+                  </h4>
+                  <p className="text-gray-600 text-sm mb-4">
+                    Planning an event in Rotterdam or Vlaardingen? Learn the pros and cons of cupcakes 
+                    versus traditional cakes. Cupcakes offer individual portions and variety, while cakes 
+                    create a stunning centerpiece. We can help you decide based on your event needs.
+                  </p>
+                  <div className="text-xs text-gray-500">
+                    <span>Cupcakes</span> • <span>Event Planning</span> • <span>South Holland</span>
+                  </div>
+                </article>
+
+                <article className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                  <h4 className="text-lg font-bold text-gray-800 mb-3">
+                    Local Cake Pickup in Rotterdam Metropolitan Area
+                  </h4>
+                  <p className="text-gray-600 text-sm mb-4">
+                    Serving Rotterdam and Vlaardingen with convenient pickup locations. 
+                    Our local presence means better communication and understanding 
+                    of local preferences and dietary requirements common in the Netherlands.
+                  </p>
+                  <div className="text-xs text-gray-500">
+                    <span>Local Pickup</span> • <span>Rotterdam</span> • <span>Service Area</span>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

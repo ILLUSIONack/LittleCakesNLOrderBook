@@ -186,34 +186,7 @@ const CakeFeed: React.FC<CakeFeedProps> = ({ maxPosts = 6 }) => {
           ))}
         </div>
 
-        {/* Follow CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="text-center mt-12"
-        >
-          <div className="bg-white rounded-2xl shadow-lg p-8 max-w-2xl mx-auto">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="p-3 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full">
-                <Instagram className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900">Follow @littlecakesnl</h3>
-            </div>
-            <p className="text-gray-600 mb-6">
-              Get daily inspiration, behind-the-scenes content, and exclusive offers!
-            </p>
-            <a
-              href="https://www.instagram.com/littlecakesnl/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-full font-semibold hover:from-pink-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105"
-            >
-              <Instagram className="w-5 h-5" />
-              Follow Now
-            </a>
-          </div>
-        </motion.div>
+        {/* Follow CTA - REMOVED to avoid duplication */}
       </div>
     </section>
   );
