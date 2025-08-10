@@ -671,7 +671,7 @@ const Home = () => {
               <div className="prose prose-lg mx-auto text-gray-600">
                 <p className="mb-4">
                   LittleCakesNL is your premier destination for custom cakes in Rotterdam and Vlaardingen, Netherlands. 
-                  We specialize in creating unique, handcrafted cakes that turn your vision into reality. Whether you're 
+                  We specialize in creating unique, handcrafted cakes that turn your vision into reality. Whether you&apos;re 
                   celebrating a wedding, birthday, anniversary, or any special occasion, our expert bakers bring creativity 
                   and passion to every creation.
                 </p>
@@ -703,8 +703,8 @@ const Home = () => {
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-800 mb-4">Birthday & Celebration Cakes</h3>
                 <p className="text-gray-600 mb-4">
-                  Make every birthday unforgettable with our custom celebration cakes. Whether it's 
-                  a child's themed party or an adult's milestone celebration, we create cakes that 
+                  Make every birthday unforgettable with our custom celebration cakes. Whether it&apos;s 
+                  a child&apos;s themed party or an adult&apos;s milestone celebration, we create cakes that 
                   bring joy and excitement to any gathering.
                 </p>
                 <ul className="text-sm text-gray-600 space-y-1">
@@ -781,7 +781,7 @@ const Home = () => {
                 Ready to Order Your Dream Cake?
               </h3>
               <p className="text-gray-600 mb-6">
-                Contact us on Instagram to start your cake journey. We'll work together to create 
+                Contact us on Instagram to start your cake journey. We&apos;ll work together to create 
                 something truly special for your celebration.
               </p>
               <a
@@ -806,7 +806,7 @@ const Home = () => {
                     How to Choose the Perfect Wedding Cake
                   </h4>
                   <p className="text-gray-600 text-sm mb-4">
-                    Selecting your wedding cake is one of the most exciting decisions you'll make for your big day. 
+                    Selecting your wedding cake is one of the most exciting decisions you&apos;ll make for your big day. 
                     Consider your wedding theme, guest count, and personal taste preferences. Our expert bakers 
                     can help you design a cake that perfectly complements your celebration.
                   </p>
