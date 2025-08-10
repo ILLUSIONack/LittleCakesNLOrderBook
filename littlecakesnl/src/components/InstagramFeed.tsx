@@ -145,10 +145,10 @@ const CakeFeed: React.FC<CakeFeedProps> = ({ maxPosts = 6 }) => {
             >
               {/* Image Container */}
               <div className="relative overflow-hidden">
-                <img
-                  src={post.imageUrl}
-                  alt={`Instagram post ${post.id}`}
-                  className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
+                <img 
+                  src={post.imageUrl} 
+                  alt={`Custom cake creation ${post.id} by LittleCakesNL - Handcrafted with love in Rotterdam and Vlaardingen, Netherlands`}
+                  className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
                 />
                 
                 {/* Instagram Badge */}
