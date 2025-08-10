@@ -664,10 +664,16 @@ const Home = () => {
           <div className="max-w-4xl mx-auto">
             
             {/* About LittleCakesNL */}
-            <div className="mb-12">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-6 text-center">
-                About LittleCakesNL
-              </h2>
+            <div className="mb-16">
+              <div className="text-center mb-8">
+                <div className="w-16 h-16 bg-gradient-to-br from-pink-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-2xl">🎂</span>
+                </div>
+                <h2 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">
+                  About LittleCakesNL
+                </h2>
+                <div className="w-20 h-1 bg-gradient-to-r from-pink-400 to-purple-500 mx-auto rounded-full"></div>
+              </div>
               <div className="prose prose-lg mx-auto text-gray-600">
                 <p className="mb-4">
                   LittleCakesNL is your premier destination for custom cakes in Rotterdam and Vlaardingen, Netherlands. 
@@ -684,44 +690,91 @@ const Home = () => {
             </div>
 
             {/* Services Grid */}
-            <div className="grid md:grid-cols-2 gap-8 mb-12">
-              <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Wedding Cakes</h3>
-                <p className="text-gray-600 mb-4">
-                  Create the perfect centerpiece for your special day with our elegant wedding cakes. 
-                  From classic tiered designs to modern minimalist styles, we work closely with you 
-                  to design a cake that reflects your personality and wedding theme.
+            <div className="mb-16">
+              <div className="text-center mb-10">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-2xl">✨</span>
+                </div>
+                <h2 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">
+                  Our Cake Services
+                </h2>
+                <div className="w-20 h-1 bg-gradient-to-r from-purple-400 to-pink-500 mx-auto rounded-full"></div>
+                <p className="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">
+                  From elegant weddings to joyful celebrations, we create cakes that make every moment special
                 </p>
-                <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• Multi-tier designs</li>
-                  <li>• Custom flavors and fillings</li>
-                  <li>• Sugar flower decorations</li>
-                  <li>• Pickup in Rotterdam & Vlaardingen</li>
-                </ul>
               </div>
+                            <div className="grid md:grid-cols-3 gap-8">
+                <div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                  <div className="w-16 h-16 bg-gradient-to-br from-pink-100 to-red-100 rounded-2xl flex items-center justify-center mb-6">
+                    <span className="text-2xl">💒</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-4">Wedding Cakes</h3>
+                  <p className="text-gray-600 mb-4">
+                    Create the perfect centerpiece for your special day with our elegant wedding cakes. 
+                    From classic tiered designs to modern minimalist styles, we work closely with you 
+                    to design a cake that reflects your personality and wedding theme.
+                  </p>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• Multi-tier designs</li>
+                    <li>• Custom flavors and fillings</li>
+                    <li>• Sugar flower decorations</li>
+                    <li>• Pickup in Rotterdam & Vlaardingen</li>
+                  </ul>
+                </div>
 
-              <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Birthday & Celebration Cakes</h3>
-                <p className="text-gray-600 mb-4">
-                  Make every birthday unforgettable with our custom celebration cakes. Whether it&apos;s 
-                  a child&apos;s themed party or an adult&apos;s milestone celebration, we create cakes that 
-                  bring joy and excitement to any gathering.
-                </p>
-                <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• Character and theme cakes</li>
-                  <li>• Personalized messages</li>
-                  <li>• Fondant and buttercream options</li>
-                  <li>• Various sizes available</li>
-                </ul>
+                <div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center mb-6">
+                    <span className="text-2xl">🎉</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-4">Birthday & Celebration Cakes</h3>
+                  <p className="text-gray-600 mb-4">
+                    Make every birthday unforgettable with our custom celebration cakes. Whether it&apos;s 
+                    a child&apos;s themed party or an adult&apos;s milestone celebration, we create cakes that 
+                    bring joy and excitement to any gathering.
+                  </p>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• Character and theme cakes</li>
+                    <li>• Personalized messages</li>
+                    <li>• Fondant and buttercream options</li>
+                    <li>• Various sizes available</li>
+                  </ul>
+                </div>
+
+                <div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-pink-100 rounded-2xl flex items-center justify-center mb-6">
+                    <span className="text-2xl">🎊</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-4">Gender Reveal Cakes</h3>
+                  <p className="text-gray-600 mb-4">
+                    Make your gender reveal party unforgettable with our stunning surprise cakes! 
+                    Our specially designed cakes feature hidden colored fillings that reveal the gender 
+                    when cut, creating a magical moment for family and friends.
+                  </p>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• Hidden colored fillings (pink/blue)</li>
+                    <li>• Custom decorations and themes</li>
+                    <li>• Perfect for intimate gatherings</li>
+                    <li>• Available in various sizes</li>
+                  </ul>
+                </div>
               </div>
             </div>
 
             {/* Why Choose Us */}
-            <div className="bg-gradient-to-r from-pink-50 to-purple-50 p-8 rounded-2xl mb-12">
-              <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-                Why Choose LittleCakesNL?
-              </h3>
-              <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-gradient-to-r from-pink-50 to-purple-50 p-10 rounded-3xl mb-16 shadow-xl border border-pink-100">
+              <div className="text-center mb-10">
+                <div className="w-16 h-16 bg-gradient-to-br from-pink-200 to-purple-200 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-2xl">⭐</span>
+                </div>
+                <h3 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">
+                  Why Choose LittleCakesNL?
+                </h3>
+                <div className="w-20 h-1 bg-gradient-to-r from-pink-400 to-purple-500 mx-auto rounded-full"></div>
+                <p className="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">
+                  We combine creativity, quality, and local expertise to deliver exceptional cakes
+                </p>
+              </div>
+              <div className="grid md:grid-cols-3 gap-8">
                 <div className="text-center">
                   <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-2xl">🎨</span>
@@ -753,8 +806,14 @@ const Home = () => {
             </div>
 
             {/* Location Information */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-              <h3 className="text-xl font-bold text-gray-800 mb-4">Service Areas</h3>
+            <div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 mb-16">
+              <div className="text-center mb-8">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-2xl">📍</span>
+                </div>
+                <h3 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-4">Service Areas</h3>
+                <div className="w-20 h-1 bg-gradient-to-r from-blue-400 to-green-500 mx-auto rounded-full"></div>
+              </div>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <h4 className="font-semibold text-gray-800 mb-2">Primary Locations</h4>
@@ -776,10 +835,16 @@ const Home = () => {
             </div>
 
             {/* Contact Information */}
-            <div className="text-center mt-12">
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">
-                Ready to Order Your Dream Cake?
-              </h3>
+            <div className="text-center mt-16 mb-16">
+              <div className="mb-8">
+                <div className="w-20 h-20 bg-gradient-to-br from-pink-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-3xl">🎂</span>
+                </div>
+                <h3 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">
+                  Ready to Order Your Dream Cake?
+                </h3>
+                <div className="w-24 h-1 bg-gradient-to-r from-pink-400 to-purple-500 mx-auto rounded-full"></div>
+              </div>
               <p className="text-gray-600 mb-6">
                 Contact us on Instagram to start your cake journey. We&apos;ll work together to create 
                 something truly special for your celebration.
@@ -796,10 +861,19 @@ const Home = () => {
             </div>
 
             {/* Blog/Content Section for SEO */}
-            <div className="mt-16">
-              <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-                Cake Tips & Inspiration
-              </h3>
+            <div className="mt-16 mb-16">
+              <div className="text-center mb-10">
+                <div className="w-16 h-16 bg-gradient-to-br from-yellow-100 to-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-2xl">📚</span>
+                </div>
+                <h3 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">
+                  Cake Tips & Inspiration
+                </h3>
+                <div className="w-20 h-1 bg-gradient-to-r from-yellow-400 to-orange-500 mx-auto rounded-full"></div>
+                <p className="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">
+                  Discover helpful tips and creative ideas for your next cake celebration
+                </p>
+              </div>
               <div className="grid md:grid-cols-2 gap-6">
                 <article className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                   <h4 className="text-lg font-bold text-gray-800 mb-3">
