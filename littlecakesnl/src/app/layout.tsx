@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Lato } from 'next/font/google'
 import './globals.css'
 
@@ -28,13 +28,6 @@ export const metadata: Metadata = {
       'en': '/',
       'nl': '/',
     },
-  },
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=5',
-  themeColor: '#ec4899',
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: 'default',
-    title: 'LittleCakesNL',
   },
   openGraph: {
     title: 'LittleCakesNL - Custom Dream Cakes in Rotterdam & Vlaardingen',
@@ -78,6 +71,13 @@ export const metadata: Metadata = {
     'geo.position': '51.9225;4.4792',
     'ICBM': '51.9225, 4.4792',
   },
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#ec4899',
 }
 
 export default function RootLayout({

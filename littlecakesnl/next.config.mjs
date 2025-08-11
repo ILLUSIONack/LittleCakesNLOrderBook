@@ -6,12 +6,6 @@ const nextConfig = {
     formats: ['image/webp', 'image/avif'],
   },
   
-  // Performance optimizations
-  experimental: {
-    optimizeCss: true,
-    optimizePackageImports: ['@/components'],
-  },
-  
   // Headers for SEO and security
   async headers() {
     return [

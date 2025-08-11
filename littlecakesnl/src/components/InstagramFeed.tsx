@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Instagram, Heart, MessageCircle, ExternalLink } from 'lucide-react';
+import { Heart, MessageCircle, Instagram, ExternalLink } from 'lucide-react';
+import Image from 'next/image';
 
 interface CakePost {
   id: string;
@@ -17,61 +18,57 @@ interface CakeFeedProps {
 
 const CakeFeed: React.FC<CakeFeedProps> = ({ maxPosts = 6 }) => {
   const [posts, setPosts] = useState<CakePost[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // Hardcoded cake posts with your actual images
-  const hardcodedPosts: CakePost[] = useMemo(() => [
-    {
-      id: '1',
-      imageUrl: '/images/orders/pic1.png',
-      likes: 45,
-      comments: 8
-    },
-    {
-      id: '2',
-      imageUrl: '/images/orders/pic2.png',
-      likes: 32,
-      comments: 5
-    },
-    {
-      id: '3',
-      imageUrl: '/images/orders/pic3.png',
-      likes: 28,
-      comments: 3
-    },
-    {
-      id: '4',
-      imageUrl: '/images/orders/pic4.png',
-      likes: 67,
-      comments: 12
-    },
-    {
-      id: '5',
-      imageUrl: '/images/orders/pic5.png',
-      likes: 23,
-      comments: 4
-    },
-    {
-      id: '6',
-      imageUrl: '/images/orders/pic6.png',
-      likes: 41,
-      comments: 7
-    }
-  ], []);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading delay for better UX
-    const timer = setTimeout(() => {
-      setPosts(hardcodedPosts.slice(0, maxPosts));
-      setLoading(false);
-    }, 800);
+    // Simulate loading Instagram posts
+    const mockPosts: CakePost[] = [
+      {
+        id: '1',
+        imageUrl: '/images/orders/pic1.png',
+        likes: 127,
+        comments: 23
+      },
+      {
+        id: '2',
+        imageUrl: '/images/orders/pic2.png',
+        likes: 89,
+        comments: 15
+      },
+      {
+        id: '3',
+        imageUrl: '/images/orders/pic3.png',
+        likes: 156,
+        comments: 31
+      },
+      {
+        id: '4',
+        imageUrl: '/images/orders/pic4.png',
+        likes: 203,
+        comments: 42
+      },
+      {
+        id: '5',
+        imageUrl: '/images/orders/pic5.png',
+        likes: 78,
+        comments: 12
+      },
+      {
+        id: '6',
+        imageUrl: '/images/orders/pic6.png',
+        likes: 134,
+        comments: 28
+      }
+    ];
 
-    return () => clearTimeout(timer);
-  }, [maxPosts, hardcodedPosts]);
+    // Simulate API delay
+    setTimeout(() => {
+      setPosts(mockPosts.slice(0, maxPosts));
+      setIsLoading(false);
+    }, 1000);
+  }, [maxPosts]);
 
-  
-
-  if (loading) {
+  if (isLoading) {
     return (
       <section className="py-16 bg-gradient-to-br from-pink-50 via-white to-purple-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -89,10 +86,9 @@ const CakeFeed: React.FC<CakeFeedProps> = ({ maxPosts = 6 }) => {
               </p>
             </motion.div>
           </div>
-          
-          {/* Loading skeleton */}
+
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {[...Array(6)].map((_, i) => (
+            {Array.from({ length: maxPosts }).map((_, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
@@ -145,9 +141,11 @@ const CakeFeed: React.FC<CakeFeedProps> = ({ maxPosts = 6 }) => {
             >
               {/* Image Container */}
               <div className="relative overflow-hidden">
-                <img 
+                <Image 
                   src={post.imageUrl} 
                   alt={`Custom cake creation ${post.id} by LittleCakesNL - Handcrafted with love in Rotterdam and Vlaardingen, Netherlands`}
+                  width={400}
+                  height={256}
                   className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
                 />
                 
