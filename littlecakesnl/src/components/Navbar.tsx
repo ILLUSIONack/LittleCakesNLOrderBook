@@ -29,6 +29,14 @@ const Navbar = () => {
             </Link>
             
             <Link 
+              href="/prices"
+              className="nav-link font-bold text-pink-500 hover:text-pink-600 transition-all duration-300 relative group"
+            >
+              Prices
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-500 to-pink-600 transition-all duration-300 group-hover:w-full"></span>
+            </Link>
+            
+            <Link 
               href="/faq"
               className="nav-link font-bold text-pink-500 hover:text-pink-600 transition-all duration-300 relative group"
             >
@@ -79,6 +87,13 @@ const Navbar = () => {
               className="block px-4 py-2 text-pink-500 hover:text-pink-600 font-bold transition-colors duration-200"
             >
               Home
+            </Link>
+            <Link 
+              href="/prices"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block px-4 py-2 text-pink-500 hover:text-pink-600 font-bold transition-colors duration-200"
+            >
+              Prices
             </Link>
             <Link 
               href="/faq"
