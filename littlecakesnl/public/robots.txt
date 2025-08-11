@@ -1,8 +1,36 @@
 User-agent: *
 Allow: /
 
-# Sitemap
+# Disallow admin and private areas
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+
+# Allow important pages
+Allow: /services/
+Allow: /locations/
+Allow: /blog/
+Allow: /prices/
+Allow: /faq/
+Allow: /about/
+Allow: /contact/
+Allow: /order/
+
+# Sitemaps
 Sitemap: https://littlecakesnl.nl/sitemap.xml
 
-# Crawl-delay
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Additional directives for search engines
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Slurp
+Allow: /
 Crawl-delay: 1 
