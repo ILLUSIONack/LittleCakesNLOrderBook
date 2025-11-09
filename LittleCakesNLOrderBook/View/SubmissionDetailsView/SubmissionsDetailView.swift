@@ -144,9 +144,9 @@ struct SubmissionDetailView: View {
       }
     }
     .sheet(isPresented: $showCopyToClipboardBottomSheet, content: {
-      CakeSelectionBottomSheet()
-                      .presentationDetents([.fraction(0.55), .medium])
-                      .presentationDragIndicator(.visible)
+      CakeSelectionBottomSheet(submission: editedSubmission, viewModel: viewModel)
+        .presentationDetents([.fraction(0.70), .large])
+        .presentationDragIndicator(.visible)
     })
     .alert(isPresented: $calendarEventSaved) {
       Alert(title: Text("Success"), message: Text("Event added to your calendar!"), dismissButton: .default(Text("OK")))

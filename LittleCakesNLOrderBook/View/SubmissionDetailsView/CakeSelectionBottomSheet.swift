@@ -1,6 +1,13 @@
 import Foundation
 import SwiftUI
 
+enum Language: String, CaseIterable, Identifiable {
+  case nl
+  case eng
+
+  var id: String { rawValue }
+}
+
 enum CakeShape: String, CaseIterable, Identifiable {
   case round = "Round"
   case heart = "Heart"
@@ -8,11 +15,13 @@ enum CakeShape: String, CaseIterable, Identifiable {
   var id: String { rawValue }
 }
 
+
 enum CakeSize: String, CaseIterable, Identifiable {
-  case small = "1 - 4"
-  case medium = "4 - 8"
-  case large = "8 - 15"
-  case extraLarge = " 20 +"
+  case oneToFour = "1 - 4"
+  case fourToEight = "4 - 8"
+  case eightToFifteen = "8 - 15"
+  case fifteenToTwenty = "15 - 20"
+  case twentyfivePlus = "25+"
 
   var id: String { rawValue }
 }
@@ -20,15 +29,17 @@ enum CakeSize: String, CaseIterable, Identifiable {
 struct CakePricing {
   static func price(for shape: CakeShape, size: CakeSize) -> Double {
     switch (shape, size) {
-    case (.round, .small): return 20
-    case (.round, .medium): return 30
-    case (.round, .large): return 40
-    case (.round, .extraLarge): return 50
+    case (.round, .oneToFour): return 40
+    case (.round, .fourToEight): return 60
+    case (.round, .eightToFifteen): return 75
+    case (.round, .fifteenToTwenty): return 95
+    case (.round, .twentyfivePlus): return 0
 
-    case (.heart, .small): return 22
-    case (.heart, .medium): return 32
-    case (.heart, .large): return 42
-    case (.heart, .extraLarge): return 55
+    case (.heart, .oneToFour): return 0
+    case (.heart, .fourToEight): return 70
+    case (.heart, .eightToFifteen): return 85
+    case (.heart, .fifteenToTwenty): return 105
+    case (.heart, .twentyfivePlus): return 0
     }
   }
 }
@@ -36,6 +47,9 @@ struct CakePricing {
 struct CakeSelectionBottomSheet: View {
   @Environment(\.dismiss) private var dismiss
 
+  @State private var editedSubmission: MappedSubmission
+  @ObservedObject var viewModel: SubmissionsViewModel
+  @State private var selectedLanguage: Language? = .nl
   @State private var selectedShape: CakeShape?
   @State private var selectedSize: CakeSize?
   @State private var didCopy = false
@@ -52,12 +66,47 @@ struct CakeSelectionBottomSheet: View {
     return "\(shape.rawValue) • \(size.rawValue) • €\(Int(price))"
   }
 
+  init(submission: MappedSubmission, viewModel: SubmissionsViewModel) {
+    self.editedSubmission = submission
+    self.viewModel = viewModel
+  }
+
   var body: some View {
     VStack(spacing: 20) {
 
       Text("Select your cake")
         .font(.headline)
 
+      // Language selection
+      VStack(alignment: .leading, spacing: 8) {
+        Text("Language")
+          .font(.subheadline)
+          .foregroundStyle(.secondary)
+
+        HStack(spacing: 12) {
+          ForEach(Language.allCases) { langauage in
+            Button {
+              selectedLanguage = langauage
+            } label: {
+              Text(langauage.rawValue)
+                .font(.subheadline)
+                .padding(.vertical, 10)
+                .padding(.horizontal, 16)
+                .frame(maxWidth: .infinity)
+                .background(
+                  selectedLanguage == langauage
+                  ? Color.blue.opacity(0.15)
+                  : Color(.systemGray6)
+                )
+                .overlay(
+                  RoundedRectangle(cornerRadius: 16)
+                    .stroke(selectedLanguage == langauage ? Color.blue : .clear, lineWidth: 1.5)
+                )
+                .cornerRadius(16)
+            }
+          }
+        }
+      }
       // Shape selection
       VStack(alignment: .leading, spacing: 8) {
         Text("Shape")
@@ -145,6 +194,10 @@ struct CakeSelectionBottomSheet: View {
       .padding(.bottom, 16)
     }
     .padding(.horizontal, 20)
+    .onAppear {
+      selectedSize = viewModel.getSubmissionSize(editedSubmission)
+      selectedShape = viewModel.getSubmissionShape(editedSubmission)
+    }
   }
 
   private func copyToClipboard() {
@@ -157,7 +210,8 @@ struct CakeSelectionBottomSheet: View {
     let text = "\(shape.rawValue) \(size.rawValue) - €\(Int(price))"
 
     #if os(iOS)
-    UIPasteboard.general.string = text
+
+    UIPasteboard.general.string = viewModel.getConfirmationMessageCopy(editedSubmission, totalPrice: price, isEnglish: selectedLanguage == .eng)
     UINotificationFeedbackGenerator().notificationOccurred(.success)
     #endif
 
