@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import CakeFeed from '@/components/InstagramFeed';
+import StickyCTA from '@/components/StickyCTA';
+import { motion } from 'framer-motion';
 
 const Home = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -474,57 +476,72 @@ const Home = () => {
               </div>
             </div>
 
-            {/* CTA Section */}
+            {/* CTA Section - Enhanced */}
             <div className={`space-y-6 transform transition-all duration-1000 delay-450 ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}>
               
-                             {/* Primary CTA Section */}
-               <div className="space-y-4">
-                 {/* Centered CTA Button */}
-                 <div className="flex justify-center">
-                   <a 
-                     href="https://littlecakesnl.fillout.com/t/mEu3kPtDbius"
-                     target="_blank"
-                     rel="noopener noreferrer"
-                     className="inline-block"
-                   >
-                     <button className="btn-modern px-12 py-5 text-xl font-bold hover-glow group relative overflow-hidden animate-pulse">
-                       <span className="relative z-10 flex items-center gap-3">
-                         🎂 Place Your Order
-                         <svg className="w-6 h-6 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                         </svg>
-                       </span>
-                     </button>
-                   </a>
-                 </div>
+              {/* Primary CTA Section - Enhanced */}
+              <div className="space-y-6">
+                {/* Enhanced CTA Button */}
+                <div className="flex justify-center">
+                  <a 
+                    href="https://littlecakesnl.fillout.com/t/mEu3kPtDbius"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block group"
+                  >
+                    <motion.button 
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="btn-modern px-16 py-6 text-2xl font-bold hover-glow group relative overflow-hidden animate-pulse shadow-2xl"
+                    >
+                      {/* Enhanced Button Background */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-600 to-pink-600 opacity-90 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      
+                      {/* Button Content */}
+                      <span className="relative z-10 flex items-center gap-4 text-white">
+                        <span className="text-3xl">🎂</span>
+                        <span>Place Your Order Now</span>
+                        <svg className="w-7 h-7 transition-transform group-hover:translate-x-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                      </span>
+                    </motion.button>
+                  </a>
+                </div>
                 
-                {/* Value Props Under CTA */}
-                <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-600">
-                  <div className="flex items-center gap-1">
-                    <span className="text-green-500">✓</span>
-                    <span>No commitment</span>
+                {/* Enhanced Value Props */}
+                <div className="flex flex-wrap justify-center gap-6 text-base text-gray-600">
+                  <div className="flex items-center gap-2 bg-white/80 px-4 py-2 rounded-full shadow-lg">
+                    <span className="text-green-500 text-xl">✓</span>
+                    <span className="font-semibold">No commitment</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-green-500">✓</span>
-                    <span>Custom pricing</span>
+                  <div className="flex items-center gap-2 bg-white/80 px-4 py-2 rounded-full shadow-lg">
+                    <span className="text-green-500 text-xl">✓</span>
+                    <span className="font-semibold">Custom pricing</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-green-500">✓</span>
-                    <span>1-3 days response</span>
+                  <div className="flex items-center gap-2 bg-white/80 px-4 py-2 rounded-full shadow-lg">
+                    <span className="text-green-500 text-xl">✓</span>
+                    <span className="font-semibold">1-3 days response</span>
                   </div>
                 </div>
                 
-                <p className="text-xs text-gray-400">
-                  By requesting a quote you agree to our terms and conditions
-                </p>
+                {/* Enhanced Trust Message */}
+                <div className="text-center">
+                  <p className="text-sm text-gray-500 mb-2">
+                    Join 100+ happy customers who got their dream cakes
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    By requesting a quote you agree to our terms and conditions
+                  </p>
+                </div>
               </div>
-
-              {/* Instagram Note - Enhanced Design */}
-
-
             </div>
+
+            {/* Instagram Note - Enhanced Design */}
+
+
           </div>
         </div>
 
@@ -890,6 +907,7 @@ const Home = () => {
       </div>
         </div>
       </section>
+      <StickyCTA />
     </div>
   );
 };
