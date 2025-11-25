@@ -1,6 +1,6 @@
 # LittleCakesNLOrderBook
 
-Welcome to **LittleCakesNLOrderBook**! This app is designed to streamline order management for your bakery, making it easier to handle customer submissions, track orders, and manage events. With features like calendar integration, automatic data fetching from the Fillout API, and submission management, LittleCakesNLOrderBook helps you stay organized and efficient.test
+Welcome to **LittleCakesNLOrderBook**! This app is designed to streamline order management for your bakery, making it easier to handle customer submissions, track orders, and manage events. With features like calendar integration, automatic data fetching from the Fillout API, and submission management, LittleCakesNLOrderBook helps you stay organized and efficient.
 
 ## Table of Contents
 
