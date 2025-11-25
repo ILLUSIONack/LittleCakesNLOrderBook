@@ -114,7 +114,7 @@ const Home = () => {
         "reviewBody": "Best birthday cake I've ever had. The attention to detail is incredible!"
       }
     ],
-    "menu": "https://littlecakesnl.fillout.com/t/mEu3kPtDbius",
+    "menu": "https://littlecakesnl.fillout.com/t/vzLF1V9hvNus",
     "acceptsReservations": false,
     "currenciesAccepted": "EUR",
     "paymentAccepted": "Cash, Credit Card, Bank Transfer"
@@ -486,7 +486,7 @@ const Home = () => {
                 {/* Enhanced CTA Button */}
                 <div className="flex justify-center">
                   <a 
-                    href="https://littlecakesnl.fillout.com/t/mEu3kPtDbius"
+                    href="https://littlecakesnl.fillout.com/t/vzLF1V9hvNus"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-block group"
