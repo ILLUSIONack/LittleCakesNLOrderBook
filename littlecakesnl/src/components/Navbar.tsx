@@ -1,0 +1,125 @@
+'use client';
+
+import Link from 'next/link';
+import { useState } from 'react';
+
+const Navbar = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/90 shadow-lg transition-all duration-300">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          
+          {/* Logo */}
+          <Link href="/" className="flex items-center group">
+            <span className="text-2xl font-bold text-pink-500 drop-shadow-lg hover:scale-105 transition-all duration-300">
+              🎂 LittleCakesNL
+            </span>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            <Link 
+              href="/"
+              className="nav-link font-bold text-pink-500 hover:text-pink-600 transition-all duration-300 relative group"
+            >
+              Home
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-500 to-pink-600 transition-all duration-300 group-hover:w-full"></span>
+            </Link>
+            
+            <Link 
+              href="/prices"
+              className="nav-link font-bold text-pink-500 hover:text-pink-600 transition-all duration-300 relative group"
+            >
+              Prices
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-500 to-pink-600 transition-all duration-300 group-hover:w-full"></span>
+            </Link>
+            
+            <Link 
+              href="/faq"
+              className="nav-link font-bold text-pink-500 hover:text-pink-600 transition-all duration-300 relative group"
+            >
+              FAQ
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-500 to-pink-600 transition-all duration-300 group-hover:w-full"></span>
+            </Link>
+
+            {/* Floating CTA Button */}
+            <a 
+              href="https://littlecakesnl.fillout.com/t/vzLF1V9hvNus"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative group"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full blur-lg opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <button className="relative bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                <span className="flex items-center gap-2">
+                  🎂 Order Now
+                  <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </span>
+              </button>
+            </a>
+          </div>
+
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 rounded-md text-pink-500 hover:text-pink-600 hover:bg-pink-50 transition-colors duration-200"
+          >
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              {isMobileMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
+        </div>
+
+        {/* Mobile Navigation */}
+        <div className={`md:hidden transition-all duration-300 overflow-hidden ${
+          isMobileMenuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'
+        }`}>
+          <div className="py-4 space-y-4 bg-white/95 backdrop-blur-md rounded-lg mt-2 shadow-lg border border-white/20">
+            <Link 
+              href="/"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block px-4 py-2 text-pink-500 hover:text-pink-600 font-bold transition-colors duration-200"
+            >
+              Home
+            </Link>
+            <Link 
+              href="/prices"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block px-4 py-2 text-pink-500 hover:text-pink-600 font-bold transition-colors duration-200"
+            >
+              Prices
+            </Link>
+            <Link 
+              href="/faq"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block px-4 py-2 text-pink-500 hover:text-pink-600 font-bold transition-colors duration-200"
+            >
+              FAQ
+            </Link>
+            <div className="px-4">
+              <a 
+                href="https://littlecakesnl.fillout.com/t/vzLF1V9hvNus"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full text-center bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-full font-bold shadow-lg"
+              >
+                🎂 Order Now
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;
+
