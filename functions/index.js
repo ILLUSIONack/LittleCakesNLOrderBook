@@ -1,135 +1,120 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
-
 const {onRequest} = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
-
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
-
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-
 const functions = require('firebase-functions');
-
-// exports.helloWorld = functions.https.onRequest((req, res) => {
-    // logger.info("Hello logs!", {structuredData: true});
-//     res.status(200).json({ message: "Hello, World!" });
-// });
-
-// const functions = require("firebase-functions");
-
-exports.helloWorld = functions.https.onCall((data, context) => {
-    // Return data in the correct format
-    logger.info("Hello logs!", {structuredData: true});
-    return { "message" : "Hello, World!"};
-});
-
-// const functions = require('firebase-functions');
-// const axios = require('axios');
-
-// const functions = require("firebase-functions");
 const admin = require("firebase-admin");
+
 admin.initializeApp();
 
-exports.filloutWebhook = functions.https.onRequest(async (req, res) => {
-    // Ensure the request is a POST request
+/**
+ * Fillout webhook handler
+ * Receives form submissions from Fillout and saves them to Firestore
+ */
+exports.filloutWebhook = onRequest({
+  invoker: 'public',  // Allow unauthenticated requests from Fillout webhooks
+  cors: true,
+}, async (req, res) => {
+    // Only accept POST requests
     if (req.method !== "POST") {
-        logger.info("Received non-POST request");
         return res.status(405).send("Method Not Allowed");
     }
 
     try {
-        // Log the incoming webhook data
-        logger.info("Received Webhook Data:", JSON.stringify(req.body, null, 2));
-
-        // Extract submission data from the payload
-        const submissionData = req.body.submission;
-
-        if (!submissionData) {
-            logger.error("Invalid payload: Missing 'submission' field.");
-            console.error("Invalid payload: Missing 'submission' field.");
-            return res.status(400).send("Bad Request: Missing 'submission' field.");
+        // Parse request body (handle string or already parsed JSON)
+        let bodyData = req.body;
+        if (typeof bodyData === 'string') {
+            bodyData = JSON.parse(bodyData);
         }
 
-        // Extract relevant fields
-        const { submissionId, submissionTime, lastUpdatedAt, questions } = submissionData;
+        // Extract submission data from various possible payload structures
+        let submissionData = null;
+        
+        if (bodyData.submission) {
+            submissionData = bodyData.submission;
+        } else if (bodyData.data?.submission) {
+            submissionData = bodyData.data.submission;
+        } else if (bodyData.event === "form_response" && bodyData.data) {
+            submissionData = bodyData.data;
+        } else if (bodyData.formResponse) {
+            submissionData = bodyData.formResponse;
+        } else if (bodyData.submissionId || bodyData.questions) {
+            submissionData = bodyData;
+        } else if (bodyData && typeof bodyData === 'object' && Object.keys(bodyData).length > 0) {
+            // Fallback: treat entire body as submission
+            submissionData = bodyData;
+        }
 
-        // Transform the questions, excluding the value field if it's empty
-        let transformedQuestions = questions.map((q, index) => {
+        if (!submissionData || !bodyData) {
+            logger.error("Invalid payload: Missing submission data");
+            return res.status(400).json({
+                error: "Bad Request: Missing submission data",
+                message: "Expected payload structure: { submission: {...} } or { data: { submission: {...} } }"
+            });
+        }
+
+        // Extract submission fields with fallbacks
+        const submissionId = submissionData.submissionId || submissionData.id || submissionData.responseId || `submission-${Date.now()}`;
+        const submissionTime = submissionData.submissionTime || submissionData.submittedAt || submissionData.createdAt || new Date().toISOString();
+        const lastUpdatedAt = submissionData.lastUpdatedAt || submissionData.updatedAt || submissionTime;
+        const questions = submissionData.questions || submissionData.responses || submissionData.answers || [];
+
+        // Transform questions to standardized format
+        const transformedQuestions = questions.map((q, index) => {
             const question = {
-                id: q.id || `q${index}`,
-                name: q.name,
-                type: q.type,
+                id: q.id || q.questionId || `q${index}`,
+                name: q.name || q.question || q.label || `Question ${index + 1}`,
+                type: q.type || q.questionType || 'ShortAnswer',
             };
-            if (q.value) {
-                question.value = q.value; // Include value only if it's non-empty
+            
+            // Handle different value field names
+            const value = q.value ?? q.answer ?? q.response;
+            if (value != null && value !== '') {
+                question.value = value;
             }
+            
             return question;
         });
 
-        // Append additional questions
+        // Add additional fields for order management
         const additionalQuestions = [
-            {
-                id: `q${transformedQuestions.length}`,
-                name: "Total amount €",
-                type: "ShortAnswer",
-                value: " ",
-            },
-            {
-                id: `q${transformedQuestions.length + 1}`,
-                name: "Remaining amount €",
-                type: "ShortAnswer",
-                value: " ",
-            },
-            {
-                id: `q${transformedQuestions.length + 2}`,
-                name: "Notitie",
-                type: "ShortAnswer",
-                value: " ",
-            },
+            { id: `q${transformedQuestions.length}`, name: "Total amount €", type: "ShortAnswer", value: " " },
+            { id: `q${transformedQuestions.length + 1}`, name: "Remaining amount €", type: "ShortAnswer", value: " " },
+            { id: `q${transformedQuestions.length + 2}`, name: "Notitie", type: "ShortAnswer", value: " " },
         ];
-        transformedQuestions = [...transformedQuestions, ...additionalQuestions];
+        const allQuestions = [...transformedQuestions, ...additionalQuestions];
 
-        // Initialize Firestore
+        // Save to Firestore
         const db = admin.firestore();
+        const docRef = db.collection("submissionsVersion2").doc();
+        const collectionId = docRef.id;
 
-        // Add the submission to Firestore
-        const docRef = db.collection("submissionsVersion2").doc(); // Auto-generate document ID
-        const collectionId = docRef.id; // Get the generated document ID
-
-        // Prepare the submission document
         const submission = {
-            submissionId: submissionId, // Use the provided submissionId
-            submissionTime: submissionTime || new Date().toISOString(),
-            lastUpdatedAt: lastUpdatedAt || new Date().toISOString(),
-            questions: transformedQuestions,
-            type: "new", // Add the new type property
-            state: "unviewed", // Add the unviewed state property
-            collectionId: collectionId, // Use the Firestore document ID as collectionId
+            submissionId,
+            submissionTime,
+            lastUpdatedAt,
+            questions: allQuestions,
+            type: "new",
+            state: "unviewed",
+            collectionId,
         };
 
-        // Save the submission to Firestore
         await docRef.set(submission);
 
-        logger.info(`Submission successfully saved with collectionId: ${collectionId}.`);
+        logger.info(`Submission saved: ${submissionId} (collectionId: ${collectionId})`);
 
-        // Respond back with a success message
         return res.status(200).json({
             message: "Submission successfully processed and stored.",
-            collectionId: collectionId,
+            collectionId,
         });
     } catch (error) {
-        logger.error("Error during webhook processing:", error);
-        console.error("Error during webhook processing:", error);
-        return res.status(500).send("Internal Server Error");
+        logger.error("Error processing webhook:", error);
+        return res.status(500).json({ error: "Internal Server Error" });
     }
+});
+
+/**
+ * Test function (can be removed if not needed)
+ */
+exports.helloWorld = functions.https.onCall((data, context) => {
+    logger.info("HelloWorld called");
+    return { message: "Hello, World!" };
 });
